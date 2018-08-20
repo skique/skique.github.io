@@ -6,13 +6,13 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>taoyouyou的博客</title>
+  <title>Archives: 2018/8 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
 <meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
 <meta property="og:type" content="website">
 <meta property="og:title" content="taoyouyou的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/archives/2018/08/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
 <meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
 <meta property="og:locale" content="zh-cn">
@@ -156,99 +156,55 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-centos搭建node环境" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
     
-    <div class="article-entry" itemprop="articleBody">
+    
       
-        <hr>
-<p>title: centos搭建node项目<br>date: 2018-08-20 16:27:47<br>tags:</p>
-<pre><code>- CentOS
-- Nginx
-- node
-</code></pre><hr>
-<h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
-<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
-<li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
-<li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
-<li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
-<li>Ctrl + Shift + P调出命令模式，输入命令Ftp-sync:Init</li>
-<li><p>配置服务器远程连接文件（项目根目录下.vscode/ftp-sync.json）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    &#123;</span><br><span class="line">    &quot;remotePath&quot;: &quot;./&quot;,   // 远程服务器路径</span><br><span class="line">    &quot;host&quot;: &quot;host&quot;,       // 服务器地址</span><br><span class="line">    &quot;username&quot;: &quot;username&quot;,    // 用户名</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,    // 密码</span><br><span class="line">    &quot;port&quot;: 21,                // 端口号</span><br><span class="line">    &quot;secure&quot;: false,        </span><br><span class="line">    &quot;protocol&quot;: &quot;ftp&quot;,         // 采用的协议</span><br><span class="line">    &quot;uploadOnSave&quot;: false,</span><br><span class="line">    &quot;passive&quot;: false,</span><br><span class="line">    &quot;debug&quot;: false,</span><br><span class="line">    &quot;privateKeyPath&quot;: null,</span><br><span class="line">    &quot;passphrase&quot;: null,</span><br><span class="line">    &quot;ignore&quot;: [</span><br><span class="line">        &quot;\\.vscode&quot;,</span><br><span class="line">        &quot;\\.git&quot;,</span><br><span class="line">        &quot;\\.DS_Store&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;generatedFiles&quot;: &#123;</span><br><span class="line">        &quot;uploadOnSave&quot;: false,</span><br><span class="line">        &quot;extensionsToInclude&quot;: [],</span><br><span class="line">        &quot;path&quot;: &quot;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置完成后在命令模式下输入Ftp-sync: Local to Remote,同步本地到远程；Ftp-sync: Remote to Local同步远程到本地<br>因为再上一篇笔记中配置了nginx以及反向代理。在项目部署到服务器后在项目目录下启动服务后即可通过域名访问</p>
-</li>
-</ol>
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2018" class="archive-year">2018</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/08/20/centos搭建node环境/" class="archive-article-date">
+  	<time datetime="2018-08-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
+</a>
+        </div>
+    	 
+        <div class="article-info info-on-right">
+          
+          
 
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/20/centos搭建node环境/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-centos独立服务器划分虚拟服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/01/centos独立服务器划分虚拟服务/">centos独立服务器划分子服务</a>
-    </h1>
-  
-
-        
-        <a href="/2018/08/01/centos独立服务器划分虚拟服务/" class="archive-article-date">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/08/01/centos独立服务器划分虚拟服务/" class="archive-article-date">
   	<time datetime="2018-08-01T06:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-01</time>
 </a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/08/01/centos独立服务器划分虚拟服务/">centos独立服务器划分子服务</a>
+    </h1>
+  
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -264,551 +220,19 @@
 		</ul>
 	</div>
 
-      
+          
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/01/centos独立服务器划分虚拟服务/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-基于CentOs搭建网站服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/基于CentOs搭建网站服务/">基于CentOS搭建网站服务</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/25/基于CentOs搭建网站服务/" class="archive-article-date">
-  	<time datetime="2018-07-25T07:59:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="搭建Http静态服务器环境"><a href="#搭建Http静态服务器环境" class="headerlink" title="搭建Http静态服务器环境"></a>搭建Http静态服务器环境</h1><p>  搭建静态网站，首先需要部署环境。下面的步骤，将告诉大家如何在服务器上通过 Nginx 部署 HTTP 静态服务。</p>
-<h2 id="1、-安装-Nginx"><a href="#1、-安装-Nginx" class="headerlink" title="1、 安装 Nginx"></a>1、 安装 Nginx</h2><p>在 CentOS 上，可直接使用 yum 来安装 Nginx</p>
-<blockquote>
-<p>yum install nginx -y    </p>
-</blockquote>
-<p>安装完成后，使用 nginx 命令启动 Nginx：</p>
-<blockquote>
-<p>nginx     </p>
-</blockquote>
-<p>此时，访问 <a href="http://116.62.197.141" target="_blank" rel="noopener">http://116.62.197.141</a> 可以看到 Nginx 的测试页面        </p>
-<h2 id="2、-配置静态服务器访问路径"><a href="#2、-配置静态服务器访问路径" class="headerlink" title="2、 配置静态服务器访问路径"></a>2、 配置静态服务器访问路径</h2><p>外网用户访问服务器的 Web 服务由 Nginx 提供，Nginx 需要配置静态资源的路径信息才能通过 url 正确访问到服务器上的静态资源。<br>打开 Nginx 的默认配置文件 /etc/nginx/nginx.conf ，修改 Nginx 配置，将默认的 root /usr/share/nginx/html; 修改为: root /data/www;   </p>
-<p>配置文件将 /data/www/static 作为所有静态资源请求的根路径，如访问:<a href="http://116.62.197.141/static/index.js，将会去" target="_blank" rel="noopener">http://116.62.197.141/static/index.js，将会去</a> /data/www/static/ 目录下去查找 index.js。现在我们需要重启 Nginx 让新的配置生效，如：</p>
-<blockquote>
-<p>nginx -s reload       </p>
-</blockquote>
-<p>重启后，现在我们应该已经可以使用我们的静态服务器了，现在让我们新建一个静态文件，查看服务是否运行正常。<br>首先让我们在 /data 目录 下创建 www 目录，如：</p>
-<blockquote>
-<p>mkdir -p /data/www     </p>
-</blockquote>
-<h2 id="3、创建第一个静态文件"><a href="#3、创建第一个静态文件" class="headerlink" title="3、创建第一个静态文件"></a>3、创建第一个静态文件</h2><p>在 /data/www 目录下创建我们的第一个静态文件 index.html       </p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;zh&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;第一个静态文件&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-Hello world！
-&lt;/body&gt;
-&lt;/html&gt;   
-</code></pre><p>现在访问 <a href="http://116.62.197.141/index.html" target="_blank" rel="noopener">http://116.62.197.141/index.html</a> 应该可以看到页面输出 Hello world!<br>到此，一个基于 Nginx 的静态服务器就搭建完成了，现在所有放在 /data/www 目录下的的静态资源都可以直接通过域名访问。</p>
-<h1 id="准备域名和证书"><a href="#准备域名和证书" class="headerlink" title="准备域名和证书"></a>准备域名和证书</h1><h2 id="1、域名注册"><a href="#1、域名注册" class="headerlink" title="1、域名注册"></a>1、域名注册</h2><p>  购买域名</p>
-<h2 id="2、域名解析"><a href="#2、域名解析" class="headerlink" title="2、域名解析"></a>2、域名解析</h2><p>  域名购买完成后, 需要将域名解析到云主机上，我的主机的 IP 为：116.62.197.141,<br>  找到控制台，可以到控制台添加解析记录<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/域名解析.png" alt=""><br>  <a href="https://help.aliyun.com/document_detail/29725.html?spm=a2c4g.11186623.2.5.fe0SoL" target="_blank" rel="noopener">具体解析规则点击这里</a><br>  域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效 </p>
-<blockquote>
-<p>ping <a href="http://www.yourmpdomain.com" target="_blank" rel="noopener">www.yourmpdomain.com</a>    </p>
-</blockquote>
-<p>  如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。</p>
-<h2 id="3、申请-SSL-证书"><a href="#3、申请-SSL-证书" class="headerlink" title="3、申请 SSL 证书"></a>3、申请 SSL 证书</h2><p>  首先登陆自己的阿里云账户，找到左侧菜单的安全–SSL证书服务<br>  点击证书购买，进入页面，这个时候可以没有出现免费证书的选项，大家不用着急，看下一步<br>  我们选择Symantec，是不是很神奇的出现了免费型DV SSL呢，没错，我们找的就是它了，选择它购买就可以。<br>  付款成功后返回控制台，进入我的证书–我的订单页面，是不是已经有了一个证书了。别及，现在还用不了<br>  点击补全信息进入下一步，填写自己要绑定的域名进入下一步,继续补全信息等待审核吧，只要资料没有填错，基本都会通过的，<br>  <a href="https://jingyan.baidu.com/article/6c67b1d6431a872787bb1ece.html" target="_blank" rel="noopener">具体申请流程点击这里</a></p>
-<h2 id="4、安装以及nginx配置"><a href="#4、安装以及nginx配置" class="headerlink" title="4、安装以及nginx配置"></a>4、安装以及nginx配置</h2><p>  SSL证书签发完以后，需要下载证书并安装证书</p>
-<ul>
-<li>打开下载的文件夹有.pem证书文件以及.key私钥文件</li>
-<li>在服务器的nginx的安装目录下新建cert文件夹，将下载的证书以及私钥文件放到此文件夹下</li>
-<li>修改nginx.conf配置文件，将证书以及私钥文件分别指向cert目录下的证书以及私钥路径</li>
-<li><p>配置好nginx后重启nginx服务</p>
-<blockquote>
-<p>nginx -s reload    </p>
-</blockquote>
-<p>即可以通过加密的服务访问网址</p>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/25/基于CentOs搭建网站服务/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-git常用命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/06/git常用命令/">git常用命令</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/06/git常用命令/" class="archive-article-date">
-  	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="常规流程"><a href="#常规流程" class="headerlink" title="常规流程"></a>常规流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git init  // git仓库初始化</span><br><span class="line">git add .  // 文件修改添加到暂存区</span><br><span class="line">git commit -m &quot;desc&quot;   // 实际上就是把暂存区的所有内容提交到当前分支</span><br><span class="line">git status  // 查看本地git仓库的提交状态</span><br><span class="line">git remote add origin git@gitee.com:taoyouyou/mongodb-install.git  // 添加远程库 </span><br><span class="line">git remote set-url --add origin git@git.oschina.net:shuaibai123/laravel-bjyblog.git   // 再次添加远程库，即一个本地的git仓库可以添加多个远程库</span><br><span class="line"></span><br><span class="line">git push -u origin master   // 首次部署到远程仓库</span><br><span class="line">git push origin branch-name --force  //  强制上传本地文件到远程库</span><br></pre></td></tr></table></figure>
-<h3 id="git-add详解"><a href="#git-add详解" class="headerlink" title="git add详解:"></a>git add详解:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git add -A   // 添加所有改动</span><br><span class="line"></span><br><span class="line">git add *     // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add .    // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add -u   // 添加修改和删除，但是不包括新建文件</span><br></pre></td></tr></table></figure>
-<h3 id="版本恢复"><a href="#版本恢复" class="headerlink" title="版本恢复:"></a>版本恢复:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard HEAD^       //回退到前一个版本</span><br><span class="line">                 HEAD^^      //回退到前两个版本</span><br><span class="line">                 HEAD~100    //回退到前100版本</span><br><span class="line">                 commituid   //利用git reflog命令可以查看到所提交的每个版本的commitid</span><br><span class="line">git log  //查看用户目前进行了哪些commit操作</span><br><span class="line">git reflog  //查看用户进行哪些git操作</span><br></pre></td></tr></table></figure>
-<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git branch              //  查看本地仓库的所有分支</span><br><span class="line">git branch dev          //  创建dev分支</span><br><span class="line">git checkout -b dev     //  创建并转到dev分支</span><br><span class="line">git checkout master     //  切回master分支</span><br><span class="line">git merge dev           //  合并dev分支</span><br><span class="line">git branch -d dev       //  删除本地dev分支</span><br><span class="line">git push origin :dev    //  删除远程dev分支</span><br></pre></td></tr></table></figure>
-<h3 id="git-子模块"><a href="#git-子模块" class="headerlink" title="git 子模块"></a>git 子模块</h3><p>在使用git工具进行开发的时候经常会遇到各种各样的需求，git子模块概念的提出也是为了解决开发中的特定需求。当你在一个项目上工作时，你需要在其中使用另外一个项目。也许它是一个第三方开发的库或者是你独立开发和并在多个父项目中使用的。这个场景下一个常见的问题产生了：你想将两个项目单独处理但是又需要在其中一个中使用另外一个。Git 通过子模块处理这个问题。子模块允许你将一个 Git 仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。</p>
-<ul>
-<li>首先你要把外部的仓库克隆到你的子目录中。你通过git submodule add将外部项目加为子模块：<br><code>git submodule add git://github.com/chneukirchen/rack.git rack</code></li>
-<li><p>现在你就在项目里的rack子目录下有了一个 Rack 项目。你可以进入那个子目录，进行变更，加入你自己的远程可写仓库来推送你的变更，从原始仓库拉取和归并等等。如果你在加入子模块后立刻运行git status，你会看到下面两项：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line"># On branch master</span><br><span class="line"># Changes to be committed:</span><br><span class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">#</span><br><span class="line">#      new file:   .gitmodules</span><br><span class="line">#      new file:   rack</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>生成了rack文件夹和.gitmodules文件，.gitmodules是一个配置文件，保存了项目 URL 和你拉取到的本地子目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat .gitmodules</span><br><span class="line">[submodule &quot;rack&quot;]</span><br><span class="line">      path = rack</span><br><span class="line">      url = git://github.com/chneukirchen/rack.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>尽管rack是你工作目录里的子目录，但 Git 把它视作一个子模块，当你不在那个目录里时并不记录它的内容。取而代之的是，Git 将它记录成来自那个仓库的一个特殊的提交。当你在那个子目录里修改并提交时，子项目会通知那里的 HEAD 已经发生变更并记录你当前正在工作的那个提交；通过那样的方法，当其他人克隆此项目，他们可以重新创建一致的环境。</p>
-</li>
-<li>也就是说当你在子目录里进行文件改动之后必须先提交到子进程的git仓库，主项目才能检测到子进程的修改并提交到远程库</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/06/git常用命令/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mongodb的下载以及安装" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/06/mongodb的下载以及安装/">mongodb的下载以及安装</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/06/mongodb的下载以及安装/" class="archive-article-date">
-  	<time datetime="2018-03-06T08:23:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="下载mongodb"><a href="#下载mongodb" class="headerlink" title="下载mongodb"></a>下载mongodb</h3><ul>
-<li>下载地址为:<a href="https://gitee.com/taoyouyou/mongodb-install.git" target="_blank" rel="noopener">https://gitee.com/taoyouyou/mongodb-install.git</a>,此版本只适用于window 64位系统。<h3 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h3></li>
-</ul>
-<p>1、在安装过程中可以点击Custom(自定义)” 按钮来设置安装目录。我的安装目录为 D:\MongoDB\Server\3.4\bin，之后直接点击下一步即可安装成功。</p>
-<p>2、安装mongodb 后设置mongodb环境变量（如果没有配置环境变量，一下所有命令均在mongodb安装目录的bin目录下执行）</p>
-<p>3、新建数据库文件夹和日志记录文件<br>   <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mongodb2.png" alt=""><br> 在D:\MongoDB\Server\3.4目录下新建data文件夹作为数据库路径,新建logs文件夹下的mongo.log文件作为日志文件以及新建mongo.conf配置文件</p>
-<p>4、数据库配置文件<br> 在mongo.conf中写入以下配置信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dbpath=D:\MongoDB\Server\3.4\data #数据库路径  </span><br><span class="line">logpath=D:\MongoDB\Server\3.4\logs\mongo.log #日志输出文件路径  </span><br><span class="line">logappend=true #错误日志采用追加模式  </span><br><span class="line">journal=true #启用日志文件，默认启用  </span><br><span class="line">quiet=true #这个选项可以过滤掉一些无用的日志信息，若需要调试使用请设置为false  </span><br><span class="line">port=27017 #端口号 默认为27017</span><br></pre></td></tr></table></figure></p>
-<p>5、启动mongodb服务</p>
-<ul>
-<li>方法一<br><code>mongod --config &quot;D:\MongoDB\Server\3.4\mongo.conf&quot;   // 在命令行启动</code> </li>
-<li>方法二<br><code>mongod --config &quot;D:\MongoDB\Server\3.4\mongo.conf&quot; --install --serviceName &quot;MongoDB&quot;    // 安装MongoDB的windows服务管理</code></li>
-</ul>
-<p>右键计算机——系统服务，打开windows服务框，本地服务服务列表中会看到MongoDB，表示已经成功将mongodb加入到了系统服务，但是此时服务还没有开启！</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net stop MongoDB  // 命令行关闭mongodb服务</span><br><span class="line"></span><br><span class="line">mongod.exe --remove --serviceName &quot;MongoDB&quot;    // 卸载MongoDB的windows服务管理</span><br></pre></td></tr></table></figure>
-<p>6、创建mongodb连接<br>安装完成后，shell交互式下输入mongo就可以直接无密码登录到数据库。默认登录到test数据<br><code>mongo 127.0.0.1:27017/admin -u &#39;userAdmin&#39; -p &#39;123&#39;    // 使用用户名和密码连接到MongoDB服务器</code></p>
-<h3 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h3><ul>
-<li>常用命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">db.createUser(&#123;user: &quot;root&quot;, pwd: &quot;123456&quot;, roles: [&#123; role: &quot;dbOwner&quot;, db: &quot;activity&quot; &#125;]&#125;)     //  创建对应数据库的权限</span><br><span class="line">mongo 127.0.0.1:27017/activity -u &apos;root&apos; -p &apos;123456&apos;   //  适用刚创建的用户权限链接对应的数据库</span><br><span class="line">show users   // 查看当前用户</span><br><span class="line"></span><br><span class="line">use runoob  // 不存在则新增runoob数据库  存在则切换到runoob数据库</span><br><span class="line">show dbs   // 查看所有数据库</span><br><span class="line">db  // 查看当前数据库</span><br><span class="line">db.runoob.insert(&#123;&quot;name&quot;:&quot;菜鸟教程&quot;&#125;)  // 向数据库新增runoob表/集合，并插入数据</span><br><span class="line">show tables 或者 show collections    // 查看当前数据库的集合</span><br><span class="line">db.runoob.find()    // 查找数据库</span><br><span class="line">db.dropDatabase()   // 删除当前数据库</span><br><span class="line">db.collection.drop()  // 删除集合</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">mongodb</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/06/mongodb的下载以及安装/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-关于http" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/24/关于http/">关于http的常见问题</a>
-    </h1>
-  
-
-        
-        <a href="/2018/02/24/关于http/" class="archive-article-date">
-  	<time datetime="2018-02-24T05:25:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="http与https的区别"><a href="#http与https的区别" class="headerlink" title="http与https的区别"></a>http与https的区别</h2><ol>
-<li>HTTP 标准端口是80 ，而 HTTPS 的标准端口是443</li>
-<li>在OSI 网络模型中，HTTP工作于应用层，而HTTPS 的安全传输机制工作在传输层</li>
-<li>HTTP 无法加密，而HTTPS 对传输的数据进行加密</li>
-<li>HTTP无需证书，而HTTPS 需要CA机构wosign的颁发的SSL证书</li>
-</ol>
-<h2 id="什么是http协议无状态协议？怎么解决这种无状态协议？"><a href="#什么是http协议无状态协议？怎么解决这种无状态协议？" class="headerlink" title="什么是http协议无状态协议？怎么解决这种无状态协议？"></a>什么是http协议无状态协议？怎么解决这种无状态协议？</h2><ul>
-<li>无状态协议对于事物没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，也就是说当客户端一次http协议完成以后，客户端在发送一次http请求，http并不知道当前客户端是“老用户”</li>
-<li>可以使用cookie来解决无状态的问题，cookie就相当于一个通行证，第一次访问的时候给客户端发送一个cookie,当客户端再次来的时候，拿着cookie(通行证),那么服务器就知道这是个“老用户”</li>
-</ul>
-<h2 id="URI和URL的区别"><a href="#URI和URL的区别" class="headerlink" title="URI和URL的区别"></a>URI和URL的区别</h2><p>** URI，是uniform resource identifier, 统一资源标识符， 用来唯一的标识一个资源，一般由三部分组成</p>
-<ul>
-<li>访问资源的命名机制</li>
-<li>存放资源的主机名</li>
-<li>资源自身的名称，由路径表示，着重强调资源。<br>** URL是uniform resource locator，统一资源定位器，他是一种具体的URI，一般由三部分别组成</li>
-<li>协议</li>
-<li>存有该资源的主机ip地址（有时也包括端口号）</li>
-<li>主机资源的具体地址。如目录和文件名等<br>**[M 53 URN，uniform resource name,统一资源命名，是通过名字来标识资源，</li>
-</ul>
-<h2 id="常见的http方法"><a href="#常见的http方法" class="headerlink" title="常见的http方法"></a>常见的http方法</h2><ul>
-<li>GET: 用于请求已经被URI识别的资源</li>
-<li>POST: 用于传输信息给服务器，只要功能与get类似</li>
-<li>PUT: 传输文件，报文主体中包含文件内容，保存到对应的URI位置</li>
-<li>HEAD: 获得报文首部，与get方法类似。只是不返回报文主体，一般用于验证URI是否有效。</li>
-<li>Delete: 删除文件，与put方法相反，删除对应URI位置文件</li>
-<li>OPTIONS: 查询相应URI支持的http方法。</li>
-</ul>
-<h2 id="http请求报文与响应报文"><a href="#http请求报文与响应报文" class="headerlink" title="http请求报文与响应报文"></a>http请求报文与响应报文</h2><p>** 请求报文包含四部分：</p>
-<ul>
-<li>a、请求行：包含请求方法、URI、HTTP版本信息</li>
-<li>b、请求首部字段</li>
-<li>c、请求内容实体</li>
-<li>d、空行<h2 id="响应报文包含四部分"><a href="#响应报文包含四部分" class="headerlink" title="响应报文包含四部分"></a>响应报文包含四部分</h2><strong> a、状态行：包含HTTP版本、状态码、状态码的原因短语
-</strong> b、响应首部字段<br><strong> c、响应内容实体
-</strong> d、空行</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/24/关于http/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-如何给非input元素添加键盘事件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/06/如何给非input元素添加键盘事件/">如何给非input元素添加键盘事件</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/06/如何给非input元素添加键盘事件/" class="archive-article-date">
-  	<time datetime="2017-11-06T09:18:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在web开发的过程中，我们总会碰见各种需求，比如要一个非input元素绑定键盘事件，通过查看vue的官方文档，我们知道键盘修饰符一般只添加在input元素中，在元素获得焦点之后，键盘事件响应，那么对于一个没有焦点事件的元素的来说，要使得它能够获得焦点，我们必须弄清楚一下一点<br>   先看：<a href="https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-eventgroupings-htmlevents" target="_blank" rel="noopener">W3C关于onfocus的部分</a>      </p>
-<p>The onfocus event occurs when an element receives focus either by the pointing device or by tabbing navigation.<br>This attribute may be used with the following elements: A, AREA, LABEL, INPUT, SELECT, TEXTAREA, and BUTTON.<br>   再看：<a href="https://www.w3.org/TR/html4/interact/forms.html#h-17.11.1" target="_blank" rel="noopener">tabbing navigation的部分</a>     </p>
-<p>Those elements that do not support the tabindex attribute or support it and assign it a value of “0” are navigated next. These elements are navigated in the order they appear in the character stream.<br>  再看：<a href="https://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/events.html#Events-KeyboardEvent" target="_blank" rel="noopener">w3c关于KeyboardEvent的部分</a><br>  我们找到了原因<br>  Keyboard events are commonly directed at the element that has the focus.<br>  大概就是说键盘按键事件一般指向能获取焦点的元素，就是不能获取焦点的元素就不能触发键盘按键事件了。<br>  那么问题就在于如何使得div获取元素了，最后发现给元素设置tabIndex就能够让元素获取焦点<br>  w3c上说的比较模糊，msdn上倒是说的很清楚<br>  An element can have focus if the tabIndex property is set to any valid negative or positive integer.<br>Elements that receive focus can fire the onblur and onfocus events as of Internet Explorer 4.0, and the onkeydown, onkeypress, and onkeyup events as of Internet Explorer 5.<br>  只要元素的tabIndex属性设置成任何有效的整数那么该元素就能取得焦点。元素在取得焦点后就能触发onblur，onfocus，onkeydown, onkeypress和onkeyup事件。<br>  看完了这么多文档，我们终于找到了给非input元素添加键盘事件的方法了<br>  一下是完整代码<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img ref=&quot;img&quot; :src=&quot;imgSrc&quot; alt=&quot;附件图片&quot; tabindex=&quot;0&quot; hidefocus=&quot;true&quot; @keyup.left=&quot;prev()&quot; @keyup.right=&quot;next()&quot; style=&quot;outline=0&quot;&gt;</span><br></pre></td></tr></table></figure></p>
-<p>  因为在元素获取焦点的时候或有一个虚线框，影响美观，可以用outline=0来去掉线框，ie用hidefocus=”true”属性来去掉线框</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">web开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/web开发//" class="article-tag-list-link color1">web开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/06/如何给非input元素添加键盘事件/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-  
 
 
           </div>
@@ -830,9 +254,9 @@ Hello world！
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
+		isHome: false,
 		isPost: false,
-		isArchive: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
