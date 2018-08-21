@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Centos搭建node项目 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="node环境安装和配置 下载并安装 Node.js下载最新的稳定版 v6.10.3 到本地:wget https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.xz下载完成后, 将其解压:tar xvJf node-v6.10.3-linux-x64.tar.xz将解压的 Node.js 目录移动到 /usr/local 目录下:mv n">
+  <meta name="description" content="node环境安装和配置 下载并安装 Node.js下载最新的稳定版 v6.10.3 到本地:curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -下载完成后, 将其解压:tar xvJf node-v6.10.3-linux-x64.tar.xz将解压的 Node.js 目录移动到 /usr/local">
 <meta name="keywords" content="CentOS,Nginx,node">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Centos搭建node项目">
 <meta property="og:url" content="http://yoursite.com/2018/08/20/centos独立服务器划分虚拟服务/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="node环境安装和配置 下载并安装 Node.js下载最新的稳定版 v6.10.3 到本地:wget https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.xz下载完成后, 将其解压:tar xvJf node-v6.10.3-linux-x64.tar.xz将解压的 Node.js 目录移动到 /usr/local 目录下:mv n">
+<meta property="og:description" content="node环境安装和配置 下载并安装 Node.js下载最新的稳定版 v6.10.3 到本地:curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -下载完成后, 将其解压:tar xvJf node-v6.10.3-linux-x64.tar.xz将解压的 Node.js 目录移动到 /usr/local">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2018-08-20T09:23:08.336Z">
+<meta property="og:updated_time" content="2018-08-21T02:23:31.411Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Centos搭建node项目">
-<meta name="twitter:description" content="node环境安装和配置 下载并安装 Node.js下载最新的稳定版 v6.10.3 到本地:wget https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.xz下载完成后, 将其解压:tar xvJf node-v6.10.3-linux-x64.tar.xz将解压的 Node.js 目录移动到 /usr/local 目录下:mv n">
+<meta name="twitter:description" content="node环境安装和配置 下载并安装 Node.js下载最新的稳定版 v6.10.3 到本地:curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -下载完成后, 将其解压:tar xvJf node-v6.10.3-linux-x64.tar.xz将解压的 Node.js 目录移动到 /usr/local">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -176,7 +176,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
-<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
+<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
 <li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
 <li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
 <li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
@@ -449,15 +449,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -469,11 +469,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
             
             <div class="clearfix"></div>
