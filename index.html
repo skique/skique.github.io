@@ -191,7 +191,7 @@
 <li>第一种情况： 最坏情况<br>– 假定目标 T 的长度为 n，模式 P 长度为 m，m≤n  – 在最坏的情况下，每一次循环都不成功，则一共要进行比 较（n-m+1）次<br>– 每一次“相同匹配”比较所耗费的时间，是 P 和 T 逐个 字符比较的时间，最坏情况下，共 m 次<br>– 因此，整个算法的最坏时间开销估计为：O( m * n )</li>
 <li><p>第二种情况：没找到匹配下的最佳情况<br>• 总是在第一个字符上不匹配<br>• 总比较次数： – n – m + 1<br>• 时间复杂度： – O(n)</p>
 <h2 id="KMP算法-无回溯匹配"><a href="#KMP算法-无回溯匹配" class="headerlink" title="KMP算法(无回溯匹配)"></a>KMP算法(无回溯匹配)</h2><h3 id="算法思想-1"><a href="#算法思想-1" class="headerlink" title="算法思想"></a>算法思想</h3><p>匹配过程中，一旦pj和ti 比较不等时，即P.substr(1,j-1) == T.substr(i-j+1,j-1)但pj≠ ti<br>– 将p右移的k位，用P中pk和ti进行比较<br>– 显然有k &lt; j, 且不同的j, 其k 值不同<br>– k 值仅仅依赖于模式P 本身，而与目标对象T无关</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想.png" alt=""></p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想.png" alt=""><br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想2.png" alt=""></p>
 </li>
 </ol>
 
