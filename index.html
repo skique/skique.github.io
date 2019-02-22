@@ -156,6 +156,240 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-吃透js中正则表达式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/02/22/吃透js中正则表达式/">吃透js中正则表达式</a>
+    </h1>
+  
+
+        
+        <a href="/2019/02/22/吃透js中正则表达式/" class="archive-article-date">
+  	<time datetime="2019-02-22T02:29:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： <a href="https://regexper.com" target="_blank" rel="noopener">https://regexper.com</a>，输入正则规则即可生成匹配规则的流程图。了解并吃透正则会为我们以后开发节省很多时间和精力，一劳永逸。先从最基本的概念开始吧，let go!</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>概念：有特殊含义的特殊字符，eg： * + ? $ ^ . | \ ( ) { } [ ]等</p>
+<h4 id="通用含义元字符"><a href="#通用含义元字符" class="headerlink" title="通用含义元字符"></a>通用含义元字符</h4><p>在大部分语言语境中代表同一种含义。如下表</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">字符</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">\t</td>
+<td style="text-align:center">水平制表符</td>
+</tr>
+<tr>
+<td style="text-align:center">\v</td>
+<td style="text-align:center">垂直制表符</td>
+</tr>
+<tr>
+<td style="text-align:center">\n</td>
+<td style="text-align:center">换行符</td>
+</tr>
+<tr>
+<td style="text-align:center">\r</td>
+<td style="text-align:center">回车符</td>
+</tr>
+<tr>
+<td style="text-align:center">\0</td>
+<td style="text-align:center">空字符</td>
+</tr>
+<tr>
+<td style="text-align:center">\f</td>
+<td style="text-align:center">换页符</td>
+</tr>
+<tr>
+<td style="text-align:center">\cX</td>
+<td style="text-align:center">Ctrl+X</td>
+</tr>
+</tbody>
+</table>
+<h4 id="其他含义元字符"><a href="#其他含义元字符" class="headerlink" title="其他含义元字符"></a>其他含义元字符</h4><ol>
+<li>字符类 </li>
+</ol>
+<ul>
+<li>我们可以使用[]来构建一个简单的字符类</li>
+<li>所谓的类是指符合某些特性的对象，一个泛指，而不是特指某个字符</li>
+<li>表达式[abc]归为一类，表达式可以匹配这些类的字符<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regexper1.svg" alt=""></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">正则表达式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/02/22/吃透js中正则表达式/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-初探pupeteer——踩坑之旅" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/29/初探pupeteer——踩坑之旅/">初探pupeteer——踩坑之旅</a>
+    </h1>
+  
+
+        
+        <a href="/2018/12/29/初探pupeteer——踩坑之旅/" class="archive-article-date">
+  	<time datetime="2018-12-29T07:17:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="关于pupeteer"><a href="#关于pupeteer" class="headerlink" title="关于pupeteer"></a>关于pupeteer</h2><p>Puppeteer是一个Node库，它提供了一个高级API来控制DevTools协议上的Chrome或Chromium。 Puppeteer默认运行无头，但可以配置为运行完整（非无头）Chrome或Chromium。<br>简单的来说是一个集成在node环境之上的可以控制谷歌浏览器爬取数据的工具</p>
+<p>您可以在浏览器中手动执行的大多数操作都可以使用Puppeteer完成！ 以下一些简单的应用场景：</p>
+<ul>
+<li>生成页面的屏幕截图和PDF。</li>
+<li>抓取SPA（单页面应用程序）并生成预渲染内容（即“SSR”（服务器端渲染））。</li>
+<li>自动化表单提交，UI测试，键盘输入等。</li>
+<li>创建最新的自动化测试环境。 使用最新的JavaScript和浏览器功能直接在最新版本的Chrome中运行测试。</li>
+<li>捕获站点的时间线跟踪，以帮助诊断性能问题。</li>
+<li>测试Chrome扩展程序。</li>
+</ul>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>安装pupeteer之前需要node的环境支持。node版本需要大于v6.4.0，如要使用 async / await，只有 Node v7.6.0 或更高版本才支持；另外，安装 Puppeteer 时，它会下载最新版本的 Chromium（〜71Mb Mac，〜90Mb Linux，〜110Mb Win），保证与 API 协同工作。</p>
+<p>确保node环境安装完成以后，使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init</span><br></pre></td></tr></table></figure></p>
+<p>初始化项目</p>
+<ol>
+<li>使用命令安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn add puppeteer</span><br><span class="line"># or &quot;npm i puppeteer&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可能会出现以下报错:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Failed to download Chromium r515411! Set &quot;PUPPETEER_SKIP_CHROMIUM_DOWNLOA</span><br><span class="line">D&quot; env variable to skip download.</span><br></pre></td></tr></table></figure></p>
+<p>是因为在执行安装的过程中需要执行install.js，这里会下载Chromium,官网建议是进行跳过，我们可以执行 —ignore-scripts 忽略这个js执行。也可以通过设置环境变量set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1阻止下载 Chromium （因为封网，直接下载会失败）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D</span><br><span class="line">// npm i --save puppeteer --ignore-scripts</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>手动下载Chromium<br>下载地址：<a href="https://download-chromium.appspot.com/" target="_blank" rel="noopener">https://download-chromium.appspot.com/</a> (需要梯子…)</li>
+</ol>
+<p>把下载刚刚下载的文件解压出来会有chrome-win32文件夹，把里面的文件拷贝到项目新建的chromium文件夹中</p>
+<ol>
+<li>新建index.js,代码如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const puppeteer = require(&apos;puppeteer&apos;);</span><br><span class="line"></span><br><span class="line">(async () =&gt; &#123;</span><br><span class="line">    const browser = await puppeteer.launch();</span><br><span class="line">    const page = await browser.newPage();</span><br><span class="line">    await page.goto(&apos;https://y.qq.com&apos;);</span><br><span class="line">    await page.screenshot(&#123;path: &apos;yqq.png&apos;&#125;);</span><br><span class="line">    browser.close();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在命令行运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js</span><br></pre></td></tr></table></figure></p>
+<p>这时候可能出现以下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(node:8672) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejec</span><br><span class="line">tion id: 1): AssertionError [ERR_ASSERTION]: Chromium revision is not downloaded</span><br><span class="line">. Run &quot;npm install&quot;</span><br><span class="line">(node:8672) [DEP0018] DeprecationWarning: Unhandled promise rejections are depre</span><br><span class="line">cated. In the future, promise rejections that are not handled will terminate the</span><br><span class="line"> Node.js process with a non-zero exit code.</span><br></pre></td></tr></table></figure></p>
+<p>显示chromium未下载错误，因为chromium默认的下载路径是在node_modules/puppeteer/.local-chromium/目录，这时候我们的chromium是在项目根目录，所以需要配置指定路径，修改index.js文件()：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const puppeteer = require(&apos;puppeteer&apos;);</span><br><span class="line"></span><br><span class="line">(async () =&gt; &#123;</span><br><span class="line">      const browser = await puppeteer.launch(&#123;</span><br><span class="line">        executablePath: &apos;./chromium/chrome.exe&apos;,</span><br><span class="line">        headless: false</span><br><span class="line">      &#125;);</span><br><span class="line">      const page = await browser.newPage();</span><br><span class="line">      await page.goto(&apos;http://music.163.com/&apos;);</span><br><span class="line">      await page.screenshot(&#123;path: &apos;music.png&apos;&#125;);</span><br><span class="line">      browser.close();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>再次运行<br><code>node index.js</code></p>
+<p>puppeteer launch参数说明：</p>
+<ul>
+<li>executablePath： 运行Chromium或Chrome可执行文件的路径</li>
+<li>headless： 是否运行在浏览器headless模式，true为不打开浏览器执行，默认为true</li>
+<li>timeout： 等待浏览器实例启动的最长时间（以毫秒为单位）。默认为30000（30秒）。通过0禁用超时</li>
+<li>args： 传递给浏览器实例的其他参数</li>
+</ul>
+<p>更多参数请参照:<a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md" target="_blank" rel="noopener">官网</a><br>中文地址：<a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/#/" target="_blank" rel="noopener"></a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网页爬虫</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/12/29/初探pupeteer——踩坑之旅/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-字符串的模式匹配" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -963,203 +1197,10 @@ Hello world！
 
 
   
-    <article id="post-关于http" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/24/关于http/">关于http的常见问题</a>
-    </h1>
-  
-
-        
-        <a href="/2018/02/24/关于http/" class="archive-article-date">
-  	<time datetime="2018-02-24T05:25:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="http与https的区别"><a href="#http与https的区别" class="headerlink" title="http与https的区别"></a>http与https的区别</h2><ol>
-<li>HTTP 标准端口是80 ，而 HTTPS 的标准端口是443</li>
-<li>在OSI 网络模型中，HTTP工作于应用层，而HTTPS 的安全传输机制工作在传输层</li>
-<li>HTTP 无法加密，而HTTPS 对传输的数据进行加密</li>
-<li>HTTP无需证书，而HTTPS 需要CA机构wosign的颁发的SSL证书</li>
-</ol>
-<h2 id="什么是http协议无状态协议？怎么解决这种无状态协议？"><a href="#什么是http协议无状态协议？怎么解决这种无状态协议？" class="headerlink" title="什么是http协议无状态协议？怎么解决这种无状态协议？"></a>什么是http协议无状态协议？怎么解决这种无状态协议？</h2><ul>
-<li>无状态协议对于事物没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，也就是说当客户端一次http协议完成以后，客户端在发送一次http请求，http并不知道当前客户端是“老用户”</li>
-<li>可以使用cookie来解决无状态的问题，cookie就相当于一个通行证，第一次访问的时候给客户端发送一个cookie,当客户端再次来的时候，拿着cookie(通行证),那么服务器就知道这是个“老用户”</li>
-</ul>
-<h2 id="URI和URL的区别"><a href="#URI和URL的区别" class="headerlink" title="URI和URL的区别"></a>URI和URL的区别</h2><p>** URI，是uniform resource identifier, 统一资源标识符， 用来唯一的标识一个资源，一般由三部分组成</p>
-<ul>
-<li>访问资源的命名机制</li>
-<li>存放资源的主机名</li>
-<li>资源自身的名称，由路径表示，着重强调资源。<br>** URL是uniform resource locator，统一资源定位器，他是一种具体的URI，一般由三部分别组成</li>
-<li>协议</li>
-<li>存有该资源的主机ip地址（有时也包括端口号）</li>
-<li>主机资源的具体地址。如目录和文件名等<br>**[M 53 URN，uniform resource name,统一资源命名，是通过名字来标识资源，</li>
-</ul>
-<h2 id="常见的http方法"><a href="#常见的http方法" class="headerlink" title="常见的http方法"></a>常见的http方法</h2><ul>
-<li>GET: 用于请求已经被URI识别的资源</li>
-<li>POST: 用于传输信息给服务器，只要功能与get类似</li>
-<li>PUT: 传输文件，报文主体中包含文件内容，保存到对应的URI位置</li>
-<li>HEAD: 获得报文首部，与get方法类似。只是不返回报文主体，一般用于验证URI是否有效。</li>
-<li>Delete: 删除文件，与put方法相反，删除对应URI位置文件</li>
-<li>OPTIONS: 查询相应URI支持的http方法。</li>
-</ul>
-<h2 id="http请求报文与响应报文"><a href="#http请求报文与响应报文" class="headerlink" title="http请求报文与响应报文"></a>http请求报文与响应报文</h2><p>** 请求报文包含四部分：</p>
-<ul>
-<li>a、请求行：包含请求方法、URI、HTTP版本信息</li>
-<li>b、请求首部字段</li>
-<li>c、请求内容实体</li>
-<li>d、空行<h2 id="响应报文包含四部分"><a href="#响应报文包含四部分" class="headerlink" title="响应报文包含四部分"></a>响应报文包含四部分</h2><strong> a、状态行：包含HTTP版本、状态码、状态码的原因短语
-</strong> b、响应首部字段<br><strong> c、响应内容实体
-</strong> d、空行</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/24/关于http/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-如何给非input元素添加键盘事件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/06/如何给非input元素添加键盘事件/">如何给非input元素添加键盘事件</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/06/如何给非input元素添加键盘事件/" class="archive-article-date">
-  	<time datetime="2017-11-06T09:18:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在web开发的过程中，我们总会碰见各种需求，比如要一个非input元素绑定键盘事件，通过查看vue的官方文档，我们知道键盘修饰符一般只添加在input元素中，在元素获得焦点之后，键盘事件响应，那么对于一个没有焦点事件的元素的来说，要使得它能够获得焦点，我们必须弄清楚一下一点<br>   先看：<a href="https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-eventgroupings-htmlevents" target="_blank" rel="noopener">W3C关于onfocus的部分</a>      </p>
-<p>The onfocus event occurs when an element receives focus either by the pointing device or by tabbing navigation.<br>This attribute may be used with the following elements: A, AREA, LABEL, INPUT, SELECT, TEXTAREA, and BUTTON.<br>   再看：<a href="https://www.w3.org/TR/html4/interact/forms.html#h-17.11.1" target="_blank" rel="noopener">tabbing navigation的部分</a>     </p>
-<p>Those elements that do not support the tabindex attribute or support it and assign it a value of “0” are navigated next. These elements are navigated in the order they appear in the character stream.<br>  再看：<a href="https://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/events.html#Events-KeyboardEvent" target="_blank" rel="noopener">w3c关于KeyboardEvent的部分</a><br>  我们找到了原因<br>  Keyboard events are commonly directed at the element that has the focus.<br>  大概就是说键盘按键事件一般指向能获取焦点的元素，就是不能获取焦点的元素就不能触发键盘按键事件了。<br>  那么问题就在于如何使得div获取元素了，最后发现给元素设置tabIndex就能够让元素获取焦点<br>  w3c上说的比较模糊，msdn上倒是说的很清楚<br>  An element can have focus if the tabIndex property is set to any valid negative or positive integer.<br>Elements that receive focus can fire the onblur and onfocus events as of Internet Explorer 4.0, and the onkeydown, onkeypress, and onkeyup events as of Internet Explorer 5.<br>  只要元素的tabIndex属性设置成任何有效的整数那么该元素就能取得焦点。元素在取得焦点后就能触发onblur，onfocus，onkeydown, onkeypress和onkeyup事件。<br>  看完了这么多文档，我们终于找到了给非input元素添加键盘事件的方法了<br>  一下是完整代码<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img ref=&quot;img&quot; :src=&quot;imgSrc&quot; alt=&quot;附件图片&quot; tabindex=&quot;0&quot; hidefocus=&quot;true&quot; @keyup.left=&quot;prev()&quot; @keyup.right=&quot;next()&quot; style=&quot;outline=0&quot;&gt;</span><br></pre></td></tr></table></figure></p>
-<p>  因为在元素获取焦点的时候或有一个虚线框，影响美观，可以用outline=0来去掉线框，ie用hidefocus=”true”属性来去掉线框</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">web开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/web开发//" class="article-tag-list-link color1">web开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/06/如何给非input元素添加键盘事件/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -1170,7 +1211,7 @@ Hello world！
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018 taoyouyou
+    		&copy; 2019 taoyouyou
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1253,11 +1294,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1281,15 +1322,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">KMP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">字符串的特征向量</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1305,11 +1342,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color1">KMP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">字符串的特征向量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
               </li>
             
             <div class="clearfix"></div>
