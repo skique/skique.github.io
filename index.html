@@ -346,7 +346,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;12345678&apos;.replace(/\d&#123;3,6&#125;?/, &apos;X&apos;)  // &quot;X45678&quot;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>对一组正则规则加(),可以对正则进行分组，比如：对taoyouyou这组单词匹配三次<br>taoyouyou{3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组1.svg" alt=""><br>可视化后能看到只是最后一个单词u重复了3次，并没有达到目的<br>(taoyouyou){3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg" alt=""><br>taoyouyou重复了3次</p>
+<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><h4 id="对一组正则规则加-可以对正则进行分组，"><a href="#对一组正则规则加-可以对正则进行分组，" class="headerlink" title="对一组正则规则加(),可以对正则进行分组，"></a>对一组正则规则加(),可以对正则进行分组，</h4><p>比如：对taoyouyou这组单词匹配三次<br>taoyouyou{3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组1.svg" alt=""><br>可视化后能看到只是最后一个单词u重复了3次，并没有达到目的<br>(taoyouyou){3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg" alt=""><br>taoyouyou重复了3次</p>
+<h4 id="反向引用"><a href="#反向引用" class="headerlink" title="反向引用"></a>反向引用</h4><p>例如实现2019-02-22 =&gt; 02/22/2019的转化。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;2019-02-22&apos;.replace(/(\d&#123;4&#125;)-(\d&#123;2&#125;)-(\d&#123;2&#125;)/,&apos;$2/$3/$1&apos;)   //  &quot;02/22/2019&quot;</span><br></pre></td></tr></table></figure></p>
+<h3 id="忽略分组"><a href="#忽略分组" class="headerlink" title="忽略分组"></a>忽略分组</h3><p>不需要捕获某些分组只需要在分组内加 ?: 就可以了。<br>eg: (?:taoyouyou).(ok)<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg" alt=""></p>
 
       
 
