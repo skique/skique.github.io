@@ -23,7 +23,7 @@
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg">
-<meta property="og:updated_time" content="2019-02-22T07:38:35.014Z">
+<meta property="og:updated_time" content="2019-02-22T12:24:50.956Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="吃透js中正则表达式">
 <meta name="twitter:description" content="我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： https://regexper.com，输入正则规则即可生成匹配规则的流程图。">
@@ -184,7 +184,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： <a href="https://regexper.com" target="_blank" rel="noopener">https://regexper.com</a>，输入正则规则即可生成匹配规则的流程图。了解并吃透正则会为我们以后开发节省很多时间和精力，一劳永逸。先从最基本的概念开始吧，let go!</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>概念：有特殊含义的特殊字符，eg： * + ? $ ^ . | \ ( ) { } [ ]等</p>
+<h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>概念：有特殊含义的特殊字符，eg： * + ? $ ^ . | \ ( ) { } [ ]等</p>
 <h4 id="通用含义元字符"><a href="#通用含义元字符" class="headerlink" title="通用含义元字符"></a>通用含义元字符</h4><p>在大部分语言语境中代表同一种含义，如下表：</p>
 <table>
 <thead>
@@ -355,7 +355,95 @@
 </ol>
 <h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><h4 id="对一组正则规则加-可以对正则进行分组，"><a href="#对一组正则规则加-可以对正则进行分组，" class="headerlink" title="对一组正则规则加(),可以对正则进行分组，"></a>对一组正则规则加(),可以对正则进行分组，</h4><p>比如：对taoyouyou这组单词匹配三次<br>taoyouyou{3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组1.svg" alt=""><br>可视化后能看到只是最后一个单词u重复了3次，并没有达到目的<br>(taoyouyou){3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg" alt=""><br>taoyouyou重复了3次</p>
 <h4 id="反向引用"><a href="#反向引用" class="headerlink" title="反向引用"></a>反向引用</h4><p>例如实现2019-02-22 =&gt; 02/22/2019的转化。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;2019-02-22&apos;.replace(/(\d&#123;4&#125;)-(\d&#123;2&#125;)-(\d&#123;2&#125;)/,&apos;$2/$3/$1&apos;)   //  &quot;02/22/2019&quot;</span><br></pre></td></tr></table></figure></p>
-<h3 id="忽略分组"><a href="#忽略分组" class="headerlink" title="忽略分组"></a>忽略分组</h3><p>不需要捕获某些分组只需要在分组内加 ?: 就可以了。<br>eg: (?:taoyouyou).(ok)<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg" alt=""></p>
+<h4 id="忽略分组"><a href="#忽略分组" class="headerlink" title="忽略分组"></a>忽略分组</h4><p>不需要捕获某些分组只需要在分组内加 ?: 就可以了。<br>(?:taoyouyou).(ok)<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg" alt=""></p>
+<h3 id="前瞻"><a href="#前瞻" class="headerlink" title="前瞻"></a>前瞻</h3><ul>
+<li>正则表达式从文本头部向尾部解析，文本尾部方向称为 “前”</li>
+<li>前瞻：正则表达式匹配到规则的时候，向前检查是否符合断言，后顾/后瞻方向相反</li>
+<li>JavaScript不支持后顾</li>
+<li>符合和不符合某项断言称为肯定/正向匹配和否定/负向匹配</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">正则</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">正向前瞻</td>
+<td style="text-align:left">exp(?=assert)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">负向前瞻</td>
+<td style="text-align:left">exp(?!assert)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">正向后顾</td>
+<td style="text-align:left">exp(?&lt;=assert)</td>
+<td style="text-align:left">JavaScript不支持</td>
+</tr>
+<tr>
+<td style="text-align:left">负向后顾</td>
+<td style="text-align:left">exp(?&lt;!assert)</td>
+<td style="text-align:left">JavaScript不支持</td>
+</tr>
+</tbody>
+</table>
+<h3 id="正则对象属性"><a href="#正则对象属性" class="headerlink" title="正则对象属性"></a>正则对象属性</h3><ul>
+<li>global: 是否全文匹配，默认false，匹配规则后面加g开启</li>
+<li>ignoreCase: 是否大小写敏感， 默认false，匹配规则后面加i开启</li>
+<li>multiline: 多行搜索， 默认false，匹配规则后面加m开启</li>
+<li>lastIndex: 当前表达式匹配内容最后一个字符的下一个位置</li>
+<li>source: 正则表达式的文本字符串<br>这几个属性都是只读属性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">reg=/\d/gmi</span><br><span class="line">reg.global  // true</span><br><span class="line">reg.ignoreCase  // true</span><br><span class="line">reg.multiline  // true</span><br><span class="line">reg.lastIndex  // 0</span><br><span class="line">reg.source  // &quot;\d&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h3><h4 id="1-正则test方法"><a href="#1-正则test方法" class="headerlink" title="1. 正则test方法"></a>1. 正则test方法</h4><p> RegExp.prototype.test(str)</p>
+<ul>
+<li>用于测试字符串参数中是否存在匹配正则表达式模式的字符串</li>
+<li>如果存在则返回true，否则返回false</li>
+</ul>
+<p>var reg2=/\w/g;<br>进行reg2.test(‘ab’)时，第三次会变成false<br>原因：while(reg2.test(‘ab’)){<br>  console.log(reg2.lastIndex);<br>}<br>即进行test时，正则表达式的lastIndex会发生变化<br>输出：1  2    表示第一个匹配上了、第二个匹配上了</p>
+<h4 id="2-正则exec方法"><a href="#2-正则exec方法" class="headerlink" title="2. 正则exec方法"></a>2. 正则exec方法</h4><p> RegExp.prototype.exec(str)</p>
+<ul>
+<li>使用正则表达式模式对字符串参数进行匹配搜索，并将更新全局对象属性以反映匹配结果</li>
+<li>如果没有匹配则返回null,否则返回一个结果数组：<br>属性index(声明匹配文本的第一个字符的位置), input(存放被检索的字符串string)<br>数组本身: [与正则表达式相匹配的文本，与正则对象的第一个子表达式（分组）相匹配的文本， 与正则对象的第二个子表达式（分组）相匹配的文本，…… ]<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var reg3=/\d(\w)(\w)\d/;    // 非全局搜索只能匹配到第一个结果</span><br><span class="line">var reg4=/\d(\w)(\w)\d/g;   // 全局搜索匹配全文</span><br><span class="line">var ts = &apos;$1az2bb3cy4dd5ee&apos;</span><br><span class="line">var ret1= reg3.exec(ts)     // (3) [&quot;1az2&quot;, &quot;a&quot;, &quot;z&quot;, index: 1, input: &quot;$1az2bb3cy4dd5ee&quot;, groups: undefined]</span><br><span class="line">console.log(reg3.lastIndex+&apos;\t&apos;+ret1.index+&apos;\t&apos;+ret1.toString())</span><br><span class="line">// &quot;0 1 1az2, a, z&quot;</span><br><span class="line">while(ret2 = reg4.exec(ts))&#123;</span><br><span class="line">  console.log(reg4.lastIndex+&apos;\t&apos;+ret2.index+&apos;\t&apos;+ret2.toString())</span><br><span class="line">&#125;</span><br><span class="line">// &quot;5 1 1az2, a, z&quot;</span><br><span class="line">// &quot;11 7 1az2, a, z&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="3-字符串对象search方法"><a href="#3-字符串对象search方法" class="headerlink" title="3. 字符串对象search方法"></a>3. 字符串对象search方法</h4><p> String.prototype.search(reg)</p>
+<ul>
+<li>search方法用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串</li>
+<li>返回第一个匹配结果index，查不到返回-1</li>
+<li>search()不执行全局匹配，它将忽略标志g, 并总是从字符串的开始进行检索</li>
+</ul>
+<h4 id="4-字符串对象match方法"><a href="#4-字符串对象match方法" class="headerlink" title="4. 字符串对象match方法"></a>4. 字符串对象match方法</h4><p> String.prototype.match(reg)</p>
+<ul>
+<li>match方法将检索字符串，以找到一个或多个与regexp相匹配的字符串</li>
+<li>regexp是否具有标志g对结果影响很大<h5 id="非全局调用"><a href="#非全局调用" class="headerlink" title="非全局调用"></a>非全局调用</h5></li>
+<li>返回数组的第一个元素存放的是匹配文本,而其余的元素存放的是与正则表达式的子表达式匹配的文本</li>
+<li>除了常规的数组元素之外,返回的数组还含有2个对象属性：index声明匹配文本的起始字符在字符串的位置,input声明对stringObject的引用</li>
+<li>全局调用的返回与正则表达式的exec方法相类似，即：[与正则表达式相匹配的文本，与正则对象的第一个子表达式（分组）相匹配的文本， 与正则对象的第二个子表达式（分组）相匹配的文本，…… ]，数组有index和input属性<h5 id="全局调用"><a href="#全局调用" class="headerlink" title="全局调用"></a>全局调用</h5></li>
+<li>如果regexp具有标志g则match方法将执行全局检索,找到字符串中的所有匹配子字符串</li>
+<li>没有找到任何匹配的子串,则返回null</li>
+<li>如果找到了一个或多个匹配子串,则返回-一个数组</li>
+<li>数组元素中存放的是字符串中所有的匹配子串,而且也没有index属性或input属性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var reg3=/\d(\w)(\w)\d/;    // 非全局搜索只能匹配到第一个结果</span><br><span class="line">var reg4=/\d(\w)(\w)\d/g;   // 全局搜索匹配全文</span><br><span class="line">var ts = &apos;$1az2bb3cy4dd5ee&apos;</span><br><span class="line">var ret1= ts.match(reg3)   // (3) [&quot;1az2&quot;, &quot;a&quot;, &quot;z&quot;, index: 1, input: &quot;$1az2bb3cy4dd5ee&quot;, groups: undefined]   </span><br><span class="line">console.log(reg3.lastIndex+&apos;\t&apos;+ret1.index)  // 0, 1</span><br><span class="line">var ret2 = ts.match(reg4)  // (2) [&quot;1az2&quot;, &quot;3cy4&quot;]</span><br><span class="line">console.log(reg4.lastIndex+&apos;\t&apos;+ret2.index)   // 0 undefined</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="5-字符串对象split方法"><a href="#5-字符串对象split方法" class="headerlink" title="5. 字符串对象split方法"></a>5. 字符串对象split方法</h4><p>String.prototype.split(reg)</p>
+<ul>
+<li>我们经常使用split方法把字符串分割为字符数组<br>eg: ‘a,b,c,d’.split(‘,’); //[“a”, “b”, “c”, “d”]</li>
+<li>在一些复杂的分割情况下我们可以使用正则表达式解决<br>eg: ‘alb2c3d’.split(/\d/; //[“a”, “b”, “c”, “d”]</li>
+</ul>
+<h4 id="5-字符串对象replace方法"><a href="#5-字符串对象replace方法" class="headerlink" title="5. 字符串对象replace方法"></a>5. 字符串对象replace方法</h4><p>String.prototype.replace</p>
+<ul>
+<li>String.prototype.replace(str, replaceStr)</li>
+<li>String.prototype.replace(reg, replaceStr)</li>
+<li>String.prototype.replace(reg, function)<br>function参数含义<br>function会在每次匹配替换的时候调用,有四个参数<br>1、匹配字符串<br>2、正则表达式分组内容,没有分组则没有该参数<br>3、匹配项在字符串中的index<br>4、原字符串<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;a1b2c3d4e5&apos;.replace(/\d/g, function(match, index, origin)&#123;</span><br><span class="line">  return parseInt(match) + 1;</span><br><span class="line">&#125;)  // &quot;a2b3c4d5e6&quot;</span><br><span class="line"></span><br><span class="line">&apos;a1b2c3d4e5&apos;.replace(/(\d)(\w)(\d)/g, function(match, group1, group2, group3, index, origin)&#123;</span><br><span class="line">  console.log(match)</span><br><span class="line">  return group1 + group3;</span><br><span class="line">&#125;)  </span><br><span class="line">// 1b2</span><br><span class="line">// 3d4</span><br><span class="line">// &quot;a12c34e5&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
 
       
 
@@ -494,7 +582,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本概念"><span class="toc-number">1.</span> <span class="toc-text">基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#元字符"><span class="toc-number">1.1.</span> <span class="toc-text">元字符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#通用含义元字符"><span class="toc-number">1.1.1.</span> <span class="toc-text">通用含义元字符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他含义元字符"><span class="toc-number">1.1.2.</span> <span class="toc-text">其他含义元字符</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-字符类"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">1. 字符类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-字符类取反"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">2. 字符类取反</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-范围类"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">3. 范围类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-预定义类"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">4. 预定义类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-边界"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">5. 边界</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-量词"><span class="toc-number">1.1.2.6.</span> <span class="toc-text">6. 量词</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#js正则的贪婪模式和非贪婪模式"><span class="toc-number">1.2.</span> <span class="toc-text">js正则的贪婪模式和非贪婪模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分组"><span class="toc-number">1.3.</span> <span class="toc-text">分组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#对一组正则规则加-可以对正则进行分组，"><span class="toc-number">1.3.1.</span> <span class="toc-text">对一组正则规则加(),可以对正则进行分组，</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#反向引用"><span class="toc-number">1.3.2.</span> <span class="toc-text">反向引用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#忽略分组"><span class="toc-number">1.4.</span> <span class="toc-text">忽略分组</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#元字符"><span class="toc-number">1.</span> <span class="toc-text">元字符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#通用含义元字符"><span class="toc-number">1.1.</span> <span class="toc-text">通用含义元字符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他含义元字符"><span class="toc-number">1.2.</span> <span class="toc-text">其他含义元字符</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-字符类"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 字符类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-字符类取反"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 字符类取反</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-范围类"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 范围类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-预定义类"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 预定义类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-边界"><span class="toc-number">1.2.5.</span> <span class="toc-text">5. 边界</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-量词"><span class="toc-number">1.2.6.</span> <span class="toc-text">6. 量词</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#js正则的贪婪模式和非贪婪模式"><span class="toc-number">2.</span> <span class="toc-text">js正则的贪婪模式和非贪婪模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分组"><span class="toc-number">3.</span> <span class="toc-text">分组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#对一组正则规则加-可以对正则进行分组，"><span class="toc-number">3.1.</span> <span class="toc-text">对一组正则规则加(),可以对正则进行分组，</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#反向引用"><span class="toc-number">3.2.</span> <span class="toc-text">反向引用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#忽略分组"><span class="toc-number">3.3.</span> <span class="toc-text">忽略分组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#前瞻"><span class="toc-number">4.</span> <span class="toc-text">前瞻</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#正则对象属性"><span class="toc-number">5.</span> <span class="toc-text">正则对象属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对象方法"><span class="toc-number">6.</span> <span class="toc-text">对象方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-正则test方法"><span class="toc-number">6.1.</span> <span class="toc-text">1. 正则test方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-正则exec方法"><span class="toc-number">6.2.</span> <span class="toc-text">2. 正则exec方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-字符串对象search方法"><span class="toc-number">6.3.</span> <span class="toc-text">3. 字符串对象search方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-字符串对象match方法"><span class="toc-number">6.4.</span> <span class="toc-text">4. 字符串对象match方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#非全局调用"><span class="toc-number">6.4.1.</span> <span class="toc-text">非全局调用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#全局调用"><span class="toc-number">6.4.2.</span> <span class="toc-text">全局调用</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-字符串对象split方法"><span class="toc-number">6.5.</span> <span class="toc-text">5. 字符串对象split方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-字符串对象replace方法"><span class="toc-number">6.6.</span> <span class="toc-text">5. 字符串对象replace方法</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
