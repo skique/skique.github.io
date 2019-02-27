@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>taoyouyou的博客</title>
+  <title>吃透js中正则表达式 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： https://regexper.com，输入正则规则即可生成匹配规则的流程图。">
-<meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
+<meta name="keywords" content="正则表达式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="taoyouyou的博客">
+<meta property="og:title" content="吃透js中正则表达式">
 <meta property="og:url" content="http://yoursite.com/2019/02/22/吃透js中正则表达式/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
 <meta property="og:description" content="我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： https://regexper.com，输入正则规则即可生成匹配规则的流程图。">
@@ -23,9 +23,9 @@
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg">
-<meta property="og:updated_time" content="2019-02-27T09:34:23.269Z">
+<meta property="og:updated_time" content="2019-02-27T09:35:28.626Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="taoyouyou的博客">
+<meta name="twitter:title" content="吃透js中正则表达式">
 <meta name="twitter:description" content="我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： https://regexper.com，输入正则规则即可生成匹配规则的流程图。">
 <meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/2/22/1691537782c64cc4">
   
@@ -165,6 +165,21 @@
           <div id="js-content" class="content-ll">
             <article id="post-吃透js中正则表达式" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      吃透js中正则表达式
+    </h1>
+  
+
+        
+        <a href="/2019/02/22/吃透js中正则表达式/" class="archive-article-date">
+  	<time datetime="2019-02-22T02:29:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -475,6 +490,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">正则表达式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -680,11 +706,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -693,6 +719,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -712,19 +742,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -740,7 +758,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
