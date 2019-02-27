@@ -24,7 +24,7 @@
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组5.svg">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg">
-<meta property="og:updated_time" content="2019-02-27T09:41:28.348Z">
+<meta property="og:updated_time" content="2019-02-27T09:43:03.239Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="吃透js中正则表达式">
 <meta name="twitter:description" content="我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： https://regexper.com，输入正则规则即可生成匹配规则的流程图。">
@@ -366,7 +366,8 @@
 <blockquote>
 <p>将捕获作为正则表达式中能够成功匹配术语时的候选字符串      </p>
 </blockquote>
-<p>这种术语表示法是在反斜杆后面加一个要引用的捕获数量。<br>捕获组捕获到的内容，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用。反向引用的作用通常是用来查找或限定重复、查找或限定指定标识配对出现等等。<br>例如:([a-z])\1{2}也就表达连续三个相同的小写字母。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组5.svg" alt=""></p>
+<p>这种术语表示法是在反斜杆后面加一个要引用的捕获数量。<br>捕获组捕获到的内容，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用。反向引用的作用通常是用来查找或限定重复、查找或限定指定标识配对出现等等。<br>例如:([a-z])\1{2}也就表达连续三个相同的小写字母。   </p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组5.svg" alt=""></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var str = &apos;&lt;p&gt;1&lt;/p&gt;&apos;</span><br><span class="line">var str2 = &apos;&lt;strong&gt;2&lt;/strong&gt;&apos;</span><br><span class="line">var reg = /&lt;(\w+)&gt;(.+)&lt;\/\1&gt;/</span><br><span class="line"></span><br><span class="line">var res = str.match(reg)</span><br><span class="line">var res2 = str2.match(reg)</span><br></pre></td></tr></table></figure>
 <h4 id="忽略分组"><a href="#忽略分组" class="headerlink" title="忽略分组"></a>忽略分组</h4><p>不需要捕获某些分组只需要在分组内加 ?: 就可以了。<br>(?:taoyouyou).(ok)<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg" alt=""></p>
 <h3 id="前瞻"><a href="#前瞻" class="headerlink" title="前瞻"></a>前瞻</h3><ul>
