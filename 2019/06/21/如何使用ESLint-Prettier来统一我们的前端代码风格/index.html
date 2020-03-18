@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/2 | taoyouyou的博客</title>
+  <title>如何使用ESLint + Prettier来统一我们的前端代码风格 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
+  <meta name="description" content="你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少">
 <meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
-<meta property="og:type" content="website">
-<meta property="og:title" content="taoyouyou的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2019/02/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何使用ESLint + Prettier来统一我们的前端代码风格">
+<meta property="og:url" content="http://yoursite.com/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta property="og:description" content="你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-06-21T10:49:50.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="taoyouyou的博客">
-<meta name="twitter:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta name="twitter:title" content="如何使用ESLint + Prettier来统一我们的前端代码风格">
+<meta name="twitter:description" content="你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -154,60 +155,203 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-如何使用ESLint-Prettier来统一我们的前端代码风格" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/22/吃透js中正则表达式/" class="archive-article-date">
-  	<time datetime="2019-02-22T02:29:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/22/吃透js中正则表达式/">吃透js中正则表达式</a>
+    <h1 class="article-title" itemprop="name">
+      如何使用ESLint + Prettier来统一我们的前端代码风格
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">正则表达式</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        <a href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/" class="archive-article-date">
+  	<time datetime="2019-06-21T01:57:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少数服从多数来确定一种合适的书写规范，通过工具统一风格。    </p>
+<p>本文将介绍，如何使用ESLint + Prettier来统一我们的前端代码风格。   </p>
+<p>首先，对应ESLint大多都很熟悉，用来进行代码的校验，js作为一门灵活的弱类型语言，代码风格千奇百怪，一千个人写js就有一千种写法。虽然js没有官方推荐的代码规范，不过社区有些比较热门的代码规范，比如standardjs、airbnb。使用ESLint配合这些规范，能够检测出代码中的潜在问题，提高代码质量，但是并不能完全统一代码风格，因为这些代码规范的重点并不在代码风格上（虽然有一些限制）。</p>
+<p>Prettier 是一个漂亮代码格式工具。prettier 通过将JavaScript解析为AST来去除原来的代码样式，并且将其按照一致的格式的方式输出。只要代码的内容是一样的，那么输出的代码就将会是一致的。 prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突。而且prettier独断自行一套格式化风格，虽然提供配置，也只是配置少量的关键属性，能在一定程度上保证的代码的风格统一，而且使用门槛极低， 关键的他的风格并不丑，更容易让大家接受。<br>同时，prettier支持我们大前端目前大部分语言处理，包括JavaScript · Flow · TypeScript · CSS · SCSS · Less · JSX · Vue · GraphQL · JSON · Markdown，唯一的遗憾是，暂时还不能格式化vue模版文件中template部分。</p>
+<h2 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h2><p>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
+<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
+<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
+<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上文提到prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突,这里我们需要来讲一下如果存在冲突怎么办<br><code>npm i -D eslint-config-prettier</code><br>通过使用eslint-config-prettier配置，能够关闭一些不必要的或者是与prettier冲突的lint选项。这样我们就不会看到一些error同时出现两次。使用的时候需要确保，这个配置在extends的最后一项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;@vue/airbnb&apos;, //使用standard做代码规范</span><br><span class="line">    &quot;prettier&quot;,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果你同时使用了上述的两种配置，那么你可以通过如下方式，简化你的配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后贴一下我们项目中的完整配置，是在vue-cli生成的代码基础上修改的，并且使用airbnb做代码规范：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  root: true,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;plugin:vue/essential&apos;,</span><br><span class="line">    &apos;@vue/airbnb&apos;,</span><br><span class="line">    &quot;plugin:prettier/recommended&quot;,</span><br><span class="line">  ],</span><br><span class="line">  plugins: [&quot;prettier&quot;],</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;comma-dangle&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;linebreak-style&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;consistent-return&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;no-param-reassign&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;max-len&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/no-use-v-if-with-v-for&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/require-valid-default-prop&apos;: &apos;off&apos;,</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;,</span><br><span class="line">    &apos;no-console&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">    &apos;no-debugger&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: &apos;babel-eslint&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h2><p>一共有三种方式支持对Prettier进行配置：</p>
+<ol>
+<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
+<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
+<li>在package.json中新建prettier属性。   </li>
+</ol>
+<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
+<p>注意一点，parser的配置项官网列出了如下可选项：</p>
+<ul>
+<li>babylon</li>
+<li>flow</li>
+<li>typescript Since v1.4.0</li>
+<li>postcss Since v1.4.0</li>
+<li>json Since v1.5.0</li>
+<li>graphql Since v1.5.0</li>
+<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
+</ul>
 
-          
+      
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/05/15/极简白话金融学/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">极简白话金融学</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ESLint-与-Prettier配合使用"><span class="toc-number">1.</span> <span class="toc-text">ESLint 与 Prettier配合使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何对Prettier进行配置"><span class="toc-number">2.</span> <span class="toc-text">如何对Prettier进行配置</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -230,8 +374,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

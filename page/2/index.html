@@ -156,6 +156,188 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-git常用命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/06/git常用命令/">git常用命令</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/06/git常用命令/" class="archive-article-date">
+  	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="常规流程"><a href="#常规流程" class="headerlink" title="常规流程"></a>常规流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git init  // git仓库初始化</span><br><span class="line">git add .  // 文件修改添加到暂存区</span><br><span class="line">git commit -m &quot;desc&quot;   // 实际上就是把暂存区的所有内容提交到当前分支</span><br><span class="line">git status  // 查看本地git仓库的提交状态</span><br><span class="line">git remote add origin git@gitee.com:taoyouyou/mongodb-install.git  // 添加远程库 </span><br><span class="line">git remote set-url --add origin git@git.oschina.net:shuaibai123/laravel-bjyblog.git   // 再次添加远程库，即一个本地的git仓库可以添加多个远程库</span><br><span class="line"></span><br><span class="line">git push -u origin master   // 首次部署到远程仓库</span><br><span class="line">git push origin branch-name --force  //  强制上传本地文件到远程库</span><br></pre></td></tr></table></figure>
+<h3 id="git-add详解"><a href="#git-add详解" class="headerlink" title="git add详解:"></a>git add详解:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git add -A   // 添加所有改动</span><br><span class="line"></span><br><span class="line">git add *     // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add .    // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add -u   // 添加修改和删除，但是不包括新建文件</span><br></pre></td></tr></table></figure>
+<h3 id="版本恢复"><a href="#版本恢复" class="headerlink" title="版本恢复:"></a>版本恢复:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard HEAD^       //回退到前一个版本</span><br><span class="line">                 HEAD^^      //回退到前两个版本</span><br><span class="line">                 HEAD~100    //回退到前100版本</span><br><span class="line">                 commituid   //利用git reflog命令可以查看到所提交的每个版本的commitid</span><br><span class="line">git log  //查看用户目前进行了哪些commit操作</span><br><span class="line">git reflog  //查看用户进行哪些git操作</span><br></pre></td></tr></table></figure>
+<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git branch              //  查看本地仓库的所有分支</span><br><span class="line">git branch dev          //  创建dev分支</span><br><span class="line">git checkout -b dev     //  创建并转到dev分支</span><br><span class="line">git checkout master     //  切回master分支</span><br><span class="line">git merge dev           //  合并dev分支</span><br><span class="line">git branch -d dev       //  删除本地dev分支</span><br><span class="line">git push origin :dev    //  删除远程dev分支</span><br></pre></td></tr></table></figure>
+<h3 id="git-子模块"><a href="#git-子模块" class="headerlink" title="git 子模块"></a>git 子模块</h3><p>在使用git工具进行开发的时候经常会遇到各种各样的需求，git子模块概念的提出也是为了解决开发中的特定需求。当你在一个项目上工作时，你需要在其中使用另外一个项目。也许它是一个第三方开发的库或者是你独立开发和并在多个父项目中使用的。这个场景下一个常见的问题产生了：你想将两个项目单独处理但是又需要在其中一个中使用另外一个。Git 通过子模块处理这个问题。子模块允许你将一个 Git 仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。</p>
+<ul>
+<li>首先你要把外部的仓库克隆到你的子目录中。你通过git submodule add将外部项目加为子模块：<br><code>git submodule add git://github.com/chneukirchen/rack.git rack</code></li>
+<li><p>现在你就在项目里的rack子目录下有了一个 Rack 项目。你可以进入那个子目录，进行变更，加入你自己的远程可写仓库来推送你的变更，从原始仓库拉取和归并等等。如果你在加入子模块后立刻运行git status，你会看到下面两项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line"># On branch master</span><br><span class="line"># Changes to be committed:</span><br><span class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">#</span><br><span class="line">#      new file:   .gitmodules</span><br><span class="line">#      new file:   rack</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成了rack文件夹和.gitmodules文件，.gitmodules是一个配置文件，保存了项目 URL 和你拉取到的本地子目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat .gitmodules</span><br><span class="line">[submodule &quot;rack&quot;]</span><br><span class="line">      path = rack</span><br><span class="line">      url = git://github.com/chneukirchen/rack.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>尽管rack是你工作目录里的子目录，但 Git 把它视作一个子模块，当你不在那个目录里时并不记录它的内容。取而代之的是，Git 将它记录成来自那个仓库的一个特殊的提交。当你在那个子目录里修改并提交时，子项目会通知那里的 HEAD 已经发生变更并记录你当前正在工作的那个提交；通过那样的方法，当其他人克隆此项目，他们可以重新创建一致的环境。</p>
+</li>
+<li>也就是说当你在子目录里进行文件改动之后必须先提交到子进程的git仓库，主项目才能检测到子进程的修改并提交到远程库</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/06/git常用命令/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-mongodb的下载以及安装" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/06/mongodb的下载以及安装/">mongodb的下载以及安装</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/06/mongodb的下载以及安装/" class="archive-article-date">
+  	<time datetime="2018-03-06T08:23:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="下载mongodb"><a href="#下载mongodb" class="headerlink" title="下载mongodb"></a>下载mongodb</h3><ul>
+<li>下载地址为:<a href="https://gitee.com/taoyouyou/mongodb-install.git" target="_blank" rel="noopener">https://gitee.com/taoyouyou/mongodb-install.git</a>,此版本只适用于window 64位系统。<h3 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h3></li>
+</ul>
+<p>1、在安装过程中可以点击Custom(自定义)” 按钮来设置安装目录。我的安装目录为 D:\MongoDB\Server\3.4\bin，之后直接点击下一步即可安装成功。</p>
+<p>2、安装mongodb 后设置mongodb环境变量（如果没有配置环境变量，一下所有命令均在mongodb安装目录的bin目录下执行）</p>
+<p>3、新建数据库文件夹和日志记录文件<br>   <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mongodb2.png" alt=""><br> 在D:\MongoDB\Server\3.4目录下新建data文件夹作为数据库路径,新建logs文件夹下的mongo.log文件作为日志文件以及新建mongo.conf配置文件</p>
+<p>4、数据库配置文件<br> 在mongo.conf中写入以下配置信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dbpath=D:\MongoDB\Server\3.4\data #数据库路径  </span><br><span class="line">logpath=D:\MongoDB\Server\3.4\logs\mongo.log #日志输出文件路径  </span><br><span class="line">logappend=true #错误日志采用追加模式  </span><br><span class="line">journal=true #启用日志文件，默认启用  </span><br><span class="line">quiet=true #这个选项可以过滤掉一些无用的日志信息，若需要调试使用请设置为false  </span><br><span class="line">port=27017 #端口号 默认为27017</span><br></pre></td></tr></table></figure></p>
+<p>5、启动mongodb服务</p>
+<ul>
+<li>方法一<br><code>mongod --config &quot;D:\MongoDB\Server\3.4\mongo.conf&quot;   // 在命令行启动</code> </li>
+<li>方法二<br><code>mongod --config &quot;D:\MongoDB\Server\3.4\mongo.conf&quot; --install --serviceName &quot;MongoDB&quot;    // 安装MongoDB的windows服务管理</code></li>
+</ul>
+<p>右键计算机——系统服务，打开windows服务框，本地服务服务列表中会看到MongoDB，表示已经成功将mongodb加入到了系统服务，但是此时服务还没有开启！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net stop MongoDB  // 命令行关闭mongodb服务</span><br><span class="line"></span><br><span class="line">mongod.exe --remove --serviceName &quot;MongoDB&quot;    // 卸载MongoDB的windows服务管理</span><br></pre></td></tr></table></figure>
+<p>6、创建mongodb连接<br>安装完成后，shell交互式下输入mongo就可以直接无密码登录到数据库。默认登录到test数据<br><code>mongo 127.0.0.1:27017/admin -u &#39;userAdmin&#39; -p &#39;123&#39;    // 使用用户名和密码连接到MongoDB服务器</code></p>
+<h3 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h3><ul>
+<li>常用命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">db.createUser(&#123;user: &quot;root&quot;, pwd: &quot;123456&quot;, roles: [&#123; role: &quot;dbOwner&quot;, db: &quot;activity&quot; &#125;]&#125;)     //  创建对应数据库的权限</span><br><span class="line">mongo 127.0.0.1:27017/activity -u &apos;root&apos; -p &apos;123456&apos;   //  适用刚创建的用户权限链接对应的数据库</span><br><span class="line">show users   // 查看当前用户</span><br><span class="line"></span><br><span class="line">use runoob  // 不存在则新增runoob数据库  存在则切换到runoob数据库</span><br><span class="line">show dbs   // 查看所有数据库</span><br><span class="line">db  // 查看当前数据库</span><br><span class="line">db.runoob.insert(&#123;&quot;name&quot;:&quot;菜鸟教程&quot;&#125;)  // 向数据库新增runoob表/集合，并插入数据</span><br><span class="line">show tables 或者 show collections    // 查看当前数据库的集合</span><br><span class="line">db.runoob.find()    // 查找数据库</span><br><span class="line">db.dropDatabase()   // 删除当前数据库</span><br><span class="line">db.collection.drop()  // 删除集合</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">mongodb</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/06/mongodb的下载以及安装/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-关于http" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -367,7 +549,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 taoyouyou
+    		&copy; 2020 taoyouyou
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -458,18 +640,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
@@ -478,11 +648,35 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -499,18 +693,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">字符串的特征向量</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
