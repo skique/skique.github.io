@@ -156,6 +156,206 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-农夫过河算法实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/12/农夫过河算法实现/">农夫过河算法实现</a>
+    </h1>
+  
+
+        
+        <a href="/2018/11/12/农夫过河算法实现/" class="archive-article-date">
+  	<time datetime="2018-11-12T08:41:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>  一个农夫带着—只狼、一只羊和—棵白菜，身处河的南岸。他要把这些东西全部运到北岸。他面前只有一条小船，船只能容下他和—件物品，另外只有农夫才能撑船。如果农夫在场，则狼不能吃羊，羊不能吃白菜，否则狼会吃羊，羊会吃白菜，所以农夫不能留下羊和白菜自己离开，也不能留下狼和羊自己离开，而狼不吃白菜。请求出农夫将所有的东西运过河的方案。</p>
+<h2 id="问题抽象"><a href="#问题抽象" class="headerlink" title="问题抽象"></a>问题抽象</h2><p>“人狼羊菜”乘船过河<br>只有人能撑船，船只有两个位置（包括人）<br>狼羊、羊菜不能在没有人时共处</p>
+<h2 id="数据抽象"><a href="#数据抽象" class="headerlink" title="数据抽象"></a>数据抽象</h2><p>每个角色的位置进行描述<br>农夫、狼、菜和羊，四个目标各用一位（假定按照农夫、狼、白菜、羊次序），目标在起始岸位置：0，目标岸：1</p>
+<p>确定每个角色位置的函数：  返回true则在目标岸， 返回false则在起始岸<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">bool farmer(int status)&#123;</span><br><span class="line">  return ((status &amp; 0x08) != 0);</span><br><span class="line">&#125;</span><br><span class="line">bool wolf(int status)&#123;</span><br><span class="line">  return ((status &amp;0x04)!= 0);</span><br><span class="line">&#125;</span><br><span class="line">bool cabbage(int status)&#123;</span><br><span class="line">  return((status &amp; 0x02) != 0);</span><br><span class="line">&#125;</span><br><span class="line">bool goat(int status)&#123;</span><br><span class="line">  return((status &amp; 0x01) != 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>安全状态的判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bool safe(intstatus)&#123;     // 返回true:安全，false:不安全</span><br><span class="line">  if((goat(status)==cabbage(status)) &amp;&amp; (goat(status)!=farmer(status)))</span><br><span class="line">    return(false);        // 羊吃白菜</span><br><span class="line">  if((goat(status)==wolf(status)) &amp;&amp; (goat(status)!=farmer(status)))</span><br><span class="line">    return(false);        // 狼吃羊return(true);</span><br><span class="line">&#125;// 其它状态为安全</span><br></pre></td></tr></table></figure></p>
+<h2 id="算法抽象"><a href="#算法抽象" class="headerlink" title="算法抽象"></a>算法抽象</h2><p>  问题变为从状态0000（整数0）出发，寻找全部由安全状态构成的状态序列，以状态1111（整数15）为最终目标。</p>
+<ul>
+<li>状态序列中每个状态都可以从前一状态通过农夫（可以带一样东西）划船过河的动作到达。</li>
+<li>序列中不能出现重复状态<h2 id="算法设计"><a href="#算法设计" class="headerlink" title="算法设计"></a>算法设计</h2></li>
+<li>定义一个整数队列moveTo，它的每个元素表示一个可以安全到达的中间状态</li>
+<li>还需要定义一个数据结构记录已被访问过的各个状态，以及已被发现的能够到达当前这个状态的路径</li>
+<li>用顺序表route 的第i 个元素记录状态i是否已被访问过，若route[i] 已被访问过，则在这个顺序表元素中记入前驱状态值；-1表示未被访问，route 的大小（长度）为16<h2 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> void solve() &#123;</span><br><span class="line">   int movers, i, location, newlocation;</span><br><span class="line">   vector&lt;int&gt; route(END+1, -1);  // 记录已考虑的状态路径</span><br><span class="line">   queue&lt;int&gt; moveTo;// 准备初值</span><br><span class="line">   moveTo.push(0x00);</span><br><span class="line">   route[0]=0;</span><br><span class="line">   while(!moveTo.empty() &amp;&amp; route[15] == -1) &#123;// 得到现在的状态</span><br><span class="line">    status = moveTo.front();</span><br><span class="line">    moveTo.pop();</span><br><span class="line">    for(movers = 1; movers &lt;= 8; movers &lt;&lt;= 1) &#123;// 农夫总是在移动，随农夫移动的也只能是在农夫同侧的东西</span><br><span class="line">      if (farmer(status)  == (bool)(status &amp; movers)) &#123;</span><br><span class="line">        newstatus = status ^ (0x08| movers);// 安全的，并且未考虑过的走法</span><br><span class="line">        if (safe(newstatus) &amp;&amp; (route[newstatus] == -1)) &#123;</span><br><span class="line">          route[newstatus] = status;moveTo.push(newstatus); </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  // 反向打印出路径</span><br><span class="line">  if(route[15] != -1) &#123; </span><br><span class="line">    cout &lt;&lt;&quot;The reverse path is : “ &lt;&lt; endl;</span><br><span class="line">    for (intstatus = 15; status &gt;= 0; status = route[status]) &#123;</span><br><span class="line">      cout &lt;&lt; &quot;The status is : “ &lt;&lt; status &lt;&lt; endl;if(status == 0) </span><br><span class="line">      break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  else</span><br><span class="line">    cout &lt;&lt; &quot;No solution.“ &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>作为一名前端工程师，将以上逻辑使用了javascript实现了，全部代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line">class Queue &#123;</span><br><span class="line"></span><br><span class="line">  constructor() &#123;</span><br><span class="line">    // 定义一个数组来保存队列里面的元素</span><br><span class="line">    this.items = []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 在队列尾部添加一个或者多个元素</span><br><span class="line">  enqueue(element) &#123; </span><br><span class="line">    this.items.push(element)</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 移除队列顶部的元素，并返回被移除的元素</span><br><span class="line">  dequeue() &#123;</span><br><span class="line">    return this.items.shift()</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 清空队列</span><br><span class="line">  remove() &#123;</span><br><span class="line">    this.items = []</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 返回队列顶部的元素，不对队列本身做修改</span><br><span class="line">  front() &#123;</span><br><span class="line">    return this.items[0]</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 判断队列是否为空</span><br><span class="line">  isEmpty() &#123;</span><br><span class="line">    return this.items.length === 0</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 返回队列里面元素的个数</span><br><span class="line">  length() &#123;</span><br><span class="line">    return this.item.length</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function farmer(status)&#123;</span><br><span class="line">  return ((status &amp; 0x08) != 0);</span><br><span class="line">&#125;</span><br><span class="line">function wolf(status)&#123;</span><br><span class="line">  return ((status &amp;0x04)!= 0);</span><br><span class="line">&#125;</span><br><span class="line">function cabbage(status)&#123;</span><br><span class="line">  return((status &amp; 0x02) != 0);</span><br><span class="line">&#125;</span><br><span class="line">function goat(status)&#123;</span><br><span class="line">  return((status &amp; 0x01) != 0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function safe(status)&#123;    // 返回true:安全，false:不安全</span><br><span class="line">  if((goat(status)==cabbage(status)) &amp;&amp; (goat(status)!=farmer(status))) // 羊吃白菜</span><br><span class="line">    return(false);        </span><br><span class="line">  if((goat(status)==wolf(status)) &amp;&amp; (goat(status)!=farmer(status))) // 狼吃羊</span><br><span class="line">    return(false);       </span><br><span class="line">  return(true);</span><br><span class="line">&#125;// 其它状态为安全</span><br><span class="line"></span><br><span class="line">(function ()&#123;</span><br><span class="line">  let movers;   // 移动的状态</span><br><span class="line">  let route = [];      // 存储对应的状态是否重复</span><br><span class="line">  let results = [],     // 输出结果</span><br><span class="line">      aftercross,</span><br><span class="line">      counter;     // 记录移动次数</span><br><span class="line">  for(let i =0; i&lt;16; i++)&#123;</span><br><span class="line">    route.push(-1);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  let moveTo = new Queue();  // 准备初值, 队列存储目标岸状态值</span><br><span class="line">  moveTo.enqueue(0x00);</span><br><span class="line">  route[0]=0;</span><br><span class="line">  while(!moveTo.isEmpty() &amp;&amp; route[15] == -1) &#123;  // 得到现在的状态</span><br><span class="line">    status = moveTo.front();</span><br><span class="line">    moveTo.dequeue();</span><br><span class="line">    </span><br><span class="line">    for(movers = 1; movers &lt;= 8; movers &lt;&lt;= 1) &#123;</span><br><span class="line">      if (farmer(status)  == Boolean(status &amp; movers)) &#123;// 随农夫移动的也只能是在农夫同侧的东西</span><br><span class="line">        newstatus = status ^ (0x08| movers); // 渡河后的情况</span><br><span class="line">        if (safe(newstatus) &amp;&amp; (route[newstatus] == -1)) &#123; // 安全的，并且未考虑过的走法</span><br><span class="line">          route[newstatus] = status;</span><br><span class="line">          moveTo.enqueue(newstatus);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if(route[15] != -1)&#123;</span><br><span class="line">    counter = 0;</span><br><span class="line">    for(status = 15; status &gt; 0; status = route[status])&#123;</span><br><span class="line">      results.push(status);</span><br><span class="line">      counter++;      </span><br><span class="line">      if(status == 0) return;</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(results);</span><br><span class="line">    for(let i = 0; i&lt; counter; i++)&#123;</span><br><span class="line">      status= results[i];</span><br><span class="line">      aftercross = results[i+1];</span><br><span class="line">      if(status &amp; 0x08)&#123;</span><br><span class="line">        console.log(&quot;农夫从起始岸到目标岸:&quot;);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        console.log(&quot;农夫从目标岸到起始岸:&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">      switch(status^aftercross)&#123;</span><br><span class="line">      case 12:</span><br><span class="line">        console.log(&quot;把狼带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      case 10:</span><br><span class="line">        console.log(&quot;把菜带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      case 9:</span><br><span class="line">        console.log(&quot;把羊带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      default:</span><br><span class="line">        console.log(&quot;什么也不带\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">      console.log(&quot;No solution for this problem.\n&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>程序运行截图：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/农夫过河实现.png" alt=""><br>源文件已上传到gitee代码片段： <a href="https://gitee.com/taoyouyou/codes/frxzgasyvpt71bjcq59d055" target="_blank" rel="noopener">https://gitee.com/taoyouyou/codes/frxzgasyvpt71bjcq59d055</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">队列</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/11/12/农夫过河算法实现/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-关于区块链中的Dapp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/12/关于区块链中的Dapp/">关于区块链中的Dapp</a>
+    </h1>
+  
+
+        
+        <a href="/2018/09/12/关于区块链中的Dapp/" class="archive-article-date">
+  	<time datetime="2018-09-12T06:40:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>有人说2018年是区块链元年，区块链这个概念被越炒越火，也是之前一直知道比特币，知道最近才更多的了解到区块链的发展，知道了以太坊，智能合约，看到各种系名词RAM、DAPP、OTCBTC，今天主要讲的是Dapp</p>
+<h2 id="什么是DAPP"><a href="#什么是DAPP" class="headerlink" title="什么是DAPP"></a>什么是DAPP</h2><p>  经过这几年移动互联网以及智能手机的普及，相信几乎所有人都知道了什么是APP(Application的简称)。 时间转眼迈入区块链时代， 一个新的名词DAPP(Decentralized Application)出现了。Dapp是Decentralized Application的简称，也就是分散式应用程序   </p>
+<p>  只有当满足以下所有条件时，一个应用才可以称之为DAPP：</p>
+<ul>
+<li>应用必须完全开源、自治并且没有一个实体控制着该应用的大部分代币(Token)。该应用必须能够根据市场的反馈及技术要求进行升级，但是升级必须由应用的用户达成共识之后才可以进行；</li>
+<li>应用的数据必须加密后存储在公开的区块链上；</li>
+<li>应用必须拥有代币机制（可以使用已存在的代币或者新发行一种内置代币），矿工或者应用维护节点需要得到代币奖励；</li>
+<li>应用代币的产生必须依据标准的加密算法，有价值的节点可以根据该算法获取应用的代币奖励。    </li>
+</ul>
+<p>  根据以上的标准，比特币、Asch都算是DAPP，<br>所以比特币是一个DAPP，Asch是一个DAPP，而基于Asch开发的<a href="http://link.zhihu.com/?target=https%3A//cctime.org" title="CCTIME" target="_blank" rel="noopener">CCTIME</a>。也是一个DAPP。不同的是，有些DAPP扮演了操作系统的角色(比如Ethereum、Asch)，基于这些平台可以很容易的开发出特定需求的DAPP，而有些DAPP(比如CCTIME)则是具体的应用。但它们都满足上面的标准。</p>
+<h2 id="DAPP的核心要素"><a href="#DAPP的核心要素" class="headerlink" title="DAPP的核心要素"></a>DAPP的核心要素</h2><p>对于DAPP的开发，我们可以从零开始，重新创建一个完整的区块链系统并开发自己的应用，这相当于开发一个新的区块链项目，比较费事费力且对个人能力要求较高。对于一个普通的开发者来说，如果你想基于区块链开发自己的应用，那选择一个成熟的区块链应用开发平台就好了。这些平台一般会提供完善的接口以及开发工具，只需要操心业务逻辑及其实现就好了。关于区块链的底层部分，这些平台都会帮你处理好。 </p>
+<ol>
+<li>开发平台:<br> 目前最流行的开发平台是Ethereum：Ethereum是目前全球除了比特币以外第二大的区块链项目，它就像一台遍及全世界的分布式计算机，你只需要把你的应用部署在Ethereum上，应用的运行就可以由所有的Ethereum节点来保证了。应用的运行需要支付手续费(GAS)。缺点是需要学习一门新的语言Solidity。<br> 另外一个建议就是基于笔者所在团队开发的Asch(中文名叫做阿希)。只要掌握JavaScript，就可以基于Asch开发DAPP。 Asch采用的是侧链架构，每一个DAPP就是一套侧链。侧链可以有独立的区块链和节点网络。不同的DAPP之间互相不会影响。不同于Ethereum， Asch系统上DAPP数量的增加不会增加主链的负担，是一套更加先进的机制。</li>
+<li>共识机制：<br> 共识机制决定了运行DAPP的各节点如何达成共识及获取奖励，<br> 目前最常用的共识机制有POW、POS以及DPOS等。POW依据计算资源分配奖励，目前Bitcoin、Ethereum都采用了这种机制(不过Ethereum后面可能要迁移到POS)。Asch采用的是经过PBFT优化后的DPOS机制，核心系统是由 101 个委托人节点组成，委托人是被社区选举的可信账户，得票最高的 101 个委托人负责生产区块。得票排名未进入前 101 名的账户被称为候选人，当他们将来获得足够多的选票并进入前 101 名后，将成为正式的委托人。基于阿希开发的DAPP默认采用这种共识机制，不过开发者可以自己修改并决定使用哪种共识机制。</li>
+<li>代币分发:<br> 一般DAPP都会内置代币(Token), 而想让更多用户参与到DAPP的维护与使用中的话，就需要考虑好如何把代币分发到用户手中。<br> 目前最常见的有以下几种方案：<ul>
+<li>挖矿：以Bitcoin为例，任何拥有计算资源的人都可以加入到Bitcoin的挖矿中来，通过挖矿奖励来获取新的Bitcoin。</li>
+<li>ICO: 可以简单理解为众筹。通过收集市面上已经成熟的其他代币，根据一定比例兑换为本DAPP内的代币来完成。Ethereum就是按照 1BTC/2000ETH的比例通过ICO众筹到了很多BTC作为起始资金。这种分发方式在国内已被禁止。</li>
+<li>空投： 将代币免费分发到用户手中。持有其他代币的用户只需要完成一个简单的绑定流程，就可以得到代币。最近的案例有CCTIME空投，具体方式可参考<a href="CCTime 加密货币时讯">CCTIME官网</a>。</li>
+<li>私募：这个就跟找投资一样，依个人能力而定了。</li>
+</ul>
+</li>
+</ol>
+<h2 id="DAPP的生命周期"><a href="#DAPP的生命周期" class="headerlink" title="DAPP的生命周期"></a>DAPP的生命周期</h2><p>一个DAPP的生命周期主要分为三部分：</p>
+<ol>
+<li>撰写白皮书白皮书描述了DAPP的技术原理、要解决的问题以及特点等。社区对白皮书的反馈可以添加到后期的更新中。</li>
+<li>分发代币可以采用上一章节描述的代币分发机制的一种。</li>
+<li>开发DAPP，逐步进化完善在DAPP发布之后，如果该DAPP走向了一个健康发展的道路，可以期望会有越来越多掌握各种技能的用户加入到社区，一起维护DAPP的发展。DAPP的发展交由社区整体进行运营、更新。无论是比特币还是比特股，早期开发者所起到的作用已经越来越小，去中心化的社区已经可以推动这些项目的继续发展。</li>
+</ol>
+<h2 id="为什么需要DAPP开发"><a href="#为什么需要DAPP开发" class="headerlink" title="为什么需要DAPP开发"></a>为什么需要DAPP开发</h2><p>目前社会对于dapp开发的关注还刚刚开始，市面上还难以看到流行的DAPP应用。但是随着区块链技术的发展，传统的C/S模式可能会被颠覆，开发者也不用再去买云服务器部署自己的应用。有了区块链开发平台，开发者可以很容易的把应用部署到区块链上，这是一个基于全球服务器，7*24不间断服务的应用平台。另外由于DAPP代币机制的存在，开发者可以很容易的基于代币获得价值回报。相信在不久的将来，DAPP会超越传统APP，在人们的社会生活中扮演越来越重要的角色。</p>
+<p>此文仅用于学习，原文转载自<a href="https://zhuanlan.zhihu.com/p/31578996" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/31578996</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/09/12/关于区块链中的Dapp/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-独立ip划分虚拟子服务器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -473,19 +673,19 @@ Hello world！
 
 
   
-    <article id="post-git常用命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-git简明手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/06/git常用命令/">git常用命令</a>
+      <a class="article-title" href="/2018/03/06/git简明手册/">git简明手册</a>
     </h1>
   
 
         
-        <a href="/2018/03/06/git常用命令/" class="archive-article-date">
+        <a href="/2018/03/06/git简明手册/" class="archive-article-date">
   	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
 </a>
         
@@ -566,7 +766,7 @@ Hello world！
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/06/git常用命令/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/03/06/git简明手册/">展开全文 >></a>
         </p>
       
 
@@ -1002,10 +1202,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
@@ -1014,15 +1210,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1054,7 +1250,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1063,10 +1275,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
             
             <div class="clearfix"></div>

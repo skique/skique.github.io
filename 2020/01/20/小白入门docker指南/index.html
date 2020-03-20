@@ -17,7 +17,7 @@
 <meta property="og:description" content="为什么要用Docker开发环境配置难题docker的出现主要是为了解决开发环境配置的难题，举例来说，安装一个 Python 应用，计算机必须有 Python 引擎，还必须有各种依赖，可能还要配置环境变量。如果某些老旧的模块与当前环境不兼容，那就麻烦了。开发者常常会说：”它在我的机器可以跑了”，言下之意就是，其他机器很可能跑不了。 环境配置如此麻烦，换一台机器，就要重来一次，旷日费时。很多人想到，能">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/11/28/16eb101b11283fe3?w=377&h=565&f=png&s=43238">
-<meta property="og:updated_time" content="2020-03-20T05:53:35.000Z">
+<meta property="og:updated_time" content="2020-03-20T11:04:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小白入门docker指南">
 <meta name="twitter:description" content="为什么要用Docker开发环境配置难题docker的出现主要是为了解决开发环境配置的难题，举例来说，安装一个 Python 应用，计算机必须有 Python 引擎，还必须有各种依赖，可能还要配置环境变量。如果某些老旧的模块与当前环境不兼容，那就麻烦了。开发者常常会说：”它在我的机器可以跑了”，言下之意就是，其他机器很可能跑不了。 环境配置如此麻烦，换一台机器，就要重来一次，旷日费时。很多人想到，能">
@@ -269,11 +269,11 @@
 </ul>
 <p>docker host通过仓库拉取镜像，基于镜像运行一个docker实例化的容器。经过一系列的命令对容器进行自定义修改后又可以提交到docker仓库。   </p>
 <p>基本概念和命令了解了以后可以上手Docker实例,    </p>
-<h3 id="Dockerfile文件"><a href="#Dockerfile文件" class="headerlink" title="Dockerfile文件"></a>Dockerfile文件</h3><p>Docker 提供自定义镜像的能力，它可以让我们保存对基础镜像的修改，并再次使用。那么，我们就可以把操作系统、运行环境、脚本和程序打包在一起，并在宿主机上对外提供服务。<br>在上文的关于镜像的介绍中只介绍最基础的命令，没有讲镜像的创建命令<br>Docker 构建镜像有两种方式，   </p>
+<h3 id="Dockerfile文件"><a href="#Dockerfile文件" class="headerlink" title="Dockerfile文件"></a>Dockerfile文件</h3><p>Docker 提供自定义镜像的能力，它可以让我们保存对基础镜像的修改，并再次使用。那么，我们就可以把操作系统、运行环境、脚本和程序打包在一起，并在宿主机上对外提供服务。<br>在上文的关于镜像的介绍中只介绍最基础的命令，没有讲镜像的创建命令<br>Docker 构建镜像有两种方式，     </p>
 <ol>
-<li><p>从已经创建的容器中更新镜像，并且提交这个镜像。举个例子:</p>
-<p> 更新镜像之前，我们需要使用镜像来创建一个容器。<br> <code>docker run -t -i ubuntu:15.10 /bin/bash</code><br> 在运行的容器内使用 apt-get update 命令进行更新。<br> 在完成操作之后，输入 exit 命令来退出这个容器。<br> 此时 ID 为 e218edb10161 的容器，是按我们的需求更改的容器。我们可以通过命令 docker commit 来提交容器副本。</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m=&quot;has update&quot; -a=&quot;runoob&quot; e218edb10161 runoob/ubuntu:v2</span><br></pre></td></tr></table></figure>
+<li>从已经创建的容器中更新镜像，并且提交这个镜像。举个例子:</li>
+</ol>
+<p>更新镜像之前，我们需要使用镜像来创建一个容器。<br><code>docker run -t -i ubuntu:15.10 /bin/bash</code><br>在运行的容器内使用 apt-get update 命令进行更新。<br>在完成操作之后，输入 exit 命令来退出这个容器。<br>此时 ID 为 e218edb10161 的容器，是按我们的需求更改的容器。我们可以通过命令 docker commit 来提交容器副本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m=&quot;has update&quot; -a=&quot;runoob&quot; e218edb10161 runoob/ubuntu:v2</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>各个参数说明：</p>
 <ul>
@@ -283,15 +283,96 @@
 <li>runoob/ubuntu:v2: 指定要创建的目标镜像名</li>
 </ul>
 </blockquote>
-</li>
-<li><p>使用 Dockerfile 指令来创建一个新的镜像<br> 使用命令 docker build ， 从零开始来创建一个新的镜像。为此，我们需要创建一个 Dockerfile 文件，其中包含一组指令来告诉 Docker 如何构建我们的镜像。   </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ cat Dockerfile </span><br><span class="line">FROM    centos:6.7</span><br><span class="line">MAINTAINER      Fisher &quot;fisher@sudops.com&quot;</span><br><span class="line"></span><br><span class="line">RUN     /bin/echo &apos;root:123456&apos; |chpasswd</span><br><span class="line">RUN     useradd runoob</span><br><span class="line">RUN     /bin/echo &apos;runoob:123456&apos; |chpasswd</span><br><span class="line">RUN     /bin/echo -e &quot;LANG=\&quot;en_US.UTF-8\&quot;&quot; &gt;/etc/default/local</span><br><span class="line">EXPOSE  22</span><br><span class="line">EXPOSE  80</span><br><span class="line">CMD     /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure>
-<p> 每一个指令都会在镜像上创建一个新的层，每一个指令的前缀都必须是大写的。<br> 第一条FROM，指定使用哪个镜像源<br> RUN 指令告诉docker 在镜像内执行命令，安装了什么。。。<br> 然后，我们使用 Dockerfile 文件，通过 docker build 命令来构建一个镜像。   </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker build -t runoob/centos:6.7 .</span><br><span class="line">```   </span><br><span class="line">&gt; 参数说明：</span><br><span class="line">&gt; - -t ：指定要创建的目标镜像名</span><br><span class="line">&gt; - . ：Dockerfile 文件所在目录，可以指定Dockerfile 的绝对路径    </span><br><span class="line"></span><br><span class="line">使用`docker images` 查看创建的镜像已经在列表中存在,   </span><br><span class="line">我们可以使用新的镜像来创建容器</span><br></pre></td></tr></table></figure>
-<p> docker run -t -i runoob/centos:6.7  /bin/bash<br> [root@41c28d18b5fb /]# id runoob<br> uid=500(runoob) gid=500(runoob) groups=500(runoob)<br> <code>`</code><br> 从上面看到新镜像已经包含我们创建的用户 runoob。   </p>
-</li>
+<ol>
+<li>使用 Dockerfile 指令来创建一个新的镜像   </li>
 </ol>
-<p>不推荐使用第一种方式进行构建，因为它没有使得整个流程标准化，因此，在企业的中更加推荐使用Dockerfile文件来构建我们的镜像。我们使用Dockerfile文件可以让构建镜像更具备可重复性，同时保证启动脚本和运行程序的标准化。</p>
+<p>使用命令 docker build ， 从零开始来创建一个新的镜像。为此，我们需要创建一个 Dockerfile 文件，其中包含一组指令来告诉 Docker 如何构建我们的镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ cat Dockerfile </span><br><span class="line">FROM    centos:6.7</span><br><span class="line">MAINTAINER      Fisher &quot;fisher@sudops.com&quot;</span><br><span class="line"></span><br><span class="line">RUN     /bin/echo &apos;root:123456&apos; |chpasswd</span><br><span class="line">RUN     useradd runoob</span><br><span class="line">RUN     /bin/echo &apos;runoob:123456&apos; |chpasswd</span><br><span class="line">RUN     /bin/echo -e &quot;LANG=\&quot;en_US.UTF-8\&quot;&quot; &gt;/etc/default/local</span><br><span class="line">EXPOSE  22</span><br><span class="line">EXPOSE  80</span><br><span class="line">CMD     /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure></p>
+<p>每一个指令都会在镜像上创建一个新的层，每一个指令的前缀都必须是大写的。<br>第一条FROM，指定使用哪个镜像源<br>RUN 指令告诉docker 在镜像内执行命令，安装了什么。。。<br>然后，我们使用 Dockerfile 文件，通过 docker build 命令来构建一个镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t runoob/centos:6.7 .</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>参数说明：</p>
+<ul>
+<li>-t ：指定要创建的目标镜像名</li>
+<li>. ：Dockerfile 文件所在目录，可以指定Dockerfile 的绝对路径    </li>
+</ul>
+</blockquote>
+<p>使用<code>docker images</code> 查看创建的镜像已经在列表中存在,<br>我们可以使用新的镜像来创建容器   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">docker run -t -i runoob/centos:6.7  /bin/bash</span><br><span class="line">[root@41c28d18b5fb /]# id runoob</span><br><span class="line">uid=500(runoob) gid=500(runoob) groups=500(runoob)</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">从上面看到新镜像已经包含我们创建的用户 runoob。   </span><br><span class="line">    </span><br><span class="line">不推荐使用第一种方式进行构建，因为它没有使得整个流程标准化，因此，在企业的中更加推荐使用Dockerfile文件来构建我们的镜像。我们使用Dockerfile文件可以让构建镜像更具备可重复性，同时保证启动脚本和运行程序的标准化。</span><br><span class="line"></span><br><span class="line">## Docker进阶——docker-compose.yml 配置文件</span><br><span class="line">前面我们学习到，可以通过编写Dockfile的方式来创建一个新的镜像，但是在实际项目中总是多个镜像相互依赖，这时我们可以用docker-compse.yml记录一个项目(project, 一般是多个镜像)的构建过程。</span><br><span class="line">使用docker compose 基本可以分为3步：</span><br><span class="line">1. 使用Dockerfile定义应用程序的环境，以便可以在任何地方复用它们。</span><br><span class="line">2. 在docker-compose.yml中定义组成应用程序的服务，以便它们可以在独立的环境中一起运行。</span><br><span class="line">3. 运行docker compose up和compose启动并运行整个应用程序。</span><br><span class="line"></span><br><span class="line">官方提供了一个 Docker Compose 配置文件的标准例子</span><br></pre></td></tr></table></figure>
+<p>version: “3.7”<br>services:</p>
+<p>  redis:<br>    image: redis:alpine    // 从指定的镜像中启动容器，可以是存储仓库、标签以及镜像 ID<br>    ports:                 // 指定端口号</p>
+<pre><code>  - &quot;6379&quot;
+networks:              // 加入指定网络
+  - frontend
+deploy:                // 指定与部署和运行服务相关的配置
+  mode: replicated        // 两支mode: global:每个集节点只有一个容器  replicated:指定容器数量（默认）
+  replicas: 2             // 如果服务是 replicated（默认)，需要指定运行的容器数量
+  update_config:          // 配置更新服务，用于无缝更新应用
+    parallelism: 2           // 一次性更新的容器数量
+    delay: 10s               // 更新一组容器之间等待的时间
+    order: stop-first        // 更新次序设置，stop-first：旧的任务在开始新任务之前停止（默认）、start-first：新的任务首先启动，并且正在运行的任务短暂重叠
+  restart_policy:         // 配置容器的重新启动，代替 restart
+    condition: on-failure    // condition:值可以为 none 、on-failure 以及 any(默认)
+    delay: 5s                // 尝试重启的等待时间，默认为 0
+    max_attempts: 3          // 在放弃之前尝试重新启动容器次数（默认：从不放弃）
+    window: 120s             // 在决定重新启动是否成功之前的等时间，指定为持续时间（默认值：立即决定）
+</code></pre><p>  db:<br>    image: postgres:9.4<br>    volumes:                 // 挂载一个目录或者一个已存在的数据卷容器，可以直接使用 HOST:CONTAINER 这样的格式，或者使用 HOST:CONTAINER:ro 这样的格式，后者对于容器来说，数据卷是只读的，这样可以有效保护宿主机的文件系统</p>
+<pre><code>  - db-data:/var/lib/postgresql/data
+networks:
+  - backend
+deploy:
+  placement:                // 指定 constraints 和 preferences
+    constraints:
+      - &quot;node.role==manager&quot;
+</code></pre><p>  vote:<br>    image: dockersamples/examplevotingapp_vote:before<br>    ports:</p>
+<pre><code>  - &quot;5000:80&quot;
+networks:
+  - frontend
+depends_on:
+  - redis
+deploy:
+  replicas: 2
+  update_config:
+    parallelism: 2
+  restart_policy:
+    condition: on-failure
+</code></pre><p>  result:<br>    image: dockersamples/examplevotingapp_result:before<br>    ports:</p>
+<pre><code>  - &quot;5001:80&quot;
+networks:
+  - backend
+depends_on:
+  - db
+deploy:
+  replicas: 1
+  update_config:
+    parallelism: 2
+    delay: 10s
+  restart_policy:
+    condition: on-failure
+</code></pre><p>  worker:<br>    image: dockersamples/examplevotingapp_worker<br>    networks:</p>
+<pre><code>  - frontend
+  - backend
+deploy:
+  mode: replicated
+  replicas: 1
+  labels: [APP=VOTING]
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 120s
+  placement:
+    constraints:
+      - &quot;node.role==manager&quot;
+</code></pre><p>  visualizer:<br>    image: dockersamples/visualizer:stable<br>    ports:</p>
+<pre><code>  - &quot;8080:8080&quot;
+stop_grace_period: 1m30s
+volumes:
+  - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;
+deploy:
+  placement:
+    constraints:
+      - &quot;node.role==manager&quot;
+</code></pre><p>networks:<br>  frontend:<br>  backend:</p>
+<p>volumes:<br>  db-data:<br><code>`</code><br>compose文件是一个定义了services，network, volumes的yaml配置文件，这个文件的默认路径为 ./docker-compose.yml。<br>关于docker-compose具体配置可以参考<a href="https://blog.csdn.net/qq_36148847/article/details/79427878" target="_blank" rel="noopener">docker-compose.yml 配置文件编写详解</a></p>
 
       
 
@@ -411,8 +492,8 @@
     </a>
   
   
-    <a href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">低版本MacbookPro通过mas-cli下载更新各版本 macOS 全解析</div>
+    <a href="/2019/12/20/node+puppeteer定时发送微博/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">node+puppeteer定时发送微博</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -571,10 +652,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
@@ -583,15 +660,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,7 +700,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -632,10 +725,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
             
             <div class="clearfix"></div>
