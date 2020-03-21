@@ -288,7 +288,7 @@
 <p>Layout:<br>Hexo 有三种默认布局：post、page 和 draft。在创建者三种不同类型的文件时，它们将会被保存到不同的路径；而您自定义的其他布局和 post 相同，都将储存到 source/_posts 文件夹。<br>Title:<br>Hexo 默认以标题做为文件名称，但您可编辑 new_post_name 参数来改变默认的文件名称，举例来说，设为 :year-:month-:day-:title.md 可让您更方便的通过日期来管理文章。</p>
 <p>通过命令新建一篇文章后，会在 source 文件夹内响应的布局（_post）文件夹下生成以.md后缀结尾的文章，可以直接在这里通过markdown语言完成一篇文章</p>
 <h3 id="草稿"><a href="#草稿" class="headerlink" title="草稿"></a>草稿</h3><p>刚刚提到了 Hexo 的一种特殊布局：draft，这种布局在建立时会被保存到 source/_drafts 文件夹，您可通过 publish 命令将草稿移动到 source/_posts 文件夹，该命令的使用方式与 new 十分类似，您也可在命令中指定 layout 来指定布局。</p>
-<p>$ hexo publish [layout] <title><br>草稿默认不会显示在页面中，您可在执行时加上 –draft 参数，或是把 render_drafts 参数设为 true 来预览草稿。</title></p>
+<p>$ hexo publish [layout] [title]<br>草稿默认不会显示在页面中，您可在执行时加上 –draft 参数，或是把 render_drafts 参数设为 true 来预览草稿。</p>
 <h3 id="生成"><a href="#生成" class="headerlink" title="生成"></a>生成</h3><p>hexo中使用generate命令可以生成静态文件快速而且简单。 或者可以加上watch参数，在监听文件变动的同时生成静态文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate --watch</span><br></pre></td></tr></table></figure></p>
 <p>完成后部署<br>您可执行下列的其中一个命令，让 Hexo 在生成完毕后自动部署网站，两个命令的作用是相同的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure></p>
 <h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>通过generate命令编译生成public静态文件夹以后，可以通过github pages服务，可以为您的静态文件托管一个web站点。<br>Git Pages 一个支持Jekyll、Hugo、Hexo静态网站的服务。因为网络的原因，这里以国内git服务商gitee为例简单介绍一个如何托管个人的web站点，生成一个能用于预览的网址。首先需要将生成的public项目先托管在gitee中。   </p>
@@ -501,110 +501,84 @@
 </ul>
 <p>docker host通过仓库拉取镜像，基于镜像运行一个docker实例化的容器。经过一系列的命令对容器进行自定义修改后又可以提交到docker仓库。   </p>
 <p>基本概念和命令了解了以后可以上手Docker实例,    </p>
-<h3 id="Dockerfile文件"><a href="#Dockerfile文件" class="headerlink" title="Dockerfile文件"></a>Dockerfile文件</h3><p>Docker 提供自定义镜像的能力，它可以让我们保存对基础镜像的修改，并再次使用。那么，我们就可以把操作系统、运行环境、脚本和程序打包在一起，并在宿主机上对外提供服务。<br>在上文的关于镜像的介绍中只介绍最基础的命令，没有讲镜像的创建命令<br>Docker 构建镜像有两种方式，     </p>
+<h3 id="构建自定义镜像"><a href="#构建自定义镜像" class="headerlink" title="构建自定义镜像"></a>构建自定义镜像</h3><p>Docker 提供自定义镜像的能力，它可以让我们保存对基础镜像的修改，并再次使用。那么，我们就可以把操作系统、运行环境、脚本和程序打包在一起，并在宿主机上对外提供服务。<br>Docker 构建镜像有两种方式，     </p>
 <ol>
 <li>从已经创建的容器中更新镜像，并且提交这个镜像。举个例子:</li>
 </ol>
-<p>更新镜像之前，我们需要使用镜像来创建一个容器。<br><code>docker run -t -i ubuntu:15.10 /bin/bash</code><br>在运行的容器内使用 apt-get update 命令进行更新。<br>在完成操作之后，输入 exit 命令来退出这个容器。<br>此时 ID 为 e218edb10161 的容器，是按我们的需求更改的容器。我们可以通过命令 docker commit 来提交容器副本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m=&quot;has update&quot; -a=&quot;runoob&quot; e218edb10161 runoob/ubuntu:v2</span><br></pre></td></tr></table></figure></p>
+<p>更新镜像之前，我们需要使用镜像来创建一个容器。<br><code>docker run -d -p 80:80 --name webserver nginx</code><br>进入这个nginx容器并修改显示内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mac$ docker exec -it webserver bash</span><br><span class="line">root@c3f41221f05d:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</span><br><span class="line">root@c3f41221f05d:/# exit</span><br><span class="line">exit</span><br></pre></td></tr></table></figure></p>
+<p>此时名为webserver的容器，是按我们的需求更改的容器。我们可以通过命令 docker commit 来提交容器副本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker commit \</span><br><span class="line">&gt;     --author &quot;Tao Wang &lt;twang2218@gmail.com&gt;&quot; \</span><br><span class="line">&gt;     --message &quot;修改了默认网页&quot; \</span><br><span class="line">&gt;     webserver \</span><br><span class="line">&gt;     nginx:v2</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>各个参数说明：</p>
 <ul>
-<li>-m: 提交的描述信息   </li>
-<li>-a: 指定镜像作者   </li>
-<li>e218edb10161：容器 ID</li>
-<li>runoob/ubuntu:v2: 指定要创建的目标镜像名</li>
+<li>-message: 提交的描述信息   </li>
+<li>-author: 指定镜像作者   </li>
+<li>webserver：容器名称</li>
+<li>nginx:v2: 指定要创建的目标镜像名</li>
 </ul>
 </blockquote>
 <ol>
 <li>使用 Dockerfile 指令来创建一个新的镜像   </li>
 </ol>
-<p>使用命令 docker build ， 从零开始来创建一个新的镜像。为此，我们需要创建一个 Dockerfile 文件，其中包含一组指令来告诉 Docker 如何构建我们的镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">runoob@runoob:~$ cat Dockerfile </span><br><span class="line">FROM    centos:6.7</span><br><span class="line">MAINTAINER      Fisher &quot;fisher@sudops.com&quot;</span><br><span class="line"></span><br><span class="line">RUN     /bin/echo &apos;root:123456&apos; |chpasswd</span><br><span class="line">RUN     useradd runoob</span><br><span class="line">RUN     /bin/echo &apos;runoob:123456&apos; |chpasswd</span><br><span class="line">RUN     /bin/echo -e &quot;LANG=\&quot;en_US.UTF-8\&quot;&quot; &gt;/etc/default/local</span><br><span class="line">EXPOSE  22</span><br><span class="line">EXPOSE  80</span><br><span class="line">CMD     /usr/sbin/sshd -D</span><br></pre></td></tr></table></figure></p>
-<p>每一个指令都会在镜像上创建一个新的层，每一个指令的前缀都必须是大写的。<br>第一条FROM，指定使用哪个镜像源<br>RUN 指令告诉docker 在镜像内执行命令，安装了什么。。。<br>然后，我们使用 Dockerfile 文件，通过 docker build 命令来构建一个镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t runoob/centos:6.7 .</span><br></pre></td></tr></table></figure></p>
+<p>使用命令 docker build ， 从零开始来创建一个新的镜像。为此，我们需要创建一个 Dockerfile 文件，其中包含一组指令来告诉 Docker 如何构建我们的镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FROM nginx</span><br><span class="line">RUN echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</span><br></pre></td></tr></table></figure></p>
+<p>每一个指令都会在镜像上创建一个新的层，每一个指令的前缀都必须是大写的。<br>第一条FROM，指定使用哪个镜像源<br>RUN 指令告诉docker 在镜像内执行命令，安装了什么。。。<br>然后，我们使用 Dockerfile 文件，通过 docker build 命令来构建一个镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx:v3 .</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>参数说明：</p>
 <ul>
 <li>-t ：指定要创建的目标镜像名</li>
-<li>. ：Dockerfile 文件所在目录，可以指定Dockerfile 的绝对路径    </li>
+<li>. ：docker构建时的上下文路径    </li>
 </ul>
 </blockquote>
-<p>使用<code>docker images</code> 查看创建的镜像已经在列表中存在,<br>我们可以使用新的镜像来创建容器   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">docker run -t -i runoob/centos:6.7  /bin/bash</span><br><span class="line">[root@41c28d18b5fb /]# id runoob</span><br><span class="line">uid=500(runoob) gid=500(runoob) groups=500(runoob)</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">从上面看到新镜像已经包含我们创建的用户 runoob。   </span><br><span class="line">    </span><br><span class="line">不推荐使用第一种方式进行构建，因为它没有使得整个流程标准化，因此，在企业的中更加推荐使用Dockerfile文件来构建我们的镜像。我们使用Dockerfile文件可以让构建镜像更具备可重复性，同时保证启动脚本和运行程序的标准化。</span><br><span class="line"></span><br><span class="line">## Docker进阶——docker-compose.yml 配置文件</span><br><span class="line">前面我们学习到，可以通过编写Dockfile的方式来创建一个新的镜像，但是在实际项目中总是多个镜像相互依赖，这时我们可以用docker-compse.yml记录一个项目(project, 一般是多个镜像)的构建过程。</span><br><span class="line">使用docker compose 基本可以分为3步：</span><br><span class="line">1. 使用Dockerfile定义应用程序的环境，以便可以在任何地方复用它们。</span><br><span class="line">2. 在docker-compose.yml中定义组成应用程序的服务，以便它们可以在独立的环境中一起运行。</span><br><span class="line">3. 运行docker compose up和compose启动并运行整个应用程序。</span><br><span class="line"></span><br><span class="line">官方提供了一个 Docker Compose 配置文件的标准例子</span><br></pre></td></tr></table></figure>
-<p>version: “3.7”<br>services:</p>
-<p>  redis:<br>    image: redis:alpine    // 从指定的镜像中启动容器，可以是存储仓库、标签以及镜像 ID<br>    ports:                 // 指定端口号</p>
-<pre><code>  - &quot;6379&quot;
-networks:              // 加入指定网络
-  - frontend
-deploy:                // 指定与部署和运行服务相关的配置
-  mode: replicated        // 两支mode: global:每个集节点只有一个容器  replicated:指定容器数量（默认）
-  replicas: 2             // 如果服务是 replicated（默认)，需要指定运行的容器数量
-  update_config:          // 配置更新服务，用于无缝更新应用
-    parallelism: 2           // 一次性更新的容器数量
-    delay: 10s               // 更新一组容器之间等待的时间
-    order: stop-first        // 更新次序设置，stop-first：旧的任务在开始新任务之前停止（默认）、start-first：新的任务首先启动，并且正在运行的任务短暂重叠
-  restart_policy:         // 配置容器的重新启动，代替 restart
-    condition: on-failure    // condition:值可以为 none 、on-failure 以及 any(默认)
-    delay: 5s                // 尝试重启的等待时间，默认为 0
-    max_attempts: 3          // 在放弃之前尝试重新启动容器次数（默认：从不放弃）
-    window: 120s             // 在决定重新启动是否成功之前的等时间，指定为持续时间（默认值：立即决定）
-</code></pre><p>  db:<br>    image: postgres:9.4<br>    volumes:                 // 挂载一个目录或者一个已存在的数据卷容器，可以直接使用 HOST:CONTAINER 这样的格式，或者使用 HOST:CONTAINER:ro 这样的格式，后者对于容器来说，数据卷是只读的，这样可以有效保护宿主机的文件系统</p>
-<pre><code>  - db-data:/var/lib/postgresql/data
-networks:
-  - backend
-deploy:
-  placement:                // 指定 constraints 和 preferences
-    constraints:
-      - &quot;node.role==manager&quot;
-</code></pre><p>  vote:<br>    image: dockersamples/examplevotingapp_vote:before<br>    ports:</p>
-<pre><code>  - &quot;5000:80&quot;
-networks:
-  - frontend
-depends_on:
-  - redis
-deploy:
-  replicas: 2
-  update_config:
-    parallelism: 2
-  restart_policy:
-    condition: on-failure
-</code></pre><p>  result:<br>    image: dockersamples/examplevotingapp_result:before<br>    ports:</p>
-<pre><code>  - &quot;5001:80&quot;
-networks:
-  - backend
-depends_on:
-  - db
-deploy:
-  replicas: 1
-  update_config:
-    parallelism: 2
-    delay: 10s
-  restart_policy:
-    condition: on-failure
-</code></pre><p>  worker:<br>    image: dockersamples/examplevotingapp_worker<br>    networks:</p>
-<pre><code>  - frontend
-  - backend
-deploy:
-  mode: replicated
-  replicas: 1
-  labels: [APP=VOTING]
-  restart_policy:
-    condition: on-failure
-    delay: 10s
-    max_attempts: 3
-    window: 120s
-  placement:
-    constraints:
-      - &quot;node.role==manager&quot;
-</code></pre><p>  visualizer:<br>    image: dockersamples/visualizer:stable<br>    ports:</p>
-<pre><code>  - &quot;8080:8080&quot;
-stop_grace_period: 1m30s
-volumes:
-  - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;
-deploy:
-  placement:
-    constraints:
-      - &quot;node.role==manager&quot;
-</code></pre><p>networks:<br>  frontend:<br>  backend:</p>
-<p>volumes:<br>  db-data:<br><code>`</code><br>compose文件是一个定义了services，network, volumes的yaml配置文件，这个文件的默认路径为 ./docker-compose.yml。<br>关于docker-compose具体配置可以参考<a href="https://blog.csdn.net/qq_36148847/article/details/79427878" target="_blank" rel="noopener">docker-compose.yml 配置文件编写详解</a></p>
+<p>关于镜像构建上下文：<br>理解刚才的命令 docker build -t nginx:v3 . 中的这个 .，实际上是在指定上下文的目录，docker build 命令会将该目录下的内容打包交给 Docker 引擎以帮助构建镜像。</p>
+<p>一般来说，应该会将 Dockerfile 置于一个空目录下，或者项目根目录下。如果该目录下没有所需文件，那么应该把所需文件复制一份过来。如果目录下有些东西确实不希望构建时传给 Docker 引擎，那么可以用 .gitignore 一样的语法写一个 .dockerignore，该文件是用于剔除不需要作为上下文传递给 Docker 引擎的。</p>
+<p>使用<code>docker images</code> 查看创建的镜像已经在列表中存在,<br>我们可以使用新的镜像来创建容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -t -i runoob/centos:6.7  /bin/bash</span><br><span class="line">[root@41c28d18b5fb /]# id runoob</span><br><span class="line">uid=500(runoob) gid=500(runoob) groups=500(runoob)</span><br></pre></td></tr></table></figure>
+<p>从上面看到新镜像已经包含我们创建的用户 runoob。   </p>
+<p>不推荐使用第一种方式进行构建，因为它没有使得整个流程标准化，因此，在企业的中更加推荐使用Dockerfile文件来构建我们的镜像。我们使用Dockerfile文件可以让构建镜像更具备可重复性，同时保证启动脚本和运行程序的标准化。</p>
+<h2 id="Dockerfile-指令详解"><a href="#Dockerfile-指令详解" class="headerlink" title="Dockerfile 指令详解"></a>Dockerfile 指令详解</h2><ol>
+<li><p>COPY 复制文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">COPY &lt;源路径&gt;... &lt;目标路径&gt;    </span><br><span class="line">//&lt;源路径&gt; 可以是多个，甚至可以是通配符.&lt;目标路径&gt;可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录用 WORKDIR 指令来指定）。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ADD 指令和 COPY 的格式和性质基本一致。但是在 COPY 基础上增加了一些自动解压缩功能</p>
+</li>
+<li>CMD 容器启动命令<br>CMD 指令的格式和 RUN 相似，也是两种格式：<blockquote>
+<p>shell 格式：CMD &lt;命令&gt;<br>exec 格式：CMD [“可执行文件”, “参数1”, “参数2”…]<br>参数列表格式：CMD [“参数1”, “参数2”…]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。</p>
+</blockquote>
+</li>
+<li>ENTRYPOINT 入口点<br>ENTRYPOINT 的目的和 CMD 一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 docker run 的参数 –entrypoint 来指定。<br>当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令.</li>
+<li>ENV 设置环境变量<blockquote>
+<p>ENV key value<br>ENV key1=value1 key2=value2…</p>
+</blockquote>
+</li>
+<li>ARG 构建参数<blockquote>
+<p>ARG &lt;参数名&gt;[=&lt;默认值&gt;]<br>构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。但是不要因此就使用 ARG 保存密码之类的信息，因为 docker history 还是可以看到所有值的。</p>
+</blockquote>
+</li>
+<li>VOLUME 定义匿名卷<blockquote>
+<p>VOLUME &lt;路径&gt;<br>VOLUME [“&lt;路径1&gt;”, “&lt;路径2&gt;”…]<br>容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中。</p>
+</blockquote>
+</li>
+<li>EXPOSE 声明端口<blockquote>
+<p>EXPOSE &lt;端口1&gt; [&lt;端口2&gt;…]<br>要将 EXPOSE 和在运行时使用 -p &lt;宿主端口&gt;:&lt;容器端口&gt; 区分开来。-p，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 EXPOSE 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。</p>
+</blockquote>
+</li>
+<li><p>WORKDIR 指定工作目录<br>每一个 RUN 都是启动一个容器、执行命令、然后提交存储层文件变更，如果把Dockfile当作shell来写的话可以会犯以下错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN cd /app</span><br><span class="line">RUN echo &quot;hello&quot; &gt; world.txt</span><br></pre></td></tr></table></figure>
+<p>第一层 RUN cd /app 的执行仅仅是当前进程的工作目录变更，一个内存上的变化而已，其结果不会造成任何文件变更。而到第二层的时候，启动的是一个全新的容器，跟第一层的容器更完全没关系，自然不可能继承前一层构建过程中的内存变化。<br>因此如果需要改变以后各层的工作目录的位置，那么应该使用 WORKDIR 指令</p>
+</li>
+<li>USER 指定当前用户<blockquote>
+<p>USER &lt;用户名&gt;<br>USER 则是改变之后层的执行 RUN, CMD 以及 ENTRYPOINT 这类命令的身份。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="Docker进阶——docker-compose-yml-配置文件"><a href="#Docker进阶——docker-compose-yml-配置文件" class="headerlink" title="Docker进阶——docker-compose.yml 配置文件"></a>Docker进阶——docker-compose.yml 配置文件</h2><p>前面我们学习到，可以通过编写Dockfile的方式来创建一个新的镜像，但是在实际项目中总是多个镜像相互依赖，这时我们可以用docker-compse.yml记录一个项目(project, 一般是多个镜像)的构建过程。<br>使用docker compose 基本可以分为3步：</p>
+<ol>
+<li>使用Dockerfile定义应用程序的环境，以便可以在任何地方复用它们。</li>
+<li>在docker-compose.yml中定义组成应用程序的服务，以便它们可以在独立的环境中一起运行。</li>
+<li>运行docker compose up和compose启动并运行整个应用程序。</li>
+</ol>
+<p>官方提供了一个 Docker Compose 配置文件的标准例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.7&quot;</span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  redis:</span><br><span class="line">    image: redis:alpine    // 从指定的镜像中启动容器，可以是存储仓库、标签以及镜像 ID</span><br><span class="line">    ports:                 // 指定端口号</span><br><span class="line">      - &quot;6379&quot;</span><br><span class="line">    networks:              // 加入指定网络</span><br><span class="line">      - frontend</span><br><span class="line">    deploy:                // 指定与部署和运行服务相关的配置</span><br><span class="line">      mode: replicated        // 两支mode: global:每个集节点只有一个容器  replicated:指定容器数量（默认）</span><br><span class="line">      replicas: 2             // 如果服务是 replicated（默认)，需要指定运行的容器数量</span><br><span class="line">      update_config:          // 配置更新服务，用于无缝更新应用</span><br><span class="line">        parallelism: 2           // 一次性更新的容器数量</span><br><span class="line">        delay: 10s               // 更新一组容器之间等待的时间</span><br><span class="line">        order: stop-first        // 更新次序设置，stop-first：旧的任务在开始新任务之前停止（默认）、start-first：新的任务首先启动，并且正在运行的任务短暂重叠</span><br><span class="line">      restart_policy:         // 配置容器的重新启动，代替 restart</span><br><span class="line">        condition: on-failure    // condition:值可以为 none 、on-failure 以及 any(默认)</span><br><span class="line">        delay: 5s                // 尝试重启的等待时间，默认为 0</span><br><span class="line">        max_attempts: 3          // 在放弃之前尝试重新启动容器次数（默认：从不放弃）</span><br><span class="line">        window: 120s             // 在决定重新启动是否成功之前的等时间，指定为持续时间（默认值：立即决定）</span><br><span class="line"></span><br><span class="line">  db:</span><br><span class="line">    image: postgres:9.4</span><br><span class="line">    volumes:                 // 挂载一个目录或者一个已存在的数据卷容器，可以直接使用 HOST:CONTAINER 这样的格式，或者使用 HOST:CONTAINER:ro 这样的格式，后者对于容器来说，数据卷是只读的，这样可以有效保护宿主机的文件系统</span><br><span class="line">      - db-data:/var/lib/postgresql/data</span><br><span class="line">    networks:</span><br><span class="line">      - backend</span><br><span class="line">    deploy:</span><br><span class="line">      placement:                // 指定 constraints 和 preferences</span><br><span class="line">        constraints:</span><br><span class="line">          - &quot;node.role==manager&quot;</span><br><span class="line"></span><br><span class="line">  vote:</span><br><span class="line">    image: dockersamples/examplevotingapp_vote:before</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5000:80&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - frontend</span><br><span class="line">    depends_on:</span><br><span class="line">      - redis</span><br><span class="line">    deploy:</span><br><span class="line">      replicas: 2</span><br><span class="line">      update_config:</span><br><span class="line">        parallelism: 2</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line"></span><br><span class="line">  result:</span><br><span class="line">    image: dockersamples/examplevotingapp_result:before</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5001:80&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - backend</span><br><span class="line">    depends_on:</span><br><span class="line">      - db</span><br><span class="line">    deploy:</span><br><span class="line">      replicas: 1</span><br><span class="line">      update_config:</span><br><span class="line">        parallelism: 2</span><br><span class="line">        delay: 10s</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line"></span><br><span class="line">  worker:</span><br><span class="line">    image: dockersamples/examplevotingapp_worker</span><br><span class="line">    networks:</span><br><span class="line">      - frontend</span><br><span class="line">      - backend</span><br><span class="line">    deploy:</span><br><span class="line">      mode: replicated</span><br><span class="line">      replicas: 1</span><br><span class="line">      labels: [APP=VOTING]</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line">        delay: 10s</span><br><span class="line">        max_attempts: 3</span><br><span class="line">        window: 120s</span><br><span class="line">      placement:</span><br><span class="line">        constraints:</span><br><span class="line">          - &quot;node.role==manager&quot;</span><br><span class="line"></span><br><span class="line">  visualizer:</span><br><span class="line">    image: dockersamples/visualizer:stable</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:8080&quot;</span><br><span class="line">    stop_grace_period: 1m30s</span><br><span class="line">    volumes:</span><br><span class="line">      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;</span><br><span class="line">    deploy:</span><br><span class="line">      placement:</span><br><span class="line">        constraints:</span><br><span class="line">          - &quot;node.role==manager&quot;</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  frontend:</span><br><span class="line">  backend:</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  db-data:</span><br></pre></td></tr></table></figure>
+<p>compose文件是一个定义了services，network, volumes的yaml配置文件，这个文件的默认路径为 ./docker-compose.yml。<br>关于docker-compose具体配置可以参考<a href="https://blog.csdn.net/qq_36148847/article/details/79427878" target="_blank" rel="noopener">docker-compose.yml 配置文件编写详解</a></p>
 
       
 
@@ -1793,6 +1767,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
@@ -1801,15 +1779,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1829,6 +1803,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -1838,10 +1816,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">字符串的特征向量</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
