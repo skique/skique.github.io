@@ -156,6 +156,167 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-浅谈前端工程化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/23/浅谈前端工程化/">浅谈前端工程化</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/23/浅谈前端工程化/" class="archive-article-date">
+  	<time datetime="2020-03-23T06:57:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>疫情之下，新年初始，发现跟随着年龄长了一岁的，还有自己的工作经验。回头看过来自己的职业生涯，这一年多以来忙忙碌碌基本已经被工作占满，996工作一年，其实是一年半的工作经验，同事之前也经常这样调侃自己。然而即便是这样，自己又有多少长进呢？被这个问题问醒，这段时间终于有机会可以从编写业务代码中抽身，我想是时候给自己的工作生涯做一个总结了。<br>这些年来做过的大大小小的项目太多了，不能一一列出来，但是无论多少项目，核心的应该是项目设计时的思想和架构，万变不离其中，于是冒出来一个想法想把做项目的设计模式与实现写出来。这其中贯穿所有的就是前端工程化。于是这就是我们今天的主题。<br>现如今web端可谓包罗万象，产品形态五花八门，涉猎极广，什么高大上的基础库/框架，拽炫酷的宣传页面，还有屌炸天的小游戏……不过这些一两个文件的小项目并非是前端技术的主要应用场景，更具商业价值的则是复杂的Web应用，它们功能完善，界面繁多，为用户提供了完整的产品体验，可能是新闻聚合网站，可能是在线购物平台，可能是社交网络，可能是金融信贷应用，可能是音乐互动社区，也可能是视频上传与分享平台，可能是系统应用，门户、数据可视化平台……<br>尽管Web应用的复杂程度与日俱增，用户对其前端界面也提出了更高的要求，但时至今日仍然没有多少前端开发者会从软件工程的角度去思考前端开发，来助力团队的开发效率，更有甚者还对前端保留着”如玩具般简单“的刻板印象，日复一日，刀耕火种。<br>随着前端开发复杂度的日益增加，各种优秀的组件框架也遍地开花。同时，我们面临业务规模的快速发展和工程师团队的不断扩张。目前来说，Web业务日益复杂化和多元化，前端开发已经由以WebPage模式为主转变为以WebApp模式为主了。现在随便找个前端项目，都已经不是过去的拼个页面+搞几个jQuery插件就能完成的了。工程复杂了就会产生许多问题，如何进行高效的多人协作？如何保证项目的可维护性？如何提高项目的开发质量？…<br>我们希望能在日常开发中制订一个规范化的前端工作流，很好地规范统一项目的模块化开发和前端资源，让代码的维护和互相协作更加容易更加方便，令前端开发自动化成为一种习惯。同时，让大家能够释放生产力，提高开发效率，更好更快地完成团队开发以及项目后期维护和扩展。</p>
+<p>回顾一下曾经经历过的项目，为了提升其前端开发效率和运行性能，前端团队的工程建设大致会经历三个阶段：</p>
+<h3 id="第一阶段：库-框架选型"><a href="#第一阶段：库-框架选型" class="headerlink" title="第一阶段：库/框架选型"></a>第一阶段：库/框架选型</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/前端框架.png" alt=""><br>前端工程建设的第一项任务就是根据项目特征进行技术选型（ps:以上排序不分排名先后）。<br>基本上现在没有人完全从0开始做网站，哪怕是政府项目用个jquery都很正常吧，React/Angularjs等框架横空出世，解放了不少生产力，合理的技术选型可以为项目节省许多工程量这点毋庸置疑。<br>关于前端技术框架选型，适合自己的就是做好的。</p>
+<h3 id="第二阶段：构建、管理工具"><a href="#第二阶段：构建、管理工具" class="headerlink" title="第二阶段：构建、管理工具"></a>第二阶段：构建、管理工具</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/构建工具.png" alt=""><br>选型之后基本上就可以开始敲码了，不过光解决开发效率还不够，必须要兼顾运行性能。前端工程进行到第二阶段会选型一种或多种构建工具，对代码进行压缩、校验、管理，之后再以页面为单位进行简单的资源合并（ps:以上排序不分排名先后）<br>前端开发工程化程度之低，常常出乎我们的意料。很多人在大型互联网公司工作时是没有多少概念的，直到离开大公司的温室，去到业界与更多的团队交流才发现，能做到这个阶段在业界来说已然超出平均水平，属于“具备较高工程化程度”的团队了，查看网上形形色色的网页源代码，能做到最基本的JS/CSS压缩的Web应用都已跨入标准互联网公司行列，不难理解为什么很多前端团队对于前端工程构建的认知还仅停留在“压缩、校验、合并”这种程度。</p>
+<h3 id="第三阶段：JS-CSS模块化开发"><a href="#第三阶段：JS-CSS模块化开发" class="headerlink" title="第三阶段：JS/CSS模块化开发"></a>第三阶段：JS/CSS模块化开发</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/模块化开发.png" alt=""><br>分而治之是软件工程中的重要思想，是复杂系统开发和维护的基石，这点放在前端开发中同样适用。在解决了基本开发效率运行效率问题之后，前端团队开始思考维护效率，模块化是目前前端最流行的分治手段（ps:以上排序不分排名先后）。</p>
+<p>很多人觉得模块化开发的工程意义是复用，其实应该是模块化开发的最大价值应该是分治。不管你将来是否要复用某段代码，你都有充分的理由将其分治为一个模块。</p>
+<p>JS模块化方案很多，AMD/CommonJS/UMD/ES6 Module等，对应的框架和工具也一大堆；<br>CSS模块化开发基本都是在less、sass、stylus等预处理器的import/mixin特性支持下实现的。</p>
+<h3 id="第四阶段：组件化开发与资源管理"><a href="#第四阶段：组件化开发与资源管理" class="headerlink" title="第四阶段：组件化开发与资源管理"></a>第四阶段：组件化开发与资源管理</h3><blockquote>
+<p>前端是一种技术问题较少、工程问题较多的软件开发领域。</p>
+</blockquote>
+<p>当我们要开发一款完整的Web应用时，前端将面临更多的工程问题，比如：</p>
+<p>大体量：多功能、多页面、多状态、多系统；<br>大规模：多人甚至多团队合作开发；<br>高性能：CDN部署、缓存控制、文件指纹、缓存复用、请求合并、按需加载、同步/异步加载、移动端首屏CSS内嵌、HTTP 2.0服务端资源推送。<br>　　<br>这些无疑是一系列严肃的系统工程问题。前面讲的三个阶段虽然相比曾经“茹毛饮血”的时代进步不少，但用于支撑第四阶段的多人合作开发以及精细的性能优化似乎还欠缺点什么。到底，缺什么呢？</p>
+<h4 id="第一件事：组件化开发"><a href="#第一件事：组件化开发" class="headerlink" title="第一件事：组件化开发"></a>第一件事：组件化开发</h4><p>整个前端项目可以划分为这么几种开发概念：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">JS模块</td>
+<td style="text-align:left">独立的算法和数据单元</td>
+<td style="text-align:left">浏览器环境检测(detect)，网络请求(ajax)，应用配置(config)，DOM操作(dom)，工具函数(utils)，以及组件里的JS单元</td>
+</tr>
+<tr>
+<td style="text-align:left">CSS模块</td>
+<td style="text-align:left">独立的功能性样式单元</td>
+<td style="text-align:left">栅格系统(grid)，字体图标(icon-fonts)，动画样式(animate)，以及组件里的CSS单元</td>
+</tr>
+<tr>
+<td style="text-align:left">UI组件</td>
+<td style="text-align:left">独立的可视/可交互功能单元</td>
+<td style="text-align:left">页头(header)，页尾(footer)，导航栏(nav)，搜索框(search)</td>
+</tr>
+<tr>
+<td style="text-align:left">页面</td>
+<td style="text-align:left">前端这种GUI软件的界面状态，是UI组件的容器</td>
+<td style="text-align:left">首页(index)，列表页(list)，用户管理(user)</td>
+</tr>
+<tr>
+<td style="text-align:left">应用</td>
+<td style="text-align:left">整个项目或整个站点被称之为应用，由多个页面组成</td>
+<td style="text-align:left">——</td>
+</tr>
+</tbody>
+</table>
+<p>以上5种开发概念以相对较少的规则组成了前端开发的基本工程结构，</p>
+<h4 id="第二件事：“智能”静态资源管理"><a href="#第二件事：“智能”静态资源管理" class="headerlink" title="第二件事：“智能”静态资源管理"></a>第二件事：“智能”静态资源管理</h4><p>上面提到的模块化/组件化开发，仅仅描述了一种开发理念，也可以认为是一种开发规范，倘若你认可这规范，对它的分治策略产生了共鸣，那我们就可以继续聊聊它的具体实现了。</p>
+<p>很明显，模块化/组件化开发之后，我们最终要解决的，就是模块/组件加载的技术问题。然而前端与客户端GUI软件有一个很大的不同：</p>
+<blockquote>
+<p>前端是一种远程部署，运行时增量下载的GUI软件。</p>
+</blockquote>
+<p>前端应用没有安装过程，其所需程序资源都部署在远程服务器，用户使用浏览器访问不同的页面来加载不同的资源，随着页面访问的增加，渐进式的将整个程序下载到本地运行，“增量下载”是前端在工程上有别于客户端GUI软件的根本原因。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/增量加载.gif" alt=""></p>
+<p>上图展示了一款界面繁多功能丰富的应用，如果采用Web实现，相信也是不小的体量，如果用户第一次访问页面就强制其加载全站静态资源再展示，相信会有很多用户因为失去耐心而流失。<br>根据“增量”的原则，我们应该精心规划每个页面的资源加载策略，使得用户无论访问哪个页面都能按需加载页面所需资源，没访问过的无需加载，访问过的可以缓存复用，最终带来流畅的应用体验。</p>
+<p>这正是Web应用“免安装”的魅力所在。</p>
+<p>由“增量加载”原则引出的前端优化技巧几乎成为了性能优化的核心：</p>
+<ol>
+<li>加载相关：按需加载，延迟加载，预加载，请求合并。</li>
+<li>缓存相关：浏览器缓存利用，缓存更新，缓存共享。非覆盖式发布。<br>这些优化方案无不围绕着如何将增量原则做到极致而展开。</li>
+</ol>
+<blockquote>
+<p>第四阶段前端开发最迫切需要做好的就是在基础架构中贯彻增量原则。</p>
+</blockquote>
+<p>相信这种贯彻不会随着时间的推移而改变，在可预见的未来，无论在HTTP1.x还是HTTP2.0时代，无论在ES5亦或者ES6/7时代，无论是AMD/CommonJS/UMD亦或者ES6 module时代，无论端内技术如何变迁，我们都有足够充分的理由要做好前端程序资源的增量加载。</p>
+<p>正如前面说到的，第三阶段前端工程缺少点什么呢？我觉得是在其基础架构中缺少这样一种“智能”的资源加载方案。没有这样的方案，很难将前端应用的规模发展到第四阶段，很难实现落地前面介绍的那种组件化开发方案，也很难让多方合作高效率的完成一项大型应用的开发，并保证其最终运行性能良好。在第四阶段，我们需要强大的工程化手段来管理”玩具般简单“的前端开发。</p>
+<h3 id="第五阶段：规范化"><a href="#第五阶段：规范化" class="headerlink" title="第五阶段：规范化"></a>第五阶段：规范化</h3><p>模块化和组件化确定了开发模型，而这些东西的实现就需要规范去落实。规范化其实是工程化中很重要的一个部分，项目初期规范制定的好坏会直接影响到后期的开发质量：</p>
+<ul>
+<li>目录结构的制定</li>
+<li>编码规范</li>
+<li>前后端接口规范</li>
+<li>前端输入输出数据文档</li>
+<li>文档规范</li>
+<li>组件管理</li>
+<li>Git分支管理</li>
+<li>Commit描述规范</li>
+<li>定期CodeReview</li>
+<li>视觉图标规范</li>
+<li>…</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在业界内有这么一句话：</p>
+<blockquote>
+<p>任何简单机械的重复劳动都应该让机器去完成。</p>
+</blockquote>
+<p>现代前端技术不再是以前刀耕火种的年代了。所以前端工程化的很多脏活累活都应该交给自动化工具来完成。</p>
+<p>个人总结经验，认为前端工程化主要应该从模块化、组件化、规范化、自动化四个方面来思考。<br>如何选型技术、如何定制规范、如何分治系统、如何优化性能、如何加载资源，当你从切图开始转变为思考这些问题的时候，我想说：你好，工程师！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/23/浅谈前端工程化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-前端工程化——CI-CD-自动化构建部署" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1542,114 +1703,6 @@
 
 
   
-    <article id="post-字符串的模式匹配" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/14/字符串的模式匹配/">字符串的模式匹配</a>
-    </h1>
-  
-
-        
-        <a href="/2018/11/14/字符串的模式匹配/" class="archive-article-date">
-  	<time datetime="2018-11-14T03:55:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="模式匹配-pattern-matching"><a href="#模式匹配-pattern-matching" class="headerlink" title="模式匹配 (pattern matching)"></a>模式匹配 (pattern matching)</h3><p>  一个目标对象T字符串,P字符串在目标T中寻找一个给定的模式P的过程<br>  用给定的模式P，在目标字符串T中搜索与模式P全同的一个子串，并求出T中第一个和P全同匹配的子串（简称为”配串”）,返回其首字符位置<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/字符串的模式匹配.png" alt=""><br>  如图所示：为使模式P与目标T匹配，必须满足p0 p1 p2 … pm-1 = ti ti+1 ti+2 … ti+m-1</p>
-<h2 id="朴素算法（穷举法）"><a href="#朴素算法（穷举法）" class="headerlink" title="朴素算法（穷举法）"></a>朴素算法（穷举法）</h2><h3 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h3><p>  设T = t0t1, t2, …,tn-1， P = p0, p1, …, pm-1</p>
-<ul>
-<li>i为T中字符的下标，j为P中字符的下标 </li>
-<li>匹配成功(p0 = ti , p1 = ti+1 , …,  pm-1 = ti+m-1 ) 即T.substr(i, m) == P.substr(0, m)</li>
-<li>匹配失败(pj≠ti ) 时，将 P 右一位移再行比较</li>
-<li>尝试所有的可能情况<h3 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h3>方法一：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_1(string S, string P, int startindex) &#123;  </span><br><span class="line">  int LastIndex = S.length() – P.length();                   // 两个字符串的模式长度差值</span><br><span class="line">  int count = P.length();    </span><br><span class="line">  if (LastIndex &lt; startindex)&#123;                               // 开始匹配位置startindex的值过大，匹配无法成功</span><br><span class="line">    return (-1);</span><br><span class="line">  &#125;</span><br><span class="line">  for (int g = startindex; g &lt;= LastIndex; g++)&#123;             // g为S的游标，用模式P和S第g位置子串比较，若失败则继续循环   </span><br><span class="line">    if (P == S.substr(g, count))</span><br><span class="line">      return  g;</span><br><span class="line">  &#125;     </span><br><span class="line">  return  (-1);                                              // 若for循环结束，则整个匹配失败，返回值为负</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>方法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_2(string T, string P, int  startindex)&#123;</span><br><span class="line">  int LastIndex = T.length() - P.length();</span><br><span class="line">  if  (LastIndex &lt; startindex) return (-1);              // 开始匹配位置startindex的值过大，匹配无法成功   </span><br><span class="line">  int i = startindex,   j = 0;                           // i 是指向T内部字符的游标，j 是指向P内部字符的游标   </span><br><span class="line">  while (i &lt; T.length()  &amp;&amp;  j &lt; P.length())&#123;   </span><br><span class="line">    if (P[j] == T[i]) &#123;</span><br><span class="line">      i++;  j++;                                         // 若P[j] == T[i],则继续向下比较</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      i = i - j + 1; j = 0;                              // 否则匹配的初始位置(i-j)右移一位 即：i=i-j+1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  if ( j &gt;=  P.length())&#123;</span><br><span class="line">    return (i - j);                                      // 若匹配成功，则返回该T子串的开始位置</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return -1;</span><br><span class="line">  &#125;                                                      // 若失败，函数返回值为负 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>方法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_3(string T, string P, int startindex) &#123;</span><br><span class="line">  for (int g= startindex; g &lt;= T.length() - P.length(); g++) &#123; //g为T的游标，      </span><br><span class="line">    for (int j=0; ((j&lt;P.length()) &amp;&amp; (T[g+j]==P[j])) ; j++);   //j为p的游标，满足条件则继续比较P的下一位j++,否则跳出内层循环将匹配的起始位置+1；即g++</span><br><span class="line">    if (j == P.length())</span><br><span class="line">      return  g;</span><br><span class="line">  &#125;</span><br><span class="line">  return(-1);                                                  // for结束，或startindex值过大,则匹配失败  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="效率分析"><a href="#效率分析" class="headerlink" title="效率分析"></a>效率分析</h3><ol>
-<li>第一种情况： 最坏情况<br>– 假定目标 T 的长度为 n，模式 P 长度为 m，m≤n  – 在最坏的情况下，每一次循环都不成功，则一共要进行比 较（n-m+1）次<br>– 每一次“相同匹配”比较所耗费的时间，是 P 和 T 逐个 字符比较的时间，最坏情况下，共 m 次<br>– 因此，整个算法的最坏时间开销估计为：O( m * n )</li>
-<li><p>第二种情况：没找到匹配下的最佳情况<br>• 总是在第一个字符上不匹配<br>• 总比较次数： – n – m + 1<br>• 时间复杂度： – O(n)</p>
-<h2 id="KMP算法-无回溯匹配"><a href="#KMP算法-无回溯匹配" class="headerlink" title="KMP算法(无回溯匹配)"></a>KMP算法(无回溯匹配)</h2><h3 id="算法思想-1"><a href="#算法思想-1" class="headerlink" title="算法思想"></a>算法思想</h3><p>匹配过程中，一旦pj和ti 比较不等时，即P.substr(1,j-1) == T.substr(i-j+1,j-1)但pj≠ ti<br>– 将p右移的k位，用P中pk和ti进行比较<br>– 显然有k &lt; j, 且不同的j, 其k 值不同<br>– k 值仅仅依赖于模式P 本身，而与目标对象T无关</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想.png" alt=""><br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想2.png" alt=""></p>
-<h3 id="算法实现-1"><a href="#算法实现-1" class="headerlink" title="算法实现"></a>算法实现</h3><h4 id="字符串的特征向量"><a href="#字符串的特征向量" class="headerlink" title="字符串的特征向量"></a>字符串的特征向量</h4><p>设模式P 由m 个字符组成，记为P  =  p0 p1 p2 p3……pm-1<br>令特征向量N 用来表示模式P 的字符分布特征，简称N 向量由m个特征数n0 …nm-1 整数组成，记为N ＝n0 n1 n2 n3……nm-1<br>N在很多文献中也称为next 数组，每个nj 对应next 数组中的元素next[j]</p>
-</li>
-</ol>
-<p>构造方法<br>P第j 个位置的特征数nj，首尾串最长的k<br>– 首串：p0    p1              … pk-2  pk-1<br>– 尾串：pj-k  pj-k+1        … pj-2   pj-1<br> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/特征向量构造方法.png" alt=""><br>例如：对于字符串 P = a  a  a  a  b   a   a  a   a   c<br>     p的特征向量N = -1  0  1  2  3   0   1  2  3   4<br> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP模式匹配示例.png" alt=""></p>
-<h4 id="KMP模式匹配算法"><a href="#KMP模式匹配算法" class="headerlink" title="KMP模式匹配算法"></a>KMP模式匹配算法</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int KMPStrMatching(string T, string P,  int* N, int start)&#123;</span><br><span class="line">  int j= 0;                   // 模式的下标变量</span><br><span class="line">  int i = start;              // 目标的下标变量</span><br><span class="line">  int pLen= P.length( );      // 模式的长度</span><br><span class="line">  int tLen= T.length( );      // 目标的长度</span><br><span class="line">  if(tLen-start &lt; pLen)       // 若目标比模式短，匹配无法成功</span><br><span class="line">  return(-1);          </span><br><span class="line">  while( j &lt; pLen&amp;&amp;  i &lt; tLen) &#123;  // 反复比较，进行匹配</span><br><span class="line">    if(j == -1  ||  T[i] == P[j])   </span><br><span class="line">      i++,  j++;</span><br><span class="line">    else j = N[j];</span><br><span class="line">  &#125;</span><br><span class="line">  if(j &gt;= pLen)</span><br><span class="line">    return(i-pLen);            // 注意仔细算下标</span><br><span class="line">  else</span><br><span class="line">    return(-1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="字符串的特征向量N-——非优化版"><a href="#字符串的特征向量N-——非优化版" class="headerlink" title="字符串的特征向量N ——非优化版"></a>字符串的特征向量N ——非优化版</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> int findNext(string P) &#123;</span><br><span class="line">   int j, k;</span><br><span class="line">   int m = P.length();       // m为模式P的长度</span><br><span class="line">   assert(m &gt; 0);                   // 若m＝0，退出</span><br><span class="line">   int* next = new int[m];            // 动态存储区开辟整数数组</span><br><span class="line">   assert(next != 0);               // 若开辟存储区域失败，退出</span><br><span class="line">   next[0] = -1;   </span><br><span class="line">   j = 0;  </span><br><span class="line">   k = -1;</span><br><span class="line">   while(j &lt; m-1) &#123;                 </span><br><span class="line">    while(k &gt;= 0 &amp;&amp; P[k] != P[j])    // 不等则采用KMP 自找首尾子串</span><br><span class="line">      k = next[k];                   // k 递归地向前找</span><br><span class="line">    j++; k++; next[j] = k;   </span><br><span class="line">  &#125;</span><br><span class="line">  return next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/模式右滑j-k位.png" alt=""></p>
-<p>如图：模式右滑j-k位后 p0 p1 …pk-1 = ti-k ti-k+1 … ti-1<br>对于最后一位pj!==ti, 若pk == pj则一定有 pk!== ti;造成一次冗余比较</p>
-<h4 id="字符串的特征向量N-——优化版"><a href="#字符串的特征向量N-——优化版" class="headerlink" title="字符串的特征向量N ——优化版"></a>字符串的特征向量N ——优化版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">int findNext(string P) &#123;</span><br><span class="line">  int j, k;</span><br><span class="line">  int m = P.length();               // m为模式P的长度</span><br><span class="line">  int* next = new int[m];           // 动态存储区开辟整数数组</span><br><span class="line">  next[0] = -1;   </span><br><span class="line">  j = 0;  </span><br><span class="line">  k = -1;</span><br><span class="line">  while(j &lt; m-1) &#123;                  // 若写成j &lt; m 会越界</span><br><span class="line">    while(k &gt;= 0 &amp;&amp; P[k] != P[j])&#123;  // 若不等，采用KMP 找首尾子串</span><br><span class="line">      k = next[k];                  // k 递归地向前找</span><br><span class="line">    &#125;             </span><br><span class="line">    j++;   k++; </span><br><span class="line">    if(P[k] == P[j])   </span><br><span class="line">      next[j] = next[k];           // 前面找k 值，没有受优化的影响</span><br><span class="line">    else</span><br><span class="line">      next[j] = k;                 // 取消if判断，则不优化</span><br><span class="line">  &#125;</span><br><span class="line">  return next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>next数组对比<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">序号j           0   1   2   3   4   5   6   7   8</span><br><span class="line"> P             a   b   c   a   a   b   a    b   c</span><br><span class="line"> k                 0   0   0   1   1   2    1   2        //非优化版</span><br><span class="line">pk==pj?            ≠   ≠   ==  ≠  ==   ≠   ==   ==</span><br><span class="line"> next[j]      -1   0   0  -1   1   0   2   0    0        //优化版</span><br></pre></td></tr></table></figure></p>
-<h3 id="算法效率"><a href="#算法效率" class="headerlink" title="算法效率"></a>算法效率</h3><p>求特征数组的时间为O(m)<br>KMP算法的时间为O(n+m)</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">朴素算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">KMP算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">字符串的特征向量</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/14/字符串的模式匹配/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1779,11 +1832,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1823,15 +1876,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
              
               <li class="article-tag-list-item">
