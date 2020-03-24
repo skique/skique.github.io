@@ -156,6 +156,118 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-初探pupeteer——踩坑之旅" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/29/初探pupeteer——踩坑之旅/">初探pupeteer——踩坑之旅</a>
+    </h1>
+  
+
+        
+        <a href="/2018/12/29/初探pupeteer——踩坑之旅/" class="archive-article-date">
+  	<time datetime="2018-12-29T07:17:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="关于pupeteer"><a href="#关于pupeteer" class="headerlink" title="关于pupeteer"></a>关于pupeteer</h2><p>Puppeteer是一个Node库，它提供了一个高级API来控制DevTools协议上的Chrome或Chromium。 Puppeteer默认运行无头，但可以配置为运行完整（非无头）Chrome或Chromium。<br>简单的来说是一个集成在node环境之上的可以控制谷歌浏览器爬取数据的工具</p>
+<p>您可以在浏览器中手动执行的大多数操作都可以使用Puppeteer完成！ 以下一些简单的应用场景：</p>
+<ul>
+<li>生成页面的屏幕截图和PDF。</li>
+<li>抓取SPA（单页面应用程序）并生成预渲染内容（即“SSR”（服务器端渲染））。</li>
+<li>自动化表单提交，UI测试，键盘输入等。</li>
+<li>创建最新的自动化测试环境。 使用最新的JavaScript和浏览器功能直接在最新版本的Chrome中运行测试。</li>
+<li>捕获站点的时间线跟踪，以帮助诊断性能问题。</li>
+<li>测试Chrome扩展程序。</li>
+</ul>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>安装pupeteer之前需要node的环境支持。node版本需要大于v6.4.0，如要使用 async / await，只有 Node v7.6.0 或更高版本才支持；另外，安装 Puppeteer 时，它会下载最新版本的 Chromium（〜71Mb Mac，〜90Mb Linux，〜110Mb Win），保证与 API 协同工作。</p>
+<p>确保node环境安装完成以后，使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init</span><br></pre></td></tr></table></figure></p>
+<p>初始化项目</p>
+<ol>
+<li>使用命令安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn add puppeteer</span><br><span class="line"># or &quot;npm i puppeteer&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可能会出现以下报错:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Failed to download Chromium r515411! Set &quot;PUPPETEER_SKIP_CHROMIUM_DOWNLOA</span><br><span class="line">D&quot; env variable to skip download.</span><br></pre></td></tr></table></figure></p>
+<p>是因为在执行安装的过程中需要执行install.js，这里会下载Chromium,官网建议是进行跳过，我们可以执行 —ignore-scripts 忽略这个js执行。也可以通过设置环境变量set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1阻止下载 Chromium （因为封网，直接下载会失败）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D</span><br><span class="line">// npm i --save puppeteer --ignore-scripts</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>手动下载Chromium<br>下载地址：<a href="https://download-chromium.appspot.com/" target="_blank" rel="noopener">https://download-chromium.appspot.com/</a> (需要梯子…)</li>
+</ol>
+<p>把下载刚刚下载的文件解压出来会有chrome-win32文件夹，把里面的文件拷贝到项目新建的chromium文件夹中</p>
+<ol>
+<li>新建index.js,代码如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const puppeteer = require(&apos;puppeteer&apos;);</span><br><span class="line"></span><br><span class="line">(async () =&gt; &#123;</span><br><span class="line">    const browser = await puppeteer.launch();</span><br><span class="line">    const page = await browser.newPage();</span><br><span class="line">    await page.goto(&apos;https://y.qq.com&apos;);</span><br><span class="line">    await page.screenshot(&#123;path: &apos;yqq.png&apos;&#125;);</span><br><span class="line">    browser.close();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在命令行运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js</span><br></pre></td></tr></table></figure></p>
+<p>这时候可能出现以下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(node:8672) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejec</span><br><span class="line">tion id: 1): AssertionError [ERR_ASSERTION]: Chromium revision is not downloaded</span><br><span class="line">. Run &quot;npm install&quot;</span><br><span class="line">(node:8672) [DEP0018] DeprecationWarning: Unhandled promise rejections are depre</span><br><span class="line">cated. In the future, promise rejections that are not handled will terminate the</span><br><span class="line"> Node.js process with a non-zero exit code.</span><br></pre></td></tr></table></figure></p>
+<p>显示chromium未下载错误，因为chromium默认的下载路径是在node_modules/puppeteer/.local-chromium/目录，这时候我们的chromium是在项目根目录，所以需要配置指定路径，修改index.js文件()：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const puppeteer = require(&apos;puppeteer&apos;);</span><br><span class="line"></span><br><span class="line">(async () =&gt; &#123;</span><br><span class="line">      const browser = await puppeteer.launch(&#123;</span><br><span class="line">        executablePath: &apos;./chromium/chrome.exe&apos;,</span><br><span class="line">        headless: false</span><br><span class="line">      &#125;);</span><br><span class="line">      const page = await browser.newPage();</span><br><span class="line">      await page.goto(&apos;http://music.163.com/&apos;);</span><br><span class="line">      await page.screenshot(&#123;path: &apos;music.png&apos;&#125;);</span><br><span class="line">      browser.close();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>再次运行<br><code>node index.js</code></p>
+<p>puppeteer launch参数说明：</p>
+<ul>
+<li>executablePath： 运行Chromium或Chrome可执行文件的路径</li>
+<li>headless： 是否运行在浏览器headless模式，true为不打开浏览器执行，默认为true</li>
+<li>timeout： 等待浏览器实例启动的最长时间（以毫秒为单位）。默认为30000（30秒）。通过0禁用超时</li>
+<li>args： 传递给浏览器实例的其他参数</li>
+</ul>
+<p>更多参数请参照:<a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md" target="_blank" rel="noopener">官网</a><br>中文地址：<a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/#/" target="_blank" rel="noopener"></a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网页爬虫</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/12/29/初探pupeteer——踩坑之旅/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-字符串的模式匹配" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1105,97 +1217,9 @@ Hello world！
 
 
   
-    <article id="post-如何给非input元素添加键盘事件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/06/如何给非input元素添加键盘事件/">如何给非input元素添加键盘事件</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/06/如何给非input元素添加键盘事件/" class="archive-article-date">
-  	<time datetime="2017-11-06T09:18:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在web开发的过程中，我们总会碰见各种需求，比如要一个非input元素绑定键盘事件，通过查看vue的官方文档，我们知道键盘修饰符一般只添加在input元素中，在元素获得焦点之后，键盘事件响应，那么对于一个没有焦点事件的元素的来说，要使得它能够获得焦点，我们必须弄清楚一下一点<br>   先看：<a href="https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-eventgroupings-htmlevents" target="_blank" rel="noopener">W3C关于onfocus的部分</a>      </p>
-<p>The onfocus event occurs when an element receives focus either by the pointing device or by tabbing navigation.<br>This attribute may be used with the following elements: A, AREA, LABEL, INPUT, SELECT, TEXTAREA, and BUTTON.<br>   再看：<a href="https://www.w3.org/TR/html4/interact/forms.html#h-17.11.1" target="_blank" rel="noopener">tabbing navigation的部分</a>     </p>
-<p>Those elements that do not support the tabindex attribute or support it and assign it a value of “0” are navigated next. These elements are navigated in the order they appear in the character stream.<br>  再看：<a href="https://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/events.html#Events-KeyboardEvent" target="_blank" rel="noopener">w3c关于KeyboardEvent的部分</a><br>  我们找到了原因<br>  Keyboard events are commonly directed at the element that has the focus.<br>  大概就是说键盘按键事件一般指向能获取焦点的元素，就是不能获取焦点的元素就不能触发键盘按键事件了。<br>  那么问题就在于如何使得div获取元素了，最后发现给元素设置tabIndex就能够让元素获取焦点<br>  w3c上说的比较模糊，msdn上倒是说的很清楚<br>  An element can have focus if the tabIndex property is set to any valid negative or positive integer.<br>Elements that receive focus can fire the onblur and onfocus events as of Internet Explorer 4.0, and the onkeydown, onkeypress, and onkeyup events as of Internet Explorer 5.<br>  只要元素的tabIndex属性设置成任何有效的整数那么该元素就能取得焦点。元素在取得焦点后就能触发onblur，onfocus，onkeydown, onkeypress和onkeyup事件。<br>  看完了这么多文档，我们终于找到了给非input元素添加键盘事件的方法了<br>  一下是完整代码<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img ref=&quot;img&quot; :src=&quot;imgSrc&quot; alt=&quot;附件图片&quot; tabindex=&quot;0&quot; hidefocus=&quot;true&quot; @keyup.left=&quot;prev()&quot; @keyup.right=&quot;next()&quot; style=&quot;outline=0&quot;&gt;</span><br></pre></td></tr></table></figure></p>
-<p>  因为在元素获取焦点的时候或有一个虚线框，影响美观，可以用outline=0来去掉线框，ie用hidefocus=”true”属性来去掉线框</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">web开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/web开发//" class="article-tag-list-link color1">web开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/06/如何给非input元素添加键盘事件/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1290,6 +1314,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
@@ -1299,10 +1327,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1322,11 +1346,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1346,10 +1370,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -1362,7 +1382,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1371,10 +1399,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
              
               <li class="article-tag-list-item">

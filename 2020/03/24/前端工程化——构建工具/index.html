@@ -6,19 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | taoyouyou的博客</title>
+  <title>前端工程化——构建工具 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
-<meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
-<meta property="og:type" content="website">
-<meta property="og:title" content="taoyouyou的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="何为构建Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。 构建其实是工程化、自动化思想在前端开发中的体现，将开">
+<meta name="keywords" content="前端工程化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端工程化——构建工具">
+<meta property="og:url" content="http://yoursite.com/2020/03/24/前端工程化——构建工具/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta property="og:description" content="何为构建Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。 构建其实是工程化、自动化思想在前端开发中的体现，将开">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png">
+<meta property="og:updated_time" content="2020-03-24T11:37:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="taoyouyou的博客">
-<meta name="twitter:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta name="twitter:title" content="前端工程化——构建工具">
+<meta name="twitter:description" content="何为构建Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。 构建其实是工程化、自动化思想在前端开发中的体现，将开">
+<meta name="twitter:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -154,438 +157,235 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-前端工程化——构建工具" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      前端工程化——构建工具
+    </h1>
+  
+
+        
+        <a href="/2020/03/24/前端工程化——构建工具/" class="archive-article-date">
+  	<time datetime="2020-03-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-24</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="何为构建"><a href="#何为构建" class="headerlink" title="何为构建"></a>何为构建</h2><p>Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。</p>
+<p>构建其实是工程化、自动化思想在前端开发中的体现，将开发流程中让人痛苦或耗时的任务自动化，让代码自动化地执行这一系列复杂的流程，从而减少你所浪费的时间、创造更大价值。</p>
+<p>比如我们执行一些例如CoffeeScript/ES6去代替Javascript、JS或CSS压缩、用Less去写CSS、用Jade去写HTML、用Browserify去模块化、为非覆盖式部署的资源加MD5戳等，这些操作如果我们一遍遍手动执行，非常耗费时间和精力，所以前端构建工具，或者较前端自动化构建工具，就是用来让我们不再做机械重复的事情，让我们从重复性工作中脱身，更加专注于代码本身。</p>
+<p>构建可以实现如下内容：</p>
+<blockquote>
+<p>代码转换：ts/es6-&gt;js,scss-&gt;css。<br>文件优化：压缩JS、CSS、HTML，压缩合并图片等。<br>代码分割：提取公共代码。<br>模块合并：将多个模块和文件通过构建合并成一个文件。<br>自动刷新：监听本地源代码变化，自动重新构建、刷新浏览器。<br>代码校验：校验代码是否符合规范，以及单元测试是否通过。<br>自动发布：自动构建出线上发布代码并部署到服务器。</p>
+</blockquote>
+<h2 id="构建工具发展"><a href="#构建工具发展" class="headerlink" title="构建工具发展"></a>构建工具发展</h2><p>构建工具发展：Npm Scripts、Grunt、Gulp、FIS 3、Webpack、Rollup、Parcel</p>
+<h3 id="1-Npm-Scripts"><a href="#1-Npm-Scripts" class="headerlink" title="1. Npm Scripts"></a>1. Npm Scripts</h3><p>npm是nodejs附带的包管理器，npm script是npm内置的一个功能，允许在package.json文件里面使用script字段定义任务，需要注意的是node script可以结合node实现更为灵活的自动化构建任务，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;node index.js&quot;,</span><br><span class="line">  &quot;new&quot;: &quot;node generateView.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>script字段中的一个属性对应一段shell脚本，除了常用的dev命令，还可以自定义自己的命令，比如我在开发网站管理后台的时候注意到有太多相似的页面需要填充相同的html结构，为了摆脱这些重复性工作，我结合node自定义了一个新增模版页面的命令。</p>
+<p>优点:</p>
+<ul>
+<li>内置，无需安装其他依赖<br>缺点: </li>
+<li>功能简单，不方便管理多个任务依赖,对于自定义任务则需要熟悉node,编写大量代码</li>
+</ul>
+<h3 id="2-Grunt"><a href="#2-Grunt" class="headerlink" title="2. Grunt"></a>2. <a href="https://www.gruntjs.net/" target="_blank" rel="noopener">Grunt</a></h3><p>Grunt 相当于进化版的 Npm scripts，它的诞生其实是为了弥补 Npm Scripts 的不足。<br>当你在Gruntfile文件正确配置好了任务，任务运行器就会自动帮你或你的小组完成大部分无聊的工作。<br>查看一个Guntfile示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(grunt) &#123;</span><br><span class="line">  grunt.initConfig(&#123;</span><br><span class="line">    jshint: &#123;         // 检查代码是否符合语法规范</span><br><span class="line">      files: [&apos;Gruntfile.js&apos;, &apos;src/**/*.js&apos;, &apos;test/**/*.js&apos;],</span><br><span class="line">      options: &#123;</span><br><span class="line">        globals: &#123;</span><br><span class="line">          jQuery: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    watch: &#123;           ／／ 监听代码更改时检查代码</span><br><span class="line">      files: [&apos;&lt;%= jshint.files %&gt;&apos;],</span><br><span class="line">      tasks: [&apos;jshint&apos;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-jshint&apos;);</span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-watch&apos;);</span><br><span class="line"></span><br><span class="line">  grunt.registerTask(&apos;default&apos;, [&apos;jshint&apos;]);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>灵活，只执行我们定义的任务</li>
+<li>拥有数量庞大的插件可供选择<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="3-gulp"><a href="#3-gulp" class="headerlink" title="3. gulp"></a>3. <a href="https://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp</a></h3><p>Gulp 是一个基于流的自动化构建工具，是Grunt的加强版，增加文件监听，文件读写，流式处理任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);     //引用基础模块</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);    //js压缩模块</span><br><span class="line"></span><br><span class="line">gulp.task(&apos;script&apos;,function()&#123;  //启动任务script</span><br><span class="line">  gulp.src(&apos;js/*.js&apos;)           //找到文件</span><br><span class="line">  .pipe(uglify())               //压缩文件</span><br><span class="line">  .pipe(gulp.dest(&apos;dist/js&apos;))   //另存压缩文件</span><br><span class="line">&#125;);</span><br><span class="line">//监听</span><br><span class="line">gulp.task(&apos;auto&apos;,function () &#123;</span><br><span class="line">  gulp.watch(&apos;js/*.js&apos;,[&apos;script&apos;]);     //监听script任务</span><br><span class="line">  gulp.watch(&apos;css/*.css&apos;,[&apos;css&apos;]);      //监听css任务</span><br><span class="line">  gulp.watch(&apos;images/*.*&apos;,[&apos;images&apos;]);  //监听images任务</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
+<p>优点：</p>
+<ul>
+<li>灵活，可单独使用也可搭配其他工具<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="4-Webpack"><a href="#4-Webpack" class="headerlink" title="4. Webpack"></a>4. <a href="https://www.webpackjs.com/" target="_blank" rel="noopener">Webpack</a></h3><p>在Webpack里一切文件皆模块，通过loader转换文件，通过Plugin注入钩子，最后输出由多个模块组合成的文件。Webpack专注于构建模块化项目。<br>Webpack是一个打包模块化的JavaScript的工具，在官网打出的口号是“打包所有资源，脚本，图片，样式”。<br>其官网的首页图很形象的展示了 Webpack 的定义，如下图：</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png" alt=""></p>
+<p>一切文件，如JavaScript、CSS、SCSS、图片、模板，对于Webpack 来说都是一个个模块，这样的好处是能清晰地描绘各个模块之间的依赖关系，以方便Webpack进行组合和打包，经过Webpack的处理，最终会输出浏览器能使用的静态资源。</p>
+<p>Webpack具有很大的灵活性，能配置处理文件的方式，使用方法大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,     // 所有模块的入口，webpack从入口开始递归解析出所有依赖的模块</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),    // 设置打包输出文件生成的文件夹</span><br><span class="line">    filename: &apos;bundle.js&apos;                     // 将入口所依赖的所有模块打包成一个文件 bundle.js 输出</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>专注于模块化，开箱即用一步到位</li>
+<li>通过plugin拓展，完整好用又不失灵活</li>
+<li>使用场景不局限于web开发</li>
+<li>社区庞大活跃</li>
+<li>良好的开发体验<br>缺点：</li>
+<li>只能用于模块化开发</li>
+</ul>
+<h3 id="异同点"><a href="#异同点" class="headerlink" title="异同点"></a>异同点</h3><p>上面介绍的几种构建工具构建工具是按照他们的诞生时间排序的，他们是时代的产物，侧面反映出 Web 开发的发展趋势，如下所述：</p>
+<blockquote>
+<p>在 Npm Scripts 和 Grunt 时代，Web 开发要做的事情变多，流程复杂，自动化思想被引入，用于简化流程；<br>在 Gulp 时代，开始出现一些新语言用于提高开发效率，流程处理思想的出现是为了简化文件转换的流程，例如将ES6转换为ES5；<br>在Webpack时代，由于单页应用的流行，网页的功能和实现代码变的复杂、庞大，Web开发向模块化改进。</p>
+</blockquote>
+<p>grunt和glup几乎是为了解决同一个问题而生，那就是让自动化流程来解决你的双手。强调的是前端开发的工作流程，在glup中我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。 简单说就一个Task Runner，就是用来跑一个一个任务的。</p>
+<p>Gulp 没发解决的是 js module 的问题，是你写代码时候如何组织代码结构的问题。在以前这些问题，还是只能通过工程师在做项目前首先就要想到如何做到模块化的问题，并且在这个问题上每个工程师都有各个的一套看法和解决方案。</p>
+<p>Webpack出现后，模块化的问题才第一次被标准化，Webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、脚本、样式等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。</p>
+<p>glup和webpack的异同点：<br>相同点：文件合并与压缩（css,js），sass/less预编译，启动server，版本控制。<br>不同点，虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。<br>gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。<br>webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。</p>
+<p>经过多年的额发展，Webpack 已经成为构建工具中的首选，这是因为：<br>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack可以为这些新项目提供一站式的解决方案；<br>Webpack有良好的生态和维护团队，能提供良好的开发体验并保证质量；<br>Webpack 被全世界大量的Web开发者使用和验证，能找到各个层面所需要的教程和经验分享。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/12/29/初探pupeteer——踩坑之旅/" class="archive-article-date">
-  	<time datetime="2018-12-29T07:17:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/12/29/初探pupeteer——踩坑之旅/">初探pupeteer——踩坑之旅</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网页爬虫</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2020/03/24/前端工程化——构建工具/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/11/14/字符串的模式匹配/" class="archive-article-date">
-  	<time datetime="2018-11-14T03:55:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-14</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/03/23/浅谈前端工程化/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">浅谈前端工程化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/11/14/字符串的模式匹配/">字符串的模式匹配</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">朴素算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">KMP算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">字符串的特征向量</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#何为构建"><span class="toc-number">1.</span> <span class="toc-text">何为构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构建工具发展"><span class="toc-number">2.</span> <span class="toc-text">构建工具发展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Npm-Scripts"><span class="toc-number">2.1.</span> <span class="toc-text">1. Npm Scripts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Grunt"><span class="toc-number">2.2.</span> <span class="toc-text">2. Grunt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-gulp"><span class="toc-number">2.3.</span> <span class="toc-text">3. gulp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Webpack"><span class="toc-number">2.4.</span> <span class="toc-text">4. Webpack</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异同点"><span class="toc-number">2.5.</span> <span class="toc-text">异同点</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/11/12/农夫过河算法实现/" class="archive-article-date">
-  	<time datetime="2018-11-12T08:41:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-12</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/11/12/农夫过河算法实现/">农夫过河算法实现</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">队列</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/09/12/关于区块链中的Dapp/" class="archive-article-date">
-  	<time datetime="2018-09-12T06:40:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-12</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/09/12/关于区块链中的Dapp/">关于区块链中的Dapp</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/08/22/独立ip划分虚拟子服务器/" class="archive-article-date">
-  	<time datetime="2018-08-22T07:13:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/08/22/独立ip划分虚拟子服务器/">独立ip划分虚拟子服务器</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/08/20/centos独立服务器划分虚拟服务/" class="archive-article-date">
-  	<time datetime="2018-08-20T08:27:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/08/20/centos独立服务器划分虚拟服务/">Centos搭建node项目</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/25/基于CentOs搭建网站服务/" class="archive-article-date">
-  	<time datetime="2018-07-25T07:59:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/25/基于CentOs搭建网站服务/">基于CentOS搭建网站服务</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/06/git简明手册/" class="archive-article-date">
-  	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/06/git简明手册/">git简明手册</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/06/mongodb的下载以及安装/" class="archive-article-date">
-  	<time datetime="2018-03-06T08:23:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/06/mongodb的下载以及安装/">mongodb的下载以及安装</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">mongodb</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/24/关于http/" class="archive-article-date">
-  	<time datetime="2018-02-24T05:25:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-24</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/24/关于http/">关于http的常见问题</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -608,8 +408,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
