@@ -156,77 +156,102 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-前端工程化——构建工具" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-玩转webpack" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/24/前端工程化——构建工具/">前端工程化——构建工具</a>
+      <a class="article-title" href="/2020/03/26/玩转webpack/">玩转webpack</a>
     </h1>
   
 
         
-        <a href="/2020/03/24/前端工程化——构建工具/" class="archive-article-date">
-  	<time datetime="2020-03-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-24</time>
+        <a href="/2020/03/26/玩转webpack/" class="archive-article-date">
+  	<time datetime="2020-03-26T08:27:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="何为构建"><a href="#何为构建" class="headerlink" title="何为构建"></a>何为构建</h2><p>Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。</p>
-<p>构建其实是工程化、自动化思想在前端开发中的体现，将开发流程中让人痛苦或耗时的任务自动化，让代码自动化地执行这一系列复杂的流程，从而减少你所浪费的时间、创造更大价值。</p>
-<p>比如我们执行一些例如CoffeeScript/ES6去代替Javascript、JS或CSS压缩、用Less去写CSS、用Jade去写HTML、用Browserify去模块化、为非覆盖式部署的资源加MD5戳等，这些操作如果我们一遍遍手动执行，非常耗费时间和精力，所以前端构建工具，或者较前端自动化构建工具，就是用来让我们不再做机械重复的事情，让我们从重复性工作中脱身，更加专注于代码本身。</p>
-<p>构建可以实现如下内容：</p>
+        <p>近来得闲，重新撸了一边webpack文档，将webpack的用法以及作用基本理清了脉络，虽然各大前端框架的生态系统越来越完善，每个框架基本都搭配了一套标准的脚手架工具，但是那是搭配好的套餐，用起来虽然也还行，还是总觉得哪里不得劲儿，就像开车开了个自动档模式，不能根据自己的项目随心所欲的搭配功能。所以今天我们就来好好啃一啃webpack,知其然也知其所以然。</p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p>webpack的核心功能就是模块化打包，既然是打包就一定涉及到entry(入口)和output(出口)，剩下的两个核心概念是loader(加载器)和plugin(插件)以及mode(模式)。</p>
+<h3 id="entry-amp-amp-output"><a href="#entry-amp-amp-output" class="headerlink" title="entry &amp;&amp; output"></a>entry &amp;&amp; output</h3><p>entry和output就是字面意思上的入口和出口，就是打包过程当中读取代码的入口以及编译输出文件。</p>
+<h3 id="mode"><a href="#mode" class="headerlink" title="mode"></a>mode</h3><p>mode有点类似于半自动挡模式：提供mode配置选项，webpack会使用相应模式的内置功能进行自动优化。就这么一句话就可以概括了模式。至于在哪种模式下，webpack会开启那些功能，可以看如下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">development</td>
+<td style="text-align:left">会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。</td>
+</tr>
+<tr>
+<td style="text-align:left">production</td>
+<td style="text-align:left">会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h3><p>loader是加载器，用于对模块的源代码进行转换。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。</p>
+<p>在 webpack 的配置中 loader 有两个目标：</p>
+<ol>
+<li>test 属性，用于标识出应该被对应的 loader 进行转换的某个或某些文件。</li>
+<li>use 属性，表示进行转换时，应该使用哪个 loader。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const config = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123; test: /\.txt$/, use: &apos;raw-loader&apos; &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以上配置中，对一个单独的 module 对象定义了 rules 属性，里面包含两个必须属性：test 和 use。这告诉 webpack 编译器(compiler) 如下信息：</p>
 <blockquote>
-<p>代码转换：ts/es6-&gt;js,scss-&gt;css。<br>文件优化：压缩JS、CSS、HTML，压缩合并图片等。<br>代码分割：提取公共代码。<br>模块合并：将多个模块和文件通过构建合并成一个文件。<br>自动刷新：监听本地源代码变化，自动重新构建、刷新浏览器。<br>代码校验：校验代码是否符合规范，以及单元测试是否通过。<br>自动发布：自动构建出线上发布代码并部署到服务器。</p>
+<p>“嘿，webpack 编译器，当你碰到「在 require()/import 语句中被解析为 ‘.txt’ 的路径」时，在你对它打包之前，先使用 raw-loader 转换一下。”</p>
 </blockquote>
-<h2 id="构建工具发展"><a href="#构建工具发展" class="headerlink" title="构建工具发展"></a>构建工具发展</h2><p>构建工具发展：Npm Scripts、Grunt、Gulp、FIS 3、Webpack、Rollup、Parcel</p>
-<h3 id="1-Npm-Scripts"><a href="#1-Npm-Scripts" class="headerlink" title="1. Npm Scripts"></a>1. Npm Scripts</h3><p>npm是nodejs附带的包管理器，npm script是npm内置的一个功能，允许在package.json文件里面使用script字段定义任务，需要注意的是node script可以结合node实现更为灵活的自动化构建任务，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;node index.js&quot;,</span><br><span class="line">  &quot;new&quot;: &quot;node generateView.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>script字段中的一个属性对应一段shell脚本，除了常用的dev命令，还可以自定义自己的命令，比如我在开发网站管理后台的时候注意到有太多相似的页面需要填充相同的html结构，为了摆脱这些重复性工作，我结合node自定义了一个新增模版页面的命令。</p>
-<p>优点:</p>
-<ul>
-<li>内置，无需安装其他依赖<br>缺点: </li>
-<li>功能简单，不方便管理多个任务依赖,对于自定义任务则需要熟悉node,编写大量代码</li>
-</ul>
-<h3 id="2-Grunt"><a href="#2-Grunt" class="headerlink" title="2. Grunt"></a>2. <a href="https://www.gruntjs.net/" target="_blank" rel="noopener">Grunt</a></h3><p>Grunt 相当于进化版的 Npm scripts，它的诞生其实是为了弥补 Npm Scripts 的不足。<br>当你在Gruntfile文件正确配置好了任务，任务运行器就会自动帮你或你的小组完成大部分无聊的工作。<br>查看一个Guntfile示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(grunt) &#123;</span><br><span class="line">  grunt.initConfig(&#123;</span><br><span class="line">    jshint: &#123;         // 检查代码是否符合语法规范</span><br><span class="line">      files: [&apos;Gruntfile.js&apos;, &apos;src/**/*.js&apos;, &apos;test/**/*.js&apos;],</span><br><span class="line">      options: &#123;</span><br><span class="line">        globals: &#123;</span><br><span class="line">          jQuery: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    watch: &#123;           ／／ 监听代码更改时检查代码</span><br><span class="line">      files: [&apos;&lt;%= jshint.files %&gt;&apos;],</span><br><span class="line">      tasks: [&apos;jshint&apos;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-jshint&apos;);</span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-watch&apos;);</span><br><span class="line"></span><br><span class="line">  grunt.registerTask(&apos;default&apos;, [&apos;jshint&apos;]);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>优点：</p>
-<ul>
-<li>灵活，只执行我们定义的任务</li>
-<li>拥有数量庞大的插件可供选择<br>缺点：</li>
-<li>集成度不高，要写很多配置后才可以用</li>
-</ul>
-<h3 id="3-gulp"><a href="#3-gulp" class="headerlink" title="3. gulp"></a>3. <a href="https://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp</a></h3><p>Gulp 是一个基于流的自动化构建工具，是Grunt的加强版，增加文件监听，文件读写，流式处理任务。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);     //引用基础模块</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);    //js压缩模块</span><br><span class="line"></span><br><span class="line">gulp.task(&apos;script&apos;,function()&#123;  //启动任务script</span><br><span class="line">  gulp.src(&apos;js/*.js&apos;)           //找到文件</span><br><span class="line">  .pipe(uglify())               //压缩文件</span><br><span class="line">  .pipe(gulp.dest(&apos;dist/js&apos;))   //另存压缩文件</span><br><span class="line">&#125;);</span><br><span class="line">//监听</span><br><span class="line">gulp.task(&apos;auto&apos;,function () &#123;</span><br><span class="line">  gulp.watch(&apos;js/*.js&apos;,[&apos;script&apos;]);     //监听script任务</span><br><span class="line">  gulp.watch(&apos;css/*.css&apos;,[&apos;css&apos;]);      //监听css任务</span><br><span class="line">  gulp.watch(&apos;images/*.*&apos;,[&apos;images&apos;]);  //监听images任务</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
-<p>优点：</p>
-<ul>
-<li>灵活，可单独使用也可搭配其他工具<br>缺点：</li>
-<li>集成度不高，要写很多配置后才可以用</li>
-</ul>
-<h3 id="4-Webpack"><a href="#4-Webpack" class="headerlink" title="4. Webpack"></a>4. <a href="https://www.webpackjs.com/" target="_blank" rel="noopener">Webpack</a></h3><p>在Webpack里一切文件皆模块，通过loader转换文件，通过Plugin注入钩子，最后输出由多个模块组合成的文件。Webpack专注于构建模块化项目。<br>Webpack是一个打包模块化的JavaScript的工具，在官网打出的口号是“打包所有资源，脚本，图片，样式”。<br>其官网的首页图很形象的展示了 Webpack 的定义，如下图：</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png" alt=""></p>
-<p>一切文件，如JavaScript、CSS、SCSS、图片、模板，对于Webpack 来说都是一个个模块，这样的好处是能清晰地描绘各个模块之间的依赖关系，以方便Webpack进行组合和打包，经过Webpack的处理，最终会输出浏览器能使用的静态资源。</p>
-<p>Webpack具有很大的灵活性，能配置处理文件的方式，使用方法大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,     // 所有模块的入口，webpack从入口开始递归解析出所有依赖的模块</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),    // 设置打包输出文件生成的文件夹</span><br><span class="line">    filename: &apos;bundle.js&apos;                     // 将入口所依赖的所有模块打包成一个文件 bundle.js 输出</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>优点：</p>
-<ul>
-<li>专注于模块化，开箱即用一步到位</li>
-<li>通过plugin拓展，完整好用又不失灵活</li>
-<li>使用场景不局限于web开发</li>
-<li>社区庞大活跃</li>
-<li>良好的开发体验<br>缺点：</li>
-<li>只能用于模块化开发</li>
-</ul>
-<h3 id="异同点"><a href="#异同点" class="headerlink" title="异同点"></a>异同点</h3><p>上面介绍的几种构建工具构建工具是按照他们的诞生时间排序的，他们是时代的产物，侧面反映出 Web 开发的发展趋势，如下所述：</p>
-<blockquote>
-<p>在 Npm Scripts 和 Grunt 时代，Web 开发要做的事情变多，流程复杂，自动化思想被引入，用于简化流程；<br>在 Gulp 时代，开始出现一些新语言用于提高开发效率，流程处理思想的出现是为了简化文件转换的流程，例如将ES6转换为ES5；<br>在Webpack时代，由于单页应用的流行，网页的功能和实现代码变的复杂、庞大，Web开发向模块化改进。</p>
+<p>当你需要对各个文件转为webpack能够处理的有效模块时可以去<a href="https://www.webpackjs.com/loaders/" target="_blank" rel="noopener">loader列表</a>选择一个合适的加载器</p>
+<h3 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h3><p>插件则可以用于执行范围更广的任务。插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>想要使用一个插件，你只需要 require() 它，然后把它添加到 plugins 数组中。多数插件可以通过选项(option)自定义。你也可以在一个配置文件中因为不同目的而多次使用同一个插件，这时需要通过使用 new 操作符来创建它的一个实例。<br>当你想用某些实现某些任务优化时可以去<a href="https://www.webpackjs.com/plugins/html-webpack-plugin/" target="_blank" rel="noopener">插件列表</a>看没有现成的插件开箱即用，</p>
+<p>这里有个例子可以说明loader以及plugin用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;); // 通过 npm 安装</span><br><span class="line">const webpack = require(&apos;webpack&apos;); // 用于访问内置插件</span><br><span class="line"></span><br><span class="line">const config = &#123;</span><br><span class="line">    ...</span><br><span class="line">    plugins: [</span><br><span class="line">        new HtmlWebpackPlugin(&#123;template: &apos;./src/index.html&apos;&#125;)</span><br><span class="line">    ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports = config;</span><br></pre></td></tr></table></figure></p>
+<p>引入了HtmlWebpackPlugin插件自动生成一个HTML文件。</p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>虽然webpack支持在命令行中手动敲下webpack-cli命中以构建文件，但是一般的项目要复杂的多，<br>所以webpack支持提供配置文件。这比在终端(terminal)中手动输入大量命令要高效的多。所以让我们创建一个取代以上使用 CLI 选项方式的配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: &apos;bundle.js&apos;,</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这是一个最简单的配置文件，定义了输入文件与输出文件，读取并运行src下的index.js文件将生成的bundle.js输出到dist文件夹中。<br>有了这样的一个配置文件之后，有两中方式启动它</p>
+<ol>
+<li>通过命令行工具运行<code>npx webpack --config webpack.config.js</code><br>这行命令表示以指定的webpack配置文件运行webpack命令<blockquote>
+<p>如果 webpack.config.js 存在，则 webpack 命令将默认选择使用它。我们在这里使用 –config 选项只是向你表明，可以传递任何名称的配置文件。这对于需要拆分成多个文件的复杂配置是非常有用。</p>
 </blockquote>
-<p>grunt和glup几乎是为了解决同一个问题而生，那就是让自动化流程来解决你的双手。强调的是前端开发的工作流程，在glup中我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。 简单说就一个Task Runner，就是用来跑一个一个任务的。</p>
-<p>Gulp 没发解决的是 js module 的问题，是你写代码时候如何组织代码结构的问题。在以前这些问题，还是只能通过工程师在做项目前首先就要想到如何做到模块化的问题，并且在这个问题上每个工程师都有各个的一套看法和解决方案。</p>
-<p>Webpack出现后，模块化的问题才第一次被标准化，Webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、脚本、样式等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。</p>
-<p>glup和webpack的异同点：<br>相同点：文件合并与压缩（css,js），sass/less预编译，启动server，版本控制。<br>不同点，虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。<br>gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。<br>webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。</p>
-<p>经过多年的额发展，Webpack 已经成为构建工具中的首选，这是因为：<br>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack可以为这些新项目提供一站式的解决方案；<br>Webpack有良好的生态和维护团队，能提供良好的开发体验并保证质量；<br>Webpack 被全世界大量的Web开发者使用和验证，能找到各个层面所需要的教程和经验分享。</p>
+</li>
+<li>NPM 脚本(NPM Scripts)<br>考虑到用 CLI 这种方式来运行本地的 webpack 不是特别方便，我们可以设置一个快捷方式。在 package.json 添加一个 npm 脚本(npm script)：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;,</span><br><span class="line">    &quot;build&quot;: &quot;webpack&quot;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>现在，可以使用 npm run build 命令，来替代我们之前使用的 npx 命令。</p>
+<p>谈谈我自己对webpack的理解，把webpack看作是要编织一条美丽的珍珠项链的话，那么配置文件则是项链的链子，而webpack中<a href="https://www.webpackjs.com/loaders/" target="_blank" rel="noopener">loader列表</a>和<a href="https://www.webpackjs.com/plugins/html-webpack-plugin/" target="_blank" rel="noopener">插件列表</a>则相当于原料库，我们可以从原料库中挑出我们所需要的珍珠，entry和output则是选择以及打磨这条项链的入口及出口。好了一切准备就绪了，我们要学习的变成如何打造一条美丽的珍珠项链。首先是要学习如何打磨完美的入口和出口。然后我们要学习应该在什么地方放上怎样的珠子，以及如何放上去。</p>
+<h2 id="实例——从零创建一个React应用"><a href="#实例——从零创建一个React应用" class="headerlink" title="实例——从零创建一个React应用"></a>实例——从零创建一个React应用</h2><p>现在我们可以从简单到复杂一步一步来完成一个针对react的从0到1的配置文件：</p>
+<h3 id="实现流程"><a href="#实现流程" class="headerlink" title="实现流程"></a>实现流程</h3><p>1，初始化npm项目，生成package.json。</p>
+<p>2，添加public/index.html。</p>
+<p>3, 安装Babel，创建.babelrc进行配置。</p>
+<p>4，安装react、react-dom、热更新react-hot-loader。</p>
+<p>5，安装webpack，创建webpack.config.js进行配置。</p>
+<p>6，添加src/index.js、src/App.js、src/App.css。</p>
+<p>7，配置package.json，修改启动命令。</p>
+<p>8，启动项目</p>
+<h3 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h3><h4 id="1-初始化npm项目，生成package-json"><a href="#1-初始化npm项目，生成package-json" class="headerlink" title="1. 初始化npm项目，生成package.json"></a>1. 初始化npm项目，生成package.json</h4><p>创建一个新项目，并cd进入。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir webpack-demo</span><br><span class="line">$ cd webpack-demo</span><br></pre></td></tr></table></figure></p>
+<p>创建package.json文件, 如果你想跳过初始化时的问题，加上 -y，以默认选项安装:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-添加public-index-html。"><a href="#2-添加public-index-html。" class="headerlink" title="2. 添加public/index.html。"></a>2. 添加public/index.html。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir public</span><br><span class="line">cd public</span><br><span class="line">touch index.html</span><br></pre></td></tr></table></figure>
+<p>index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- sourced from https://raw.githubusercontent.com/reactjs/reactjs.org/master/static/html/single-file-example.html --&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot; /&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&gt;</span><br><span class="line">  &lt;title&gt;React Starter&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;noscript&gt;</span><br><span class="line">    You need to enable JavaScript to run this app.</span><br><span class="line">  &lt;/noscript&gt;</span><br><span class="line">  &lt;script src=&quot;../dist/bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里引入的bundle.js后面会用到。</p>
+<h4 id="3-安装Babel，创建-babelrc进行配置。"><a href="#3-安装Babel，创建-babelrc进行配置。" class="headerlink" title="3. 安装Babel，创建.babelrc进行配置。"></a>3. 安装Babel，创建.babelrc进行配置。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ../</span><br><span class="line">npm install -D @babel/core@7.1.0 @babel/cli@7.1.0 @babel/preset-env@7.1.0 @babel/preset-react@7.0.0</span><br><span class="line">touch .babelrc</span><br></pre></td></tr></table></figure>
+<p>.babelrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;: [&quot;@babel/env&quot;, &quot;@babel/preset-react&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-安装react、react-dom、热更新react-hot-loader"><a href="#4-安装react、react-dom、热更新react-hot-loader" class="headerlink" title="4. 安装react、react-dom、热更新react-hot-loader"></a>4. 安装react、react-dom、热更新react-hot-loader</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i react react-dom -S</span><br><span class="line">npm i react-hot-loader -D</span><br></pre></td></tr></table></figure>
+<h4 id="5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置"><a href="#5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置" class="headerlink" title="5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置"></a>5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader --save-dev</span><br><span class="line">touch webpack.config.js</span><br></pre></td></tr></table></figure>
+<p>webpack.config.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&quot;path&quot;);</span><br><span class="line">const webpack = require(&quot;webpack&quot;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &quot;./src/index.js&quot;,</span><br><span class="line">  mode: &quot;development&quot;,</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.(js|jsx)$/,</span><br><span class="line">        exclude: /(node_modules|bower_components)/,</span><br><span class="line">        loader: &quot;babel-loader&quot;,</span><br><span class="line">        options: &#123; presets: [&quot;@babel/env&quot;] &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.css$/,</span><br><span class="line">        use: [&quot;style-loader&quot;, &quot;css-loader&quot;]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  resolve: &#123; extensions: [&quot;*&quot;, &quot;.js&quot;, &quot;.jsx&quot;] &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &quot;dist/&quot;),</span><br><span class="line">    publicPath: &quot;/dist/&quot;,</span><br><span class="line">    filename: &quot;bundle.js&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    contentBase: path.join(__dirname, &quot;public/&quot;),</span><br><span class="line">    port: 3000,</span><br><span class="line">    publicPath: &quot;http://localhost:3000/dist/&quot;,</span><br><span class="line">    hotOnly: true</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [new webpack.HotModuleReplacementPlugin()]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-添加src-index-js、src-App-js、src-App-css。"><a href="#6-添加src-index-js、src-App-js、src-App-css。" class="headerlink" title="6. 添加src/index.js、src/App.js、src/App.css。"></a>6. 添加src/index.js、src/App.js、src/App.css。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir src</span><br><span class="line">cd src</span><br><span class="line">touch index.js</span><br><span class="line">touch App.js</span><br><span class="line">touch App.css</span><br></pre></td></tr></table></figure>
+<p>index.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import React from &quot;react&quot;;</span><br><span class="line">import ReactDOM from &quot;react-dom&quot;;</span><br><span class="line">import App from &quot;./App.js&quot;;</span><br><span class="line">ReactDOM.render(&lt;App /&gt;, document.getElementById(&quot;root&quot;));</span><br></pre></td></tr></table></figure></p>
+<p>App.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component&#125; from &quot;react&quot;;</span><br><span class="line">import &#123;hot&#125; from &apos;react-hot-loader&apos;;</span><br><span class="line">import &quot;./App.css&quot;;</span><br><span class="line"></span><br><span class="line">class App extends Component&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    return(</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;h1&gt; Hello&lt;/h1&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default hot(module)(App);</span><br></pre></td></tr></table></figure></p>
+<p>App.css<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.App &#123;</span><br><span class="line">  margin: 1rem;</span><br><span class="line">  font-family: Arial, Helvetica, sans-serif;</span><br><span class="line">  border: 1px solid red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="7-配置package-json，修改启动命令。"><a href="#7-配置package-json，修改启动命令。" class="headerlink" title="7. 配置package.json，修改启动命令。"></a>7. 配置package.json，修改启动命令。</h4><p>在package.json里配置scripts字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;start&quot;: &quot;webpack-dev-server --mode development&quot;,</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="8-启动项目。"><a href="#8-启动项目。" class="headerlink" title="8. 启动项目。"></a>8. 启动项目。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p>在浏览器键入<a href="http://localhost:3000以启动项目" target="_blank" rel="noopener">http://localhost:3000以启动项目</a></p>
+<p><a href="https://gitee.com/taoyouyou/react-demo.git" target="_blank" rel="noopener">Github地址</a></p>
 
       
 
@@ -240,7 +265,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">webpack</a>
         		</li>
       		
 		</ul>
@@ -250,7 +275,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/24/前端工程化——构建工具/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/03/26/玩转webpack/">展开全文 >></a>
         </p>
       
 
@@ -654,6 +679,130 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/03/19/如何用hexo搭出自己的博客系统/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-前端工程化——构建工具" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/24/前端工程化——构建工具/">前端工程化——构建工具</a>
+    </h1>
+  
+
+        
+        <a href="/2020/02/24/前端工程化——构建工具/" class="archive-article-date">
+  	<time datetime="2020-02-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="何为构建"><a href="#何为构建" class="headerlink" title="何为构建"></a>何为构建</h2><p>Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。</p>
+<p>构建其实是工程化、自动化思想在前端开发中的体现，将开发流程中让人痛苦或耗时的任务自动化，让代码自动化地执行这一系列复杂的流程，从而减少你所浪费的时间、创造更大价值。</p>
+<p>比如我们执行一些例如CoffeeScript/ES6去代替Javascript、JS或CSS压缩、用Less去写CSS、用Jade去写HTML、用Browserify去模块化、为非覆盖式部署的资源加MD5戳等，这些操作如果我们一遍遍手动执行，非常耗费时间和精力，所以前端构建工具，或者较前端自动化构建工具，就是用来让我们不再做机械重复的事情，让我们从重复性工作中脱身，更加专注于代码本身。</p>
+<p>构建可以实现如下内容：</p>
+<blockquote>
+<p>代码转换：ts/es6-&gt;js,scss-&gt;css。<br>文件优化：压缩JS、CSS、HTML，压缩合并图片等。<br>代码分割：提取公共代码。<br>模块合并：将多个模块和文件通过构建合并成一个文件。<br>自动刷新：监听本地源代码变化，自动重新构建、刷新浏览器。<br>代码校验：校验代码是否符合规范，以及单元测试是否通过。<br>自动发布：自动构建出线上发布代码并部署到服务器。</p>
+</blockquote>
+<h2 id="构建工具发展"><a href="#构建工具发展" class="headerlink" title="构建工具发展"></a>构建工具发展</h2><p>构建工具发展：Npm Scripts、Grunt、Gulp、FIS 3、Webpack、Rollup、Parcel</p>
+<h3 id="1-Npm-Scripts"><a href="#1-Npm-Scripts" class="headerlink" title="1. Npm Scripts"></a>1. Npm Scripts</h3><p>npm是nodejs附带的包管理器，npm script是npm内置的一个功能，允许在package.json文件里面使用script字段定义任务，需要注意的是node script可以结合node实现更为灵活的自动化构建任务，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;node index.js&quot;,</span><br><span class="line">  &quot;new&quot;: &quot;node generateView.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>script字段中的一个属性对应一段shell脚本，除了常用的dev命令，还可以自定义自己的命令，比如我在开发网站管理后台的时候注意到有太多相似的页面需要填充相同的html结构，为了摆脱这些重复性工作，我结合node自定义了一个新增模版页面的命令。</p>
+<p>优点:</p>
+<ul>
+<li>内置，无需安装其他依赖<br>缺点: </li>
+<li>功能简单，不方便管理多个任务依赖,对于自定义任务则需要熟悉node,编写大量代码</li>
+</ul>
+<h3 id="2-Grunt"><a href="#2-Grunt" class="headerlink" title="2. Grunt"></a>2. <a href="https://www.gruntjs.net/" target="_blank" rel="noopener">Grunt</a></h3><p>Grunt 相当于进化版的 Npm scripts，它的诞生其实是为了弥补 Npm Scripts 的不足。<br>当你在Gruntfile文件正确配置好了任务，任务运行器就会自动帮你或你的小组完成大部分无聊的工作。<br>查看一个Guntfile示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(grunt) &#123;</span><br><span class="line">  grunt.initConfig(&#123;</span><br><span class="line">    jshint: &#123;         // 检查代码是否符合语法规范</span><br><span class="line">      files: [&apos;Gruntfile.js&apos;, &apos;src/**/*.js&apos;, &apos;test/**/*.js&apos;],</span><br><span class="line">      options: &#123;</span><br><span class="line">        globals: &#123;</span><br><span class="line">          jQuery: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    watch: &#123;           ／／ 监听代码更改时检查代码</span><br><span class="line">      files: [&apos;&lt;%= jshint.files %&gt;&apos;],</span><br><span class="line">      tasks: [&apos;jshint&apos;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-jshint&apos;);</span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-watch&apos;);</span><br><span class="line"></span><br><span class="line">  grunt.registerTask(&apos;default&apos;, [&apos;jshint&apos;]);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>灵活，只执行我们定义的任务</li>
+<li>拥有数量庞大的插件可供选择<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="3-gulp"><a href="#3-gulp" class="headerlink" title="3. gulp"></a>3. <a href="https://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp</a></h3><p>Gulp 是一个基于流的自动化构建工具，是Grunt的加强版，增加文件监听，文件读写，流式处理任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);     //引用基础模块</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);    //js压缩模块</span><br><span class="line"></span><br><span class="line">gulp.task(&apos;script&apos;,function()&#123;  //启动任务script</span><br><span class="line">  gulp.src(&apos;js/*.js&apos;)           //找到文件</span><br><span class="line">  .pipe(uglify())               //压缩文件</span><br><span class="line">  .pipe(gulp.dest(&apos;dist/js&apos;))   //另存压缩文件</span><br><span class="line">&#125;);</span><br><span class="line">//监听</span><br><span class="line">gulp.task(&apos;auto&apos;,function () &#123;</span><br><span class="line">  gulp.watch(&apos;js/*.js&apos;,[&apos;script&apos;]);     //监听script任务</span><br><span class="line">  gulp.watch(&apos;css/*.css&apos;,[&apos;css&apos;]);      //监听css任务</span><br><span class="line">  gulp.watch(&apos;images/*.*&apos;,[&apos;images&apos;]);  //监听images任务</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
+<p>优点：</p>
+<ul>
+<li>灵活，可单独使用也可搭配其他工具<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="4-Webpack"><a href="#4-Webpack" class="headerlink" title="4. Webpack"></a>4. <a href="https://www.webpackjs.com/" target="_blank" rel="noopener">Webpack</a></h3><p>在Webpack里一切文件皆模块，通过loader转换文件，通过Plugin注入钩子，最后输出由多个模块组合成的文件。Webpack专注于构建模块化项目。<br>Webpack是一个打包模块化的JavaScript的工具，在官网打出的口号是“打包所有资源，脚本，图片，样式”。<br>其官网的首页图很形象的展示了 Webpack 的定义，如下图：</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png" alt=""></p>
+<p>一切文件，如JavaScript、CSS、SCSS、图片、模板，对于Webpack 来说都是一个个模块，这样的好处是能清晰地描绘各个模块之间的依赖关系，以方便Webpack进行组合和打包，经过Webpack的处理，最终会输出浏览器能使用的静态资源。</p>
+<p>Webpack具有很大的灵活性，能配置处理文件的方式，使用方法大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,     // 所有模块的入口，webpack从入口开始递归解析出所有依赖的模块</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),    // 设置打包输出文件生成的文件夹</span><br><span class="line">    filename: &apos;bundle.js&apos;                     // 将入口所依赖的所有模块打包成一个文件 bundle.js 输出</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>专注于模块化，开箱即用一步到位</li>
+<li>通过plugin拓展，完整好用又不失灵活</li>
+<li>使用场景不局限于web开发</li>
+<li>社区庞大活跃</li>
+<li>良好的开发体验<br>缺点：</li>
+<li>只能用于模块化开发</li>
+</ul>
+<h3 id="异同点"><a href="#异同点" class="headerlink" title="异同点"></a>异同点</h3><p>上面介绍的几种构建工具构建工具是按照他们的诞生时间排序的，他们是时代的产物，侧面反映出 Web 开发的发展趋势，如下所述：</p>
+<blockquote>
+<p>在 Npm Scripts 和 Grunt 时代，Web 开发要做的事情变多，流程复杂，自动化思想被引入，用于简化流程；<br>在 Gulp 时代，开始出现一些新语言用于提高开发效率，流程处理思想的出现是为了简化文件转换的流程，例如将ES6转换为ES5；<br>在Webpack时代，由于单页应用的流行，网页的功能和实现代码变的复杂、庞大，Web开发向模块化改进。</p>
+</blockquote>
+<p>grunt和glup几乎是为了解决同一个问题而生，那就是让自动化流程来解决你的双手。强调的是前端开发的工作流程，在glup中我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。 简单说就一个Task Runner，就是用来跑一个一个任务的。</p>
+<p>Gulp 没法解决的是 js module 的问题，是你写代码时候如何组织代码结构的问题。在以前这些问题，还是只能通过工程师在做项目前首先就要想到如何做到模块化的问题，并且在这个问题上每个工程师都有各个的一套看法和解决方案。</p>
+<p>Webpack出现后，模块化的问题才第一次被标准化，Webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、脚本、样式等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。</p>
+<p>glup和webpack的异同点：<br>相同点：文件合并与压缩（css,js），sass/less预编译，启动server，版本控制。<br>不同点，虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。<br>gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。<br>webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。</p>
+<p>经过多年的额发展，Webpack 已经成为构建工具中的首选，这是因为：<br>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack可以为这些新项目提供一站式的解决方案；<br>Webpack有良好的生态和维护团队，能提供良好的开发体验并保证质量；<br>Webpack 被全世界大量的Web开发者使用和验证，能找到各个层面所需要的教程和经验分享。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/02/24/前端工程化——构建工具/">展开全文 >></a>
         </p>
       
 
@@ -1377,353 +1526,6 @@
 
 
   
-    <article id="post-吃透js中正则表达式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/22/吃透js中正则表达式/">吃透js中正则表达式</a>
-    </h1>
-  
-
-        
-        <a href="/2019/02/22/吃透js中正则表达式/" class="archive-article-date">
-  	<time datetime="2019-02-22T02:29:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： <a href="https://regexper.com" target="_blank" rel="noopener">https://regexper.com</a>，输入正则规则即可生成匹配规则的流程图。了解并吃透正则会为我们以后开发节省很多时间和精力，一劳永逸。先从最基本的概念开始吧，let go!</p>
-<h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>概念：有特殊含义的特殊字符，eg： * + ? $ ^ . | \ ( ) { } [ ]等</p>
-<h4 id="通用含义元字符"><a href="#通用含义元字符" class="headerlink" title="通用含义元字符"></a>通用含义元字符</h4><p>在大部分语言语境中代表同一种含义，如下表：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">\t</td>
-<td style="text-align:left">水平制表符</td>
-</tr>
-<tr>
-<td style="text-align:left">\v</td>
-<td style="text-align:left">垂直制表符</td>
-</tr>
-<tr>
-<td style="text-align:left">\n</td>
-<td style="text-align:left">换行符</td>
-</tr>
-<tr>
-<td style="text-align:left">\r</td>
-<td style="text-align:left">回车符</td>
-</tr>
-<tr>
-<td style="text-align:left">\0</td>
-<td style="text-align:left">空字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\f</td>
-<td style="text-align:left">换页符</td>
-</tr>
-<tr>
-<td style="text-align:left">\cX</td>
-<td style="text-align:left">Ctrl+X</td>
-</tr>
-</tbody>
-</table>
-<h4 id="其他含义元字符"><a href="#其他含义元字符" class="headerlink" title="其他含义元字符"></a>其他含义元字符</h4><h5 id="1-字符类"><a href="#1-字符类" class="headerlink" title="1. 字符类"></a>1. 字符类</h5><ul>
-<li>我们可以使用元字符[]来构建一个简单的字符类</li>
-<li>所谓的类是指符合某些特性的对象，一个泛指，而不是特指某个字符</li>
-<li>表达式[abc]归为一类，表达式可以匹配这些类的字符<br><img src="https://user-gold-cdn.xitu.io/2019/2/22/1691537782c64cc4" alt=""><h5 id="2-字符类取反"><a href="#2-字符类取反" class="headerlink" title="2. 字符类取反"></a>2. 字符类取反</h5></li>
-<li>我们可以使用元字符^来创建反向类/负向类</li>
-<li>反向类的意思是不属于某个类的内容</li>
-<li>表达式[^abc]表示不是字符a或b或c的内容<br><img src="https://user-gold-cdn.xitu.io/2019/2/22/169153777e9b7144" alt=""><h5 id="3-范围类"><a href="#3-范围类" class="headerlink" title="3. 范围类"></a>3. 范围类</h5></li>
-<li>正则表达式还提供了范围类</li>
-<li>我们使用[a-z]来连接两个字符表示从a到z的任意字符</li>
-<li>这是个闭区间也就包含a和z本身<br><img src="https://user-gold-cdn.xitu.io/2019/2/22/1691537781734783" alt=""><h5 id="4-预定义类"><a href="#4-预定义类" class="headerlink" title="4. 预定义类"></a>4. 预定义类</h5></li>
-<li>正则表达式提供了一些特殊字符表示自一组比较复杂的匹配规则，如下表：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">等价</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">.</td>
-<td style="text-align:left">[^\r\n]</td>
-<td style="text-align:left">除了回车符和换行符之外的所有字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\d</td>
-<td style="text-align:left">[0-9]</td>
-<td style="text-align:left">数字字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\D</td>
-<td style="text-align:left">[^0-9]</td>
-<td style="text-align:left">非数字字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\s</td>
-<td style="text-align:left">[\t\n\x0B\f\r]</td>
-<td style="text-align:left">空白符</td>
-</tr>
-<tr>
-<td style="text-align:left">\0</td>
-<td style="text-align:left">[^\t\n\x0B\f\r]</td>
-<td style="text-align:left">非空白符</td>
-</tr>
-<tr>
-<td style="text-align:left">\w</td>
-<td style="text-align:left">[a-zA-Z_0-9]</td>
-<td style="text-align:left">单词字符(字母数字下划线)</td>
-</tr>
-<tr>
-<td style="text-align:left">\W</td>
-<td style="text-align:left">[^a-zA-Z_0-9]</td>
-<td style="text-align:left">非单词字符</td>
-</tr>
-</tbody>
-</table>
-<h5 id="5-边界"><a href="#5-边界" class="headerlink" title="5. 边界"></a>5. 边界</h5><ul>
-<li>正则表达式还提供了几个常用的边界匹配字符，如下表：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">^</td>
-<td style="text-align:left">以xxx开始</td>
-</tr>
-<tr>
-<td style="text-align:left">$</td>
-<td style="text-align:left">以xxx结束</td>
-</tr>
-<tr>
-<td style="text-align:left">\b</td>
-<td style="text-align:left">单词边界</td>
-</tr>
-<tr>
-<td style="text-align:left">\B</td>
-<td style="text-align:left">非单词边界</td>
-</tr>
-</tbody>
-</table>
-<h5 id="6-量词"><a href="#6-量词" class="headerlink" title="6. 量词"></a>6. 量词</h5><table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">?</td>
-<td style="text-align:left">出现一次或0次（最多出现一次）</td>
-</tr>
-<tr>
-<td style="text-align:left">+</td>
-<td style="text-align:left">出现一次或多次（最少出现一次）</td>
-</tr>
-<tr>
-<td style="text-align:left">*</td>
-<td style="text-align:left">出现0次或多次（任意次）</td>
-</tr>
-<tr>
-<td style="text-align:left">{n}</td>
-<td style="text-align:left">出现n次</td>
-</tr>
-<tr>
-<td style="text-align:left">{n, m}</td>
-<td style="text-align:left">出现n到m次</td>
-</tr>
-<tr>
-<td style="text-align:left">{n, }</td>
-<td style="text-align:left">至少出现n次</td>
-</tr>
-</tbody>
-</table>
-<h3 id="js正则的贪婪模式和非贪婪模式"><a href="#js正则的贪婪模式和非贪婪模式" class="headerlink" title="js正则的贪婪模式和非贪婪模式"></a>js正则的贪婪模式和非贪婪模式</h3><ol>
-<li><p>贪婪模式：\d{3,6}匹配数字3到6次，那么在匹配的过程中会尽可能多的的匹配。如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;12345678&apos;.replace(/\d&#123;3,6&#125;/, &apos;X&apos;)  // &quot;X78&quot;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>非贪婪模式：在量词后面加上 ? ,可以让正则表达式尽可能少的匹配，也就是非贪婪模式。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;12345678&apos;.replace(/\d&#123;3,6&#125;?/, &apos;X&apos;)  // &quot;X45678&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>对一组正则规则加(),可以对正则进行分组，   </p>
-<p>比如：对taoyouyou这组单词匹配三次<br>taoyouyou{3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组1.svg" alt=""><br>可视化后能看到只是最后一个单词u重复了3次，并没有达到目的<br>(taoyouyou){3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg" alt=""><br>taoyouyou重复了3次</p>
-<h4 id="捕获组引用"><a href="#捕获组引用" class="headerlink" title="捕获组引用"></a>捕获组引用</h4><p>对字符串进行分组后，   </p>
-<p>捕获组的编号是按照“(”出现的顺序，从左到右，从1开始进行编号的 。   </p>
-<p>在replace方法中可以通过$number(number表示捕获组的编号)进行引用      </p>
-<p>在js表达式中分组引用通过RegExp对象暴露出来，    </p>
-<p>即通过RegExp.$number引用   </p>
-<p>例如实现2019-02-22 =&gt; 02/22/2019的转化。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;2019-02-22&apos;.replace(/(\d&#123;4&#125;)-(\d&#123;2&#125;)-(\d&#123;2&#125;)/,&apos;$2/$3/$1&apos;)   //  &quot;02/22/2019&quot;</span><br></pre></td></tr></table></figure></p>
-<h4 id="反向引用"><a href="#反向引用" class="headerlink" title="反向引用"></a>反向引用</h4><p>正则表达式中所定义的捕获的反向引用指的是 </p>
-<blockquote>
-<p>将捕获作为正则表达式中能够成功匹配术语时的候选字符串      </p>
-</blockquote>
-<p>这种术语表示法是在反斜杆后面加一个要引用的捕获数量。<br>捕获组捕获到的内容，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用。反向引用的作用通常是用来查找或限定重复、查找或限定指定标识配对出现等等。<br>例如:([a-z])\1{2}也就表达连续三个相同的小写字母。   </p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组5.svg" alt=""></p>
-<h4 id="忽略分组"><a href="#忽略分组" class="headerlink" title="忽略分组"></a>忽略分组</h4><p>不需要捕获某些分组只需要在分组内加 ?: 就可以了。<br>(?:taoyouyou).(ok)<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg" alt=""></p>
-<h3 id="前瞻"><a href="#前瞻" class="headerlink" title="前瞻"></a>前瞻</h3><ul>
-<li>正则表达式从文本头部向尾部解析，文本尾部方向称为 “前”</li>
-<li>前瞻：正则表达式匹配到规则的时候，向前检查是否符合断言，后顾/后瞻方向相反</li>
-<li>JavaScript不支持后顾</li>
-<li>符合和不符合某项断言称为肯定/正向匹配和否定/负向匹配</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">名称</th>
-<th style="text-align:left">正则</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">正向前瞻</td>
-<td style="text-align:left">exp(?=assert)</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td style="text-align:left">负向前瞻</td>
-<td style="text-align:left">exp(?!assert)</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td style="text-align:left">正向后顾</td>
-<td style="text-align:left">exp(?&lt;=assert)</td>
-<td style="text-align:left">JavaScript不支持</td>
-</tr>
-<tr>
-<td style="text-align:left">负向后顾</td>
-<td style="text-align:left">exp(?&lt;!assert)</td>
-<td style="text-align:left">JavaScript不支持</td>
-</tr>
-</tbody>
-</table>
-<h3 id="正则对象属性"><a href="#正则对象属性" class="headerlink" title="正则对象属性"></a>正则对象属性</h3><ul>
-<li>global: 是否全文匹配，默认false，匹配规则后面加g开启</li>
-<li>ignoreCase: 是否大小写敏感， 默认false，匹配规则后面加i开启</li>
-<li>multiline: 多行搜索， 默认false，匹配规则后面加m开启</li>
-<li>lastIndex: 当前表达式匹配内容最后一个字符的下一个位置</li>
-<li>source: 正则表达式的文本字符串<br>这几个属性都是只读属性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">reg=/\d/gmi</span><br><span class="line">reg.global  // true</span><br><span class="line">reg.ignoreCase  // true</span><br><span class="line">reg.multiline  // true</span><br><span class="line">reg.lastIndex  // 0</span><br><span class="line">reg.source  // &quot;\d&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h3><h4 id="1-正则test方法"><a href="#1-正则test方法" class="headerlink" title="1. 正则test方法"></a>1. 正则test方法</h4><p> RegExp.prototype.test(str)</p>
-<ul>
-<li>用于测试字符串参数中是否存在匹配正则表达式模式的字符串</li>
-<li>如果存在则返回true，否则返回false   </li>
-</ul>
-<p>需要注意的是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var reg2=/\w/g;</span><br></pre></td></tr></table></figure></p>
-<p>进行reg2.test(‘ab’)时，第三次会变成false<br>原因：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">while(reg2.test(&apos;ab&apos;))&#123;</span><br><span class="line">  console.log(reg2.lastIndex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>即进行test时，正则表达式的lastIndex会发生变化<br>输出：1  2    表示第一个匹配上了、第二个匹配上了</p>
-<h4 id="2-正则exec方法"><a href="#2-正则exec方法" class="headerlink" title="2. 正则exec方法"></a>2. 正则exec方法</h4><p> RegExp.prototype.exec(str)</p>
-<ul>
-<li>使用正则表达式模式对字符串参数进行匹配搜索，并将更新全局对象属性以反映匹配结果</li>
-<li>如果没有匹配则返回null,否则返回一个结果数组：<br>属性index(声明匹配文本的第一个字符的位置), input(存放被检索的字符串string)<br>数组本身: [与正则表达式相匹配的文本，与正则对象的第一个子表达式（分组）相匹配的文本， 与正则对象的第二个子表达式（分组）相匹配的文本，…… ]<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var reg3=/\d(\w)(\w)\d/;    // 非全局搜索只能匹配到第一个结果</span><br><span class="line">var reg4=/\d(\w)(\w)\d/g;   // 全局搜索匹配全文</span><br><span class="line">var ts = &apos;$1az2bb3cy4dd5ee&apos;</span><br><span class="line">var ret1= reg3.exec(ts)     // (3) [&quot;1az2&quot;, &quot;a&quot;, &quot;z&quot;, index: 1, input: &quot;$1az2bb3cy4dd5ee&quot;, groups: undefined]</span><br><span class="line">console.log(reg3.lastIndex+&apos;\t&apos;+ret1.index+&apos;\t&apos;+ret1.toString())</span><br><span class="line">// &quot;0 1 1az2, a, z&quot;</span><br><span class="line">while(ret2 = reg4.exec(ts))&#123;</span><br><span class="line">  console.log(reg4.lastIndex+&apos;\t&apos;+ret2.index+&apos;\t&apos;+ret2.toString())</span><br><span class="line">&#125;</span><br><span class="line">// &quot;5 1 1az2, a, z&quot;</span><br><span class="line">// &quot;11 7 1az2, a, z&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h4 id="3-字符串对象search方法"><a href="#3-字符串对象search方法" class="headerlink" title="3. 字符串对象search方法"></a>3. 字符串对象search方法</h4><p> String.prototype.search(reg)</p>
-<ul>
-<li>search方法用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串</li>
-<li>返回第一个匹配结果index，查不到返回-1</li>
-<li>search()不执行全局匹配，它将忽略标志g, 并总是从字符串的开始进行检索</li>
-</ul>
-<h4 id="4-字符串对象match方法"><a href="#4-字符串对象match方法" class="headerlink" title="4. 字符串对象match方法"></a>4. 字符串对象match方法</h4><p> String.prototype.match(reg)</p>
-<ul>
-<li>match方法将检索字符串，以找到一个或多个与regexp相匹配的字符串</li>
-<li>regexp是否具有标志g对结果影响很大<h5 id="非全局调用"><a href="#非全局调用" class="headerlink" title="非全局调用"></a>非全局调用</h5></li>
-<li>返回数组的第一个元素存放的是匹配文本,而其余的元素存放的是与正则表达式的子表达式匹配的文本</li>
-<li>除了常规的数组元素之外,返回的数组还含有2个对象属性：index声明匹配文本的起始字符在字符串的位置,input声明对stringObject的引用</li>
-<li>全局调用的返回与正则表达式的exec方法相类似，即：[与正则表达式相匹配的文本，与正则对象的第一个子表达式（分组）相匹配的文本， 与正则对象的第二个子表达式（分组）相匹配的文本，…… ]，数组有index和input属性<h5 id="全局调用"><a href="#全局调用" class="headerlink" title="全局调用"></a>全局调用</h5></li>
-<li>如果regexp具有标志g则match方法将执行全局检索,找到字符串中的所有匹配子字符串</li>
-<li>没有找到任何匹配的子串,则返回null</li>
-<li>如果找到了一个或多个匹配子串,则返回-一个数组</li>
-<li>数组元素中存放的是字符串中所有的匹配子串,而且也没有index属性或input属性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var reg3=/\d(\w)(\w)\d/;    // 非全局搜索只能匹配到第一个结果</span><br><span class="line">var reg4=/\d(\w)(\w)\d/g;   // 全局搜索匹配全文</span><br><span class="line">var ts = &apos;$1az2bb3cy4dd5ee&apos;</span><br><span class="line">var ret1= ts.match(reg3)   // (3) [&quot;1az2&quot;, &quot;a&quot;, &quot;z&quot;, index: 1, input: &quot;$1az2bb3cy4dd5ee&quot;, groups: undefined]   </span><br><span class="line">console.log(reg3.lastIndex+&apos;\t&apos;+ret1.index)  // 0, 1</span><br><span class="line">var ret2 = ts.match(reg4)  // (2) [&quot;1az2&quot;, &quot;3cy4&quot;]</span><br><span class="line">console.log(reg4.lastIndex+&apos;\t&apos;+ret2.index)   // 0 undefined</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h4 id="5-字符串对象split方法"><a href="#5-字符串对象split方法" class="headerlink" title="5. 字符串对象split方法"></a>5. 字符串对象split方法</h4><p>String.prototype.split(reg)</p>
-<ul>
-<li>我们经常使用split方法把字符串分割为字符数组<br>eg: ‘a,b,c,d’.split(‘,’); //[“a”, “b”, “c”, “d”]</li>
-<li>在一些复杂的分割情况下我们可以使用正则表达式解决<br>eg: ‘alb2c3d’.split(/\d/; //[“a”, “b”, “c”, “d”]</li>
-</ul>
-<h4 id="6-字符串对象replace方法"><a href="#6-字符串对象replace方法" class="headerlink" title="6. 字符串对象replace方法"></a>6. 字符串对象replace方法</h4><p>String.prototype.replace</p>
-<ul>
-<li>String.prototype.replace(str, replaceStr)</li>
-<li>String.prototype.replace(reg, replaceStr)</li>
-<li>String.prototype.replace(reg, function)<br>function参数含义<br>function会在每次匹配替换的时候调用,有四个参数<br>1、匹配字符串<br>2、正则表达式分组内容,没有分组则没有该参数<br>3、匹配项在字符串中的index<br>4、原字符串<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;a1b2c3d4e5&apos;.replace(/\d/g, function(match, index, origin)&#123;</span><br><span class="line">  return parseInt(match) + 1;</span><br><span class="line">&#125;)  // &quot;a2b3c4d5e6&quot;</span><br><span class="line"></span><br><span class="line">&apos;a1b2c3d4e5&apos;.replace(/(\d)(\w)(\d)/g, function(match, group1, group2, group3, index, origin)&#123;</span><br><span class="line">  console.log(match)</span><br><span class="line">  return group1 + group3;</span><br><span class="line">&#125;)  </span><br><span class="line">// 1b2</span><br><span class="line">// 3d4</span><br><span class="line">// &quot;a12c34e5&quot;</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">正则表达式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/22/吃透js中正则表达式/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1821,10 +1623,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
@@ -1834,6 +1632,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1865,18 +1667,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -1889,7 +1679,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1897,7 +1695,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1906,6 +1704,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">

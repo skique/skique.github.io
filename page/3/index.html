@@ -156,6 +156,115 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-关于http" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/24/关于http/">关于http的常见问题</a>
+    </h1>
+  
+
+        
+        <a href="/2018/02/24/关于http/" class="archive-article-date">
+  	<time datetime="2018-02-24T05:25:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="http与https的区别"><a href="#http与https的区别" class="headerlink" title="http与https的区别"></a>http与https的区别</h2><ol>
+<li>HTTP 标准端口是80 ，而 HTTPS 的标准端口是443</li>
+<li>在OSI 网络模型中，HTTP工作于应用层，而HTTPS 的安全传输机制工作在传输层</li>
+<li>HTTP 无法加密，而HTTPS 对传输的数据进行加密</li>
+<li>HTTP无需证书，而HTTPS 需要CA机构wosign的颁发的SSL证书</li>
+</ol>
+<h2 id="什么是http协议无状态协议？怎么解决这种无状态协议？"><a href="#什么是http协议无状态协议？怎么解决这种无状态协议？" class="headerlink" title="什么是http协议无状态协议？怎么解决这种无状态协议？"></a>什么是http协议无状态协议？怎么解决这种无状态协议？</h2><ul>
+<li>无状态协议对于事物没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，也就是说当客户端一次http协议完成以后，客户端在发送一次http请求，http并不知道当前客户端是“老用户”</li>
+<li>可以使用cookie来解决无状态的问题，cookie就相当于一个通行证，第一次访问的时候给客户端发送一个cookie,当客户端再次来的时候，拿着cookie(通行证),那么服务器就知道这是个“老用户”</li>
+</ul>
+<h2 id="URI和URL的区别"><a href="#URI和URL的区别" class="headerlink" title="URI和URL的区别"></a>URI和URL的区别</h2><p>** URI，是uniform resource identifier, 统一资源标识符， 用来唯一的标识一个资源，一般由三部分组成</p>
+<ul>
+<li>访问资源的命名机制</li>
+<li>存放资源的主机名</li>
+<li>资源自身的名称，由路径表示，着重强调资源。<br>** URL是uniform resource locator，统一资源定位器，他是一种具体的URI，一般由三部分别组成</li>
+<li>协议</li>
+<li>存有该资源的主机ip地址（有时也包括端口号）</li>
+<li>主机资源的具体地址。如目录和文件名等<br>**[M 53 URN，uniform resource name,统一资源命名，是通过名字来标识资源，</li>
+</ul>
+<h2 id="常见的http方法"><a href="#常见的http方法" class="headerlink" title="常见的http方法"></a>常见的http方法</h2><ul>
+<li>GET: 用于请求已经被URI识别的资源</li>
+<li>POST: 用于传输信息给服务器，只要功能与get类似</li>
+<li>PUT: 传输文件，报文主体中包含文件内容，保存到对应的URI位置</li>
+<li>HEAD: 获得报文首部，与get方法类似。只是不返回报文主体，一般用于验证URI是否有效。</li>
+<li>Delete: 删除文件，与put方法相反，删除对应URI位置文件</li>
+<li>OPTIONS: 查询相应URI支持的http方法。</li>
+</ul>
+<h2 id="http请求报文与响应报文"><a href="#http请求报文与响应报文" class="headerlink" title="http请求报文与响应报文"></a>http请求报文与响应报文</h2><p>** 请求报文包含四部分：</p>
+<ul>
+<li>a、请求行：包含请求方法、URI、HTTP版本信息</li>
+<li>b、请求首部字段</li>
+<li>c、请求内容实体</li>
+<li>d、空行<h2 id="响应报文包含四部分"><a href="#响应报文包含四部分" class="headerlink" title="响应报文包含四部分"></a>响应报文包含四部分</h2><strong> a、状态行：包含HTTP版本、状态码、状态码的原因短语
+</strong> b、响应首部字段<br><strong> c、响应内容实体
+</strong> d、空行</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">http</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/02/24/关于http/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-如何给非input元素添加键盘事件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -341,10 +450,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
@@ -354,6 +459,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -385,18 +494,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -409,7 +506,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -417,7 +522,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -426,6 +531,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
