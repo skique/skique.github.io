@@ -156,6 +156,184 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-如何使用ESLint-Prettier来统一我们的前端代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">如何使用ESLint + Prettier来统一我们的前端代码风格</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/" class="archive-article-date">
+  	<time datetime="2019-06-21T01:57:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少数服从多数来确定一种合适的书写规范，通过工具统一风格。    </p>
+<p>本文将介绍，如何使用ESLint + Prettier来统一我们的前端代码风格。   </p>
+<p>首先，对应ESLint大多都很熟悉，用来进行代码的校验，js作为一门灵活的弱类型语言，代码风格千奇百怪，一千个人写js就有一千种写法。虽然js没有官方推荐的代码规范，不过社区有些比较热门的代码规范，比如standardjs、airbnb。使用ESLint配合这些规范，能够检测出代码中的潜在问题，提高代码质量，但是并不能完全统一代码风格，因为这些代码规范的重点并不在代码风格上（虽然有一些限制）。</p>
+<p>Prettier 是一个漂亮代码格式工具。prettier 通过将JavaScript解析为AST来去除原来的代码样式，并且将其按照一致的格式的方式输出。只要代码的内容是一样的，那么输出的代码就将会是一致的。 prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突。而且prettier独断自行一套格式化风格，虽然提供配置，也只是配置少量的关键属性，能在一定程度上保证的代码的风格统一，而且使用门槛极低， 关键的他的风格并不丑，更容易让大家接受。<br>同时，prettier支持我们大前端目前大部分语言处理，包括JavaScript · Flow · TypeScript · CSS · SCSS · Less · JSX · Vue · GraphQL · JSON · Markdown，唯一的遗憾是，暂时还不能格式化vue模版文件中template部分。</p>
+<h2 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h2><p>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
+<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
+<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
+<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上文提到prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突,这里我们需要来讲一下如果存在冲突怎么办<br><code>npm i -D eslint-config-prettier</code><br>通过使用eslint-config-prettier配置，能够关闭一些不必要的或者是与prettier冲突的lint选项。这样我们就不会看到一些error同时出现两次。使用的时候需要确保，这个配置在extends的最后一项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;@vue/airbnb&apos;, //使用standard做代码规范</span><br><span class="line">    &quot;prettier&quot;,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果你同时使用了上述的两种配置，那么你可以通过如下方式，简化你的配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后贴一下我们项目中的完整配置，是在vue-cli生成的代码基础上修改的，并且使用airbnb做代码规范：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  root: true,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;plugin:vue/essential&apos;,</span><br><span class="line">    &apos;@vue/airbnb&apos;,</span><br><span class="line">    &quot;plugin:prettier/recommended&quot;,</span><br><span class="line">  ],</span><br><span class="line">  plugins: [&quot;prettier&quot;],</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;comma-dangle&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;linebreak-style&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;consistent-return&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;no-param-reassign&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;max-len&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/no-use-v-if-with-v-for&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/require-valid-default-prop&apos;: &apos;off&apos;,</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;,</span><br><span class="line">    &apos;no-console&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">    &apos;no-debugger&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: &apos;babel-eslint&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h2><p>一共有三种方式支持对Prettier进行配置：</p>
+<ol>
+<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
+<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
+<li>在package.json中新建prettier属性。   </li>
+</ol>
+<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
+<p>注意一点，parser的配置项官网列出了如下可选项：</p>
+<ul>
+<li>babylon</li>
+<li>flow</li>
+<li>typescript Since v1.4.0</li>
+<li>postcss Since v1.4.0</li>
+<li>json Since v1.5.0</li>
+<li>graphql Since v1.5.0</li>
+<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-极简白话金融学" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/15/极简白话金融学/">极简白话金融学</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/15/极简白话金融学/" class="archive-article-date">
+  	<time datetime="2019-05-15T09:01:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="微观金融学——商学院的金融学"><a href="#微观金融学——商学院的金融学" class="headerlink" title="微观金融学——商学院的金融学"></a>微观金融学——商学院的金融学</h2><p>微观金融学就是研究人们如何在不确定的环境下进行资源跨期配置的学科，通俗地说，就是研究个体的金融决策的学问。这也就是我们市场上最热门的学问——公开上市、兼并收购、私募、股票涨跌、期货期权、资产证券化、基金、债券，高频交易、量化交易，甚至现在热炒的互联网金融……莫不属于这个领域。可以说，凡是和我们个体财富相关的投融资决策和背景都属于微观金融学的研究范畴，不确定环境和跨期资源配置因此成了这个学科最典型的标志。与此相适应，对于风险、风险收益、对风险证券的定价、公司投融资决策，以及影响这些因素的市场结构和制度安排成为其主要内容。</p>
+<p>在传统的西方学科语系中，现代金融学一般指的就是微观金融学。根据研究对象的不同，我们将其大概分为“公司金融”和“投资学”两部分内容。</p>
+<ul>
+<li>公司金融是从企业角度出发，研究企业筹融资（比如上市、发行债券、增发、私有化等），企业发展扩张（比如兼并收购、分拆、寻找项目、分红决策等），以及企业治理（比如股东权利、董事会、管理层薪酬激励等）。</li>
+<li>投资学则是从投资者角度出发，研究证券的合理定价（比如依据股票/债券/期货的风险程度，判断现在价格是被高估或者低估），进行资产管理（比如在不同的资产种类中，寻找最优化的资产组合），以及与资产管理相关的市场结构和制度安排。</li>
+</ul>
+<h3 id="历史大纪事："><a href="#历史大纪事：" class="headerlink" title="历史大纪事："></a>历史大纪事：</h3><ol>
+<li><p>1952年，马科维茨（Markowitz）的年轻人提出了 <strong>投资组合理论</strong>。被称为“现代金融学的大爆炸”：将收益率视为一个数学上的随机变量。证券的期望收益则是该随机变量的数学期望（均值）；而风险则可以用该随机变量的方差来表示。将各证券的投资比例设定为变量，将这个问题转化为设计一个数学规划，如何使得证券组合的收益最大、风险最小。对于每一固定收益率求最小方差，或者对于每一个固定的方差求最大收益率，这个多元方程的解可以决定一条曲线。这条曲线上的每个点都对应着最优投资组合（给定风险水平下，收益率最大的组合），这条线的名字就叫“有效前沿”。对于投资者而言，不存在比有效前沿上更优的组合。这样一来，投资者面临的决策就被简化了许多。换句话说，所有投资者都可以根据自己的风险偏好在这个“有效前沿”上寻找自己的最优策略。 由于这是一个纯技术性的理论，完全脱离了经典经济学的一般均衡的框架，因而被视为异端。著名的经济学家米尔顿·弗里德曼教授（Milton Friedman）指责说：“这可不是经济学。”————第一次华尔街革命</p>
+</li>
+<li><p>20世纪60年代, 马科维茨的学生威廉·夏普（W.Sharpe），进一步在一般均衡的框架下，假定证券市场中所有投资人都有相同的初始偏好，以“风险—收益”函数来决策，从而推导出一个单个证券（投资组合）的期望受益率与相对风险程度间的关系式, 所谓“相对风险程度”，是指该证券（证券组合）和市场组合之间的联动性（术语叫“协方差”）。在理论的模型里，这个“市场组合”可以在一系列严格的假设下被推算出来。而在一般现实世界中，我们常常会用市场指数（比如道琼斯指数、上证指数、日经指数等）来近似表示这个市场组合。这就是金融学里最著名的 <strong>资产定价模型</strong></p>
+</li>
+<li><p>20世纪60年代中期到70年代, 尤金·法玛（Eugene Fama）提出了 <strong>有效市场假说</strong>。所谓市场有效性是指市场价格能否充分反映市场价格。</p>
+</li>
+<li><p>1979年丹石尔·卡尼曼（Daniel Kahneman）和阿莫斯·特维尔斯基（Amas Tversky）通过一系列的实验证明，长期以来主宰金融经济学的“理性人”的假定常常受到约束。人类的决策过程往往受到个人偏好、社会规范、观念习惯的影响，因而导致“理性预期”出现系统性的偏差。除此之外，卡尼曼和特维尔斯基还发现了人类在决策中会体现出如“损失规避”“框架效应”等系统性的特征，这些特征构成了“预期理论”的基础。以此为起点，金融学家们开始探讨“非理性预期”下的资产定价和投融资决策行为——<strong>行为金融学</strong>因此在20世纪80年代后蓬勃发展。</p>
+</li>
+</ol>
+<ol>
+<li><p>1956年，默顿·米勒和莫迪利安尼（Modigliani）于1956年提出了另一个划时代的理论——<strong>资本结构理论</strong>：米勒和莫迪利安尼首次阐述了无套利假设。无套利假设是指在一个完善的金融市场里，不存在确定的高卖低买的套利机会。米勒和莫迪利安尼证明了理想市场条件下，公司价值与财务政策无关。MM定理的精妙之处在于，它设定了一个“理想市场”的简单框架讨论公司的资本结构。而现实世界中，每一种和“理想市场”相违背的条件都有可能对企业投融资决策造成影响，以MM定理作为参照点，我们可以精确地量化估算这种影响在最终企业价值上的体现——这些影响正是所有公司投资决策都要理解和考虑的问题。以此为起点，对公司的投融资决策的研究开始进入一个有体系的时期，因此，这条定理被视为是现代公司金融的开山之作。同时，基于无套利假设的分析框架也开始成为金融学研究中具有代表性的研究思路。</p>
+</li>
+<li><p>在1972年， 费雪·布莱克（Fischer Black）和迈伦·舒尔斯（Myron Scholes）合作的文章中提出了一种 <strong>基于无套利假设的模型为期权产品定价</strong>。某只股票的买入（卖出）期权就是指以某个固定的执行价格在一定的期限内买入（卖出）该证券的权利。无套利假设告诉我们，在一定的价格随机过程假设下，每一时刻都可通过股票和股票期权的适当组合对冲风险，使该组合变成无风险证券，从而就可得到期权价格与股票价格之间的一个偏微分方程。只要解出这个偏微分方程，期权的价格就得以确定。 ————第二次华尔街革命</p>
+</li>
+</ol>
+<h2 id="宏观金融学——经济系的金融学"><a href="#宏观金融学——经济系的金融学" class="headerlink" title="宏观金融学——经济系的金融学"></a>宏观金融学——经济系的金融学</h2><p>研究宏观的总量的金融问题的学问，比如货币的供求、银行的运营、利息决定、汇率变动，以及金融市场与经济增长经济危机等等。宏观金融学有时候也叫作“货币经济学”。</p>
+<h3 id="历史大纪事：-1"><a href="#历史大纪事：-1" class="headerlink" title="历史大纪事："></a>历史大纪事：</h3><p>1936年。就在这一年，凯恩斯出版了一本被称为“拯救了资本主义”的不朽著作——《就业、利息和货币通论》（The General Theory of Employment,Interest,and Money），现代宏观经济学就此产生。其中，凯恩斯关于货币供给调节、利率决定，以及汇率决定的理论被后来者不断延伸拓展，宏观金融学由此形成，其核心就是货币经济学</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/15/极简白话金融学/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-吃透js中正则表达式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1240,221 +1418,6 @@ Hello world！
 
 
   
-    <article id="post-git简明手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/06/git简明手册/">git简明手册</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/06/git简明手册/" class="archive-article-date">
-  	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="为什么要使用git"><a href="#为什么要使用git" class="headerlink" title="为什么要使用git"></a>为什么要使用git</h2><p>因为git目前世界上最先进的分布式版本控制管理工具<br>从上面那句话可以看出git有两个特点，一是版本控制，二是分布式   </p>
-<p>你是否有个这个烦恼的，想删去一个段落，又怕将来找不回来想回复怎么办，也许你会先把这一版另存为，再发展新版本，这样来回几次，也许你的文件夹早已经是一团乱麻，现在有了git就可以很好的解决这问题了，因为git有版本控制的功能。    </p>
-<p>说起版本控制一定有不少人都用过svn,在git没有出来之前，svn作为集中式版本控制工具确实占的了一席之地，为什么发展到后来渐渐势微呢，他们之中主要的区别是一个集中式版本控制，一个是分布式版本控制。    </p>
-<p>先说集中式版本控制系统，版本库是集中存放在中央服务器的，而干活的时候，用的都是自己的电脑，所以要先从中央服务器取得最新的版本，然后开始干活，干完活了，再把自己的活推送给中央服务器。中央服务器就好比是一个图书馆，你要改一本书，必须先从图书馆借出来，然后回到家自己改，改完了，再放回图书馆。   </p>
-<p>而分布式版本控制系统根本没有“中央服务器”，每个人的电脑上都是一个完整的版本库，这样，你工作的时候，就不需要联网了，因为版本库就在你自己的电脑上。既然每个人电脑上都有一个完整的版本库，那多个人如何协作呢？比方说你在自己电脑上改了文件A，你的同事也在他的电脑上改了文件A，这时，你们俩之间只需把各自的修改推送给对方，就可以互相看到对方的修改了。    </p>
-<p>git允许你在一条生产流上开发，不但能自动记录每次文件的改动，还可以让同事协作编辑，这样就不用自己管理一堆类似的文件了，也不需要把文件传来传去。如果想查看某次改动，只需要在提交记录里瞄一眼就可以。如果像要恢复到某一版本只要在命令行上敲下一段代码，你的项目就会想坐上了时光穿梭机一样，自动就回到了以前，一切入故，再也没有了想删不敢删，想改不敢改的烦恼了。</p>
-<h2 id="git第一步"><a href="#git第一步" class="headerlink" title="git第一步"></a>git第一步</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>不同的系统有不同的安装的方法，以Mac为例，你可以通过brew安装，如果没有brew的话也可以直接在terminal上直接敲下git命令行，terminal会先检查有没有git环境，没有的还就会自动安装git,至于windows系统可以先去git上下载安装包，然后直接点安装即可，都非常简单</p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在git中，我们使用git config 命令用来配置git的配置文件，git配置级别主要有以下3类：</p>
-<ul>
-<li>1、仓库级别 local 【优先级最高】</li>
-<li>2、用户级别 global【优先级次之】</li>
-<li>3、系统级别 system【优先级最低】</li>
-</ul>
-<p>再没有特殊要求下，我们只需要配置用户级别的git config即可,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email “you@example.com”</span><br><span class="line">git config --global user.name “Your Name”</span><br></pre></td></tr></table></figure></p>
-<p>如果想要检查你的配置，可以使用 <code>git config --list</code>命令来列出所有 Git 当时能找到的配置。</p>
-<h3 id="生成-SSH-公钥"><a href="#生成-SSH-公钥" class="headerlink" title="生成 SSH 公钥"></a>生成 SSH 公钥</h3><p> 首先，你需要确认自己是否已经拥有密钥。 默认情况下，用户的 SSH 密钥存储在其 ~/.ssh 目录下。 进入该目录并列出其中内容，你便可以快速确认自己是否已拥有密钥<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br></pre></td></tr></table></figure></p>
-<p>如果该目录下没有存在密钥对，则可以运行 ssh-keygen 程序来创建它们<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -o</span><br></pre></td></tr></table></figure></p>
-<p>首先 ssh-keygen 会确认密钥的存储位置（默认是 .ssh/id_rsa），然后它会要求你输入两次密钥口令。 如果你不想在使用密钥时输入口令，将其留空即可。 然而，如果你使用了密码，那么请确保添加了 -o 选项，它会以比默认格式更能抗暴力破解的格式保存私钥。<br>复制各自的 .pub 文件内容,发送给任意一个 Git 服务器管理员 （假设服务器正在使用基于公钥的 SSH 验证设置）</p>
-<h2 id="Git-基础"><a href="#Git-基础" class="headerlink" title="Git 基础"></a>Git 基础</h2><h3 id="初始化一个git仓库"><a href="#初始化一个git仓库" class="headerlink" title="初始化一个git仓库"></a>初始化一个git仓库</h3><p>通常有两种获取 Git 项目仓库的方式：</p>
-<ul>
-<li>将尚未进行版本控制的本地目录转换为 Git 仓库；</li>
-<li>从其它服务器 克隆 一个已存在的 Git 仓库。<br>两种方式都会在你的本地机器上得到一个工作就绪的 Git 仓库。</li>
-</ul>
-<h4 id="在已存在目录中初始化仓库"><a href="#在已存在目录中初始化仓库" class="headerlink" title="在已存在目录中初始化仓库"></a>在已存在目录中初始化仓库</h4><p>那么首先需要进入该项目目录中，执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure></p>
-<p>该命令将创建一个名为 .git 的子目录，这个子目录含有你初始化的 Git 仓库中所有的必须文件，这些文件是 Git 仓库的骨干。 但是，在这个时候，我们仅仅是做了一个初始化的操作，你的项目里的文件还没有被跟踪。</p>
-<h4 id="克隆现有的仓库"><a href="#克隆现有的仓库" class="headerlink" title="克隆现有的仓库"></a>克隆现有的仓库</h4><p>如果你想获得一份已经存在了的 Git 仓库的拷贝，比如说，你想为某个开源项目贡献自己的一份力，这时就要用到 git clone 命令。<br>克隆仓库的命令是 git clone <url> 。 比如，要克隆 Git 的链接库 libgit2，可以用下面的命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/libgit2/libgit2</span><br></pre></td></tr></table></figure></url></p>
-<p>如果你想在克隆远程仓库的时候，自定义本地仓库的名字，你可以通过额外的参数指定新的目录名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/libgit2/libgit2 mylibgit</span><br></pre></td></tr></table></figure>
-<p>这会执行与上一条命令相同的操作，但目标目录名变为了 mylibgit。</p>
-<h4 id="忽略文件"><a href="#忽略文件" class="headerlink" title="忽略文件"></a>忽略文件</h4><p>一般我们总会有些文件无需纳入 Git 的管理，也不希望它们总出现在未跟踪文件列表。 通常都是些自动生成的文件，比如日志文件，或者编译过程中创建的临时文件等。 在这种情况下，我们可以创建一个名为 .gitignore 的文件，列出要忽略的文件的模式。</p>
-<h3 id="工作区和暂存区与远程库"><a href="#工作区和暂存区与远程库" class="headerlink" title="工作区和暂存区与远程库"></a>工作区和暂存区与远程库</h3><h4 id="工作区"><a href="#工作区" class="headerlink" title="工作区"></a>工作区</h4><p>工作区就是当前的工作目录</p>
-<h4 id="版本库"><a href="#版本库" class="headerlink" title="版本库"></a>版本库</h4><p>工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。<br>Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/git-01.png" alt=""></p>
-<p>万事开头难，入手git开头的流程已经讲清楚，接下里就是运行git命令暂存修改，提交到暂存区以及push到远程仓库的操作了。基于本文篇幅有限，接下来着重讲一下啊在通过git开发流中经常用到的一些命令。在需要用到时候可以来这里查漏补缺。</p>
-<h3 id="常规流程"><a href="#常规流程" class="headerlink" title="常规流程"></a>常规流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">git init  // git仓库初始化</span><br><span class="line">git add .  // 文件修改添加到暂存区</span><br><span class="line">git reset HEAD CONTRIBUTING.md  // 取消暂存的文件</span><br><span class="line">git commit -m &quot;desc&quot;   // 实际上就是把暂存区的所有内容提交到当前分支</span><br><span class="line">git commit --amend   // 撤销上一次的提交</span><br><span class="line">git status  // 查看本地git仓库的提交状态</span><br><span class="line"></span><br><span class="line">git remote add origin git@gitee.com:taoyouyou/mongodb-install.git  // 添加远程库 </span><br><span class="line">git remote set-url --add origin git@git.oschina.net:shuaibai123/laravel-bjyblog.git   // 再次添加远程库，即一个本地的git仓库可以添加多个远程库</span><br><span class="line">git remote rm origin1      // 删除指定远程库</span><br><span class="line">git pull origin branch  // 拉取制定远程库的指定分支</span><br><span class="line">git pull origin branch --allow-unrelated-histories  // 强制拉取某远程库</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git push -u origin master   // 首次部署到远程仓库</span><br><span class="line">git push origin branch-name --force  //  强制上传本地文件到远程库</span><br></pre></td></tr></table></figure>
-<h3 id="git-add详解"><a href="#git-add详解" class="headerlink" title="git add详解:"></a>git add详解:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git add -A   // 添加所有改动</span><br><span class="line"></span><br><span class="line">git add *     // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add .    // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add -u   // 添加修改和删除，但是不包括新建文件</span><br></pre></td></tr></table></figure>
-<h3 id="版本恢复"><a href="#版本恢复" class="headerlink" title="版本恢复:"></a>版本恢复:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard HEAD^       //回退到前一个版本</span><br><span class="line">                 HEAD^^      //回退到前两个版本</span><br><span class="line">                 HEAD~100    //回退到前100版本</span><br><span class="line">                 commituid   //利用git reflog命令可以查看到所提交的每个版本的commitid</span><br><span class="line">git log  //查看用户目前进行了哪些commit操作</span><br><span class="line">git reflog  //查看用户进行哪些git操作</span><br></pre></td></tr></table></figure>
-<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git branch              //  查看本地仓库的所有分支</span><br><span class="line">git branch dev          //  创建dev分支</span><br><span class="line">git checkout -b dev     //  创建并转到dev分支</span><br><span class="line">git checkout master     //  切回master分支</span><br><span class="line">git merge dev           //  合并dev分支</span><br><span class="line">git branch -d dev       //  删除本地dev分支</span><br><span class="line">git push origin :dev    //  删除远程dev分支</span><br></pre></td></tr></table></figure>
-<h3 id="git-子模块"><a href="#git-子模块" class="headerlink" title="git 子模块"></a>git 子模块</h3><p>在使用git工具进行开发的时候经常会遇到各种各样的需求，git子模块概念的提出也是为了解决开发中的特定需求。当你在一个项目上工作时，你需要在其中使用另外一个项目。也许它是一个第三方开发的库或者是你独立开发和并在多个父项目中使用的。这个场景下一个常见的问题产生了：你想将两个项目单独处理但是又需要在其中一个中使用另外一个。Git 通过子模块处理这个问题。子模块允许你将一个 Git 仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。</p>
-<ul>
-<li>首先你要把外部的仓库克隆到你的子目录中。你通过git submodule add将外部项目加为子模块：<br><code>git submodule add git://github.com/chneukirchen/rack.git rack</code></li>
-<li><p>现在你就在项目里的rack子目录下有了一个 Rack 项目。你可以进入那个子目录，进行变更，加入你自己的远程可写仓库来推送你的变更，从原始仓库拉取和归并等等。如果你在加入子模块后立刻运行git status，你会看到下面两项：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line"># On branch master</span><br><span class="line"># Changes to be committed:</span><br><span class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">#</span><br><span class="line">#      new file:   .gitmodules</span><br><span class="line">#      new file:   rack</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>生成了rack文件夹和.gitmodules文件，.gitmodules是一个配置文件，保存了项目 URL 和你拉取到的本地子目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat .gitmodules</span><br><span class="line">[submodule &quot;rack&quot;]</span><br><span class="line">      path = rack</span><br><span class="line">      url = git://github.com/chneukirchen/rack.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>尽管rack是你工作目录里的子目录，但 Git 把它视作一个子模块，当你不在那个目录里时并不记录它的内容。取而代之的是，Git 将它记录成来自那个仓库的一个特殊的提交。当你在那个子目录里修改并提交时，子项目会通知那里的 HEAD 已经发生变更并记录你当前正在工作的那个提交；通过那样的方法，当其他人克隆此项目，他们可以重新创建一致的环境。</p>
-</li>
-<li>也就是说当你在子目录里进行文件改动之后必须先提交到子进程的git仓库，主项目才能检测到子进程的修改并提交到远程库</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/06/git简明手册/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mongodb的下载以及安装" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/06/mongodb的下载以及安装/">mongodb的下载以及安装</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/06/mongodb的下载以及安装/" class="archive-article-date">
-  	<time datetime="2018-03-06T08:23:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="下载mongodb"><a href="#下载mongodb" class="headerlink" title="下载mongodb"></a>下载mongodb</h3><ul>
-<li>下载地址为:<a href="https://gitee.com/taoyouyou/mongodb-install.git" target="_blank" rel="noopener">https://gitee.com/taoyouyou/mongodb-install.git</a>,此版本只适用于window 64位系统。<h3 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h3></li>
-</ul>
-<p>1、在安装过程中可以点击Custom(自定义)” 按钮来设置安装目录。我的安装目录为 D:\MongoDB\Server\3.4\bin，之后直接点击下一步即可安装成功。</p>
-<p>2、安装mongodb 后设置mongodb环境变量（如果没有配置环境变量，一下所有命令均在mongodb安装目录的bin目录下执行）</p>
-<p>3、新建数据库文件夹和日志记录文件<br>   <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mongodb2.png" alt=""><br> 在D:\MongoDB\Server\3.4目录下新建data文件夹作为数据库路径,新建logs文件夹下的mongo.log文件作为日志文件以及新建mongo.conf配置文件</p>
-<p>4、数据库配置文件<br> 在mongo.conf中写入以下配置信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dbpath=D:\MongoDB\Server\3.4\data #数据库路径  </span><br><span class="line">logpath=D:\MongoDB\Server\3.4\logs\mongo.log #日志输出文件路径  </span><br><span class="line">logappend=true #错误日志采用追加模式  </span><br><span class="line">journal=true #启用日志文件，默认启用  </span><br><span class="line">quiet=true #这个选项可以过滤掉一些无用的日志信息，若需要调试使用请设置为false  </span><br><span class="line">port=27017 #端口号 默认为27017</span><br></pre></td></tr></table></figure></p>
-<p>5、启动mongodb服务</p>
-<ul>
-<li>方法一<br><code>mongod --config &quot;D:\MongoDB\Server\3.4\mongo.conf&quot;   // 在命令行启动</code> </li>
-<li>方法二<br><code>mongod --config &quot;D:\MongoDB\Server\3.4\mongo.conf&quot; --install --serviceName &quot;MongoDB&quot;    // 安装MongoDB的windows服务管理</code></li>
-</ul>
-<p>右键计算机——系统服务，打开windows服务框，本地服务服务列表中会看到MongoDB，表示已经成功将mongodb加入到了系统服务，但是此时服务还没有开启！</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net stop MongoDB  // 命令行关闭mongodb服务</span><br><span class="line"></span><br><span class="line">mongod.exe --remove --serviceName &quot;MongoDB&quot;    // 卸载MongoDB的windows服务管理</span><br></pre></td></tr></table></figure>
-<p>6、创建mongodb连接<br>安装完成后，shell交互式下输入mongo就可以直接无密码登录到数据库。默认登录到test数据<br><code>mongo 127.0.0.1:27017/admin -u &#39;userAdmin&#39; -p &#39;123&#39;    // 使用用户名和密码连接到MongoDB服务器</code></p>
-<h3 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h3><ul>
-<li>常用命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">db.createUser(&#123;user: &quot;root&quot;, pwd: &quot;123456&quot;, roles: [&#123; role: &quot;dbOwner&quot;, db: &quot;activity&quot; &#125;]&#125;)     //  创建对应数据库的权限</span><br><span class="line">mongo 127.0.0.1:27017/activity -u &apos;root&apos; -p &apos;123456&apos;   //  适用刚创建的用户权限链接对应的数据库</span><br><span class="line">show users   // 查看当前用户</span><br><span class="line"></span><br><span class="line">use runoob  // 不存在则新增runoob数据库  存在则切换到runoob数据库</span><br><span class="line">show dbs   // 查看所有数据库</span><br><span class="line">db  // 查看当前数据库</span><br><span class="line">db.runoob.insert(&#123;&quot;name&quot;:&quot;菜鸟教程&quot;&#125;)  // 向数据库新增runoob表/集合，并插入数据</span><br><span class="line">show tables 或者 show collections    // 查看当前数据库的集合</span><br><span class="line">db.runoob.find()    // 查找数据库</span><br><span class="line">db.dropDatabase()   // 删除当前数据库</span><br><span class="line">db.collection.drop()  // 删除集合</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">mongodb</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/06/mongodb的下载以及安装/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1564,15 +1527,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1584,15 +1543,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1620,11 +1579,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1636,19 +1611,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
             
             <div class="clearfix"></div>
