@@ -156,6 +156,381 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-小白入门docker指南" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/20/小白入门docker指南/">小白入门docker指南</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/20/小白入门docker指南/" class="archive-article-date">
+  	<time datetime="2020-01-20T03:43:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="为什么要用Docker"><a href="#为什么要用Docker" class="headerlink" title="为什么要用Docker"></a>为什么要用Docker</h2><h3 id="开发环境配置难题"><a href="#开发环境配置难题" class="headerlink" title="开发环境配置难题"></a>开发环境配置难题</h3><p>docker的出现主要是为了解决开发环境配置的难题，举例来说，安装一个 Python 应用，计算机必须有 Python 引擎，还必须有各种依赖，可能还要配置环境变量。如果某些老旧的模块与当前环境不兼容，那就麻烦了。开发者常常会说：”它在我的机器可以跑了”，言下之意就是，其他机器很可能跑不了。</p>
+<p>环境配置如此麻烦，换一台机器，就要重来一次，旷日费时。很多人想到，能不能从根本上解决问题，软件可以带环境安装？也就是说，安装的时候，把原始环境一模一样地复制过来。</p>
+<h3 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h3><p>在此之前都是用虚拟机来解决这个问题,虚拟机（virtual machine）就是带环境安装的一种解决方案。它可以在一种操作系统里面运行另一种操作系统，比如在 Windows 系统里面运行 Linux 系统。应用程序对此毫无感知，因为虚拟机看上去跟真实系统一模一样，而对于底层系统来说，虚拟机就是一个普通文件，不需要了就删掉，对其他部分毫无影响。<br>虽然用户可以通过虚拟机还原软件的原始环境。但是，这个方案有几个缺点。  </p>
+<ol>
+<li>资源占用多<br>虚拟机会独占一部分内存和硬盘空间。它运行的时候，其他程序就不能使用这些资源了。哪怕虚拟机里面的应用程序，真正使用的内存只有 1MB，虚拟机依然需要几百 MB 的内存才能运行。   </li>
+<li>冗余步骤多<br>虚拟机是完整的操作系统，一些系统级别的操作步骤，往往无法跳过，比如用户登录。   </li>
+<li>启动慢<br>启动操作系统需要多久，启动虚拟机就需要多久。可能要等几分钟，应用程序才能真正运行。</li>
+</ol>
+<h3 id="Linux-容器"><a href="#Linux-容器" class="headerlink" title="Linux 容器"></a>Linux 容器</h3><p>由于虚拟机存在这些缺点，Linux 发展出了另一种虚拟化技术：Linux 容器（Linux Containers，缩写为 LXC）。<br>Linux 容器不是模拟一个完整的操作系统，而是对进程进行隔离。或者说，在正常进程的外面套了一个保护层。对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。<br>由于容器是进程级别的，相比虚拟机有很多优势。</p>
+<ol>
+<li>启动快<br>容器里面的应用，直接就是底层系统的一个进程，而不是虚拟机内部的进程。所以，启动容器相当于启动本机的一个进程，而不是启动一个操作系统，速度就快很多。   </li>
+<li>资源占用少<br>容器只占用需要的资源，不占用那些没有用到的资源；虚拟机由于是完整的操作系统，不可避免要占用所有资源。另外，多个容器可以共享资源，虚拟机都是独享资源。</li>
+<li>体积小<br>容器只要包含用到的组件即可，而虚拟机是整个操作系统的打包，所以容器文件比虚拟机文件要小很多。      </li>
+</ol>
+<p>总之，容器有点像轻量级的虚拟机，能够提供虚拟化的环境，但是成本开销小得多。</p>
+<p>Docker 属于 Linux 容器的一种封装，提供简单易用的容器使用接口。它是目前最流行的 Linux 容器解决方案。</p>
+<h2 id="Docker的用途"><a href="#Docker的用途" class="headerlink" title="Docker的用途"></a>Docker的用途</h2><p>Docker 的主要用途，目前有三大类。</p>
+<ol>
+<li>提供一次性的环境。比如，本地测试他人的软件、持续集成的时候提供单元测试和构建的环境。</li>
+<li>提供弹性的云服务。因为 Docker 容器可以随开随关，很适合动态扩容和缩容。</li>
+<li>组建微服务架构。通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构。</li>
+</ol>
+<h2 id="Docker的安装"><a href="#Docker的安装" class="headerlink" title="Docker的安装"></a>Docker的安装</h2><p>了解了Docker是干什么的有什么作用之后，我们就可以将docker括入囊中了。Docker 从 17.03 版本之后分为 CE（Community Edition: 社区版） 和 EE（Enterprise Edition: 企业版），我们用社区版就可以了。<br>Docker CE 的安装可以参考菜鸟出的docker教程。</p>
+<blockquote>
+<ul>
+<li><a href="https://www.runoob.com/docker/macos-docker-install.html" target="_blank" rel="noopener">MacOS Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/ubuntu-docker-install.html" target="_blank" rel="noopener">Ubuntu Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/windows-docker-install.html" target="_blank" rel="noopener">Windows Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/centos-docker-install.html" target="_blank" rel="noopener">Centos Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/debian-docker-install.html" target="_blank" rel="noopener">Debian Docker 安装</a></li>
+</ul>
+</blockquote>
+<h3 id="镜像加速"><a href="#镜像加速" class="headerlink" title="镜像加速"></a>镜像加速</h3><p>鉴于国内网络问题，后续拉取 Docker 镜像十分缓慢，我们可以需要配置加速器来解决，Docker 官方和国内很多云服务商都提供了国内加速器服务，例如：</p>
+<ul>
+<li>Docker官方提供的中国镜像库：<a href="https://registry.docker-cn.com" target="_blank" rel="noopener">https://registry.docker-cn.com</a></li>
+<li>七牛云加速器：<a href="https://reg-mirror.qiniu.com" target="_blank" rel="noopener">https://reg-mirror.qiniu.com</a>      </li>
+<li>网易的镜像地址：<a href="http://hub-mirror.c.163.com" target="_blank" rel="noopener">http://hub-mirror.c.163.com</a></li>
+</ul>
+<p>在任务栏点击 Docker for mac 应用图标 -&gt; Perferences… -&gt; Daemon -&gt; Registry mirrors。在列表中填写加速器地址即可。修改完成之后，点击 Apply &amp; Restart 按钮，Docker 就会重启并应用配置的镜像地址了。<br><img src="https://user-gold-cdn.xitu.io/2019/11/28/16eb101b11283fe3?w=377&amp;h=565&amp;f=png&amp;s=43238" alt=""></p>
+<p>之后我们可以通过 docker info 来查看是否配置成功。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ docker info</span><br><span class="line">...</span><br><span class="line">Registry Mirrors:</span><br><span class="line"> http://hub-mirror.c.163.com</span><br><span class="line">Live Restore Enabled: false</span><br></pre></td></tr></table></figure></p>
+<h2 id="Docker的使用"><a href="#Docker的使用" class="headerlink" title="Docker的使用"></a>Docker的使用</h2><p>要理解并使用docker，首先要理解docker下的三个重要概念</p>
+<ul>
+<li>镜像（Image）</li>
+<li>容器（Container）</li>
+<li>仓库（Repository）   <h3 id="image文件"><a href="#image文件" class="headerlink" title="image文件"></a>image文件</h3>Docker 把应用程序及其依赖，打包在 image 文件里面。只有通过这个文件，才能生成 Docker 容器。image 文件可以看作是容器的模板。Docker 根据 image 文件生成容器的实例。同一个 image 文件，可以生成多个同时运行的容器实例。</li>
+</ul>
+<p>我们可以通过命令来创建镜像以及管理和使用本地的镜像</p>
+<ul>
+<li>列出本机的所有 image 文件<br><code>docker images</code></li>
+</ul>
+<ul>
+<li>获取镜像<br><code>docker pull ubuntu</code></li>
+</ul>
+<ul>
+<li>删除镜像<br><code>docker rmi hello-world</code></li>
+<li>设置镜像标签<br><code>docker tag 860c279d2fec runoob/centos:dev</code></li>
+</ul>
+<h3 id="docker容器"><a href="#docker容器" class="headerlink" title="docker容器"></a>docker容器</h3><p>Docker 的容器可以简单理解为提供了系统硬件环境，它是真正跑项目程序、消耗机器资源、提供服务的东西。例如，我们可以暂时把容器看作一个 Linux 的电脑，它可以直接运行。那么，容器是基于镜像启动的，并且每个容器都是相互隔离的。注意的是，容器在启动的时候基于镜像创建一层可写层作为最上层。</p>
+<ul>
+<li>基于镜像创建一个容器<br><code>docker run -itd ubuntu bash</code>    <blockquote>
+<p>参数说明：   </p>
+<ul>
+<li>-i: 交互式操作。   </li>
+<li>-t: 终端。</li>
+<li>-d: 后台运行。</li>
+<li>ubuntu: ubuntu 镜像。</li>
+<li>bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash。   </li>
+</ul>
+</blockquote>
+</li>
+<li>查看所有的容器<br><code>docker ps -a</code></li>
+<li>查看正在运行的容器<br><code>docker ps</code></li>
+<li>停止一个容器<br><code>docker stop &lt;容器 ID&gt;</code></li>
+<li>启动一个已经停止的容器<br><code>docker start &lt;容器 ID&gt;</code></li>
+<li>进入容器：在使用 -d 参数时，容器启动后会进入后台。此时想要进入容器，可以通过以下指令进入：<ol>
+<li>docker attach：退出容器终端，会导致容器的停止。<br><code>docker attach &lt;容器 ID&gt;</code></li>
+<li>docker exec：退出容器终端，不会导致容器的停止。<br><code>docker exec -it &lt;容器 ID&gt; /bin/bash</code></li>
+</ol>
+</li>
+<li>删除容器<br><code>docker rm -f &lt;容器 ID&gt;</code></li>
+<li>清理掉所有处于终止状态的容器。<br><code>docker container prune</code></li>
+</ul>
+<h3 id="Docker仓库"><a href="#Docker仓库" class="headerlink" title="Docker仓库"></a>Docker仓库</h3><p>仓库可看着一个代码控制中心，用来保存镜像.这一点，和 Git 非常类似。我们可以从中心仓库下载镜像，也可以从自建仓库下载。同时，我们可以把制作好的镜像 commit 到本地，然后 push 到远程仓库。仓库分为公开仓库和私有仓库，最大的公开仓库是官方仓库 Dock Hub，国内的公开仓库也有很多选择，例如阿里云等。<br>在 <a href="https://hub.docker.com" target="_blank" rel="noopener">https://hub.docker.com</a> 免费注册一个 Docker 账号。</p>
+<ul>
+<li>登录<br><code>docker login #需要输入用户名密码</code></li>
+<li>退出<br><code>docker logout</code></li>
+<li>拉取镜像<br><code>docker pull ubuntu</code></li>
+<li>提交镜像<br><code>docker commit -m=&quot;has update&quot; -a=&quot;runoob&quot; e218edb10161 runoob/ubuntu:v2</code></li>
+<li>推送镜像<br><code>docker push</code></li>
+</ul>
+<p>docker host通过仓库拉取镜像，基于镜像运行一个docker实例化的容器。经过一系列的命令对容器进行自定义修改后又可以提交到docker仓库。   </p>
+<p>基本概念和命令了解了以后可以上手Docker实例,    </p>
+<h3 id="构建自定义镜像"><a href="#构建自定义镜像" class="headerlink" title="构建自定义镜像"></a>构建自定义镜像</h3><p>Docker 提供自定义镜像的能力，它可以让我们保存对基础镜像的修改，并再次使用。那么，我们就可以把操作系统、运行环境、脚本和程序打包在一起，并在宿主机上对外提供服务。<br>Docker 构建镜像有两种方式，     </p>
+<ol>
+<li>从已经创建的容器中更新镜像，并且提交这个镜像。举个例子:</li>
+</ol>
+<p>更新镜像之前，我们需要使用镜像来创建一个容器。<br><code>docker run -d -p 80:80 --name webserver nginx</code><br>进入这个nginx容器并修改显示内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mac$ docker exec -it webserver bash</span><br><span class="line">root@c3f41221f05d:/# echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</span><br><span class="line">root@c3f41221f05d:/# exit</span><br><span class="line">exit</span><br></pre></td></tr></table></figure></p>
+<p>此时名为webserver的容器，是按我们的需求更改的容器。我们可以通过命令 docker commit 来提交容器副本。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker commit \</span><br><span class="line">&gt;     --author &quot;Tao Wang &lt;twang2218@gmail.com&gt;&quot; \</span><br><span class="line">&gt;     --message &quot;修改了默认网页&quot; \</span><br><span class="line">&gt;     webserver \</span><br><span class="line">&gt;     nginx:v2</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>各个参数说明：</p>
+<ul>
+<li>-message: 提交的描述信息   </li>
+<li>-author: 指定镜像作者   </li>
+<li>webserver：容器名称</li>
+<li>nginx:v2: 指定要创建的目标镜像名</li>
+</ul>
+</blockquote>
+<ol>
+<li>使用 Dockerfile 指令来创建一个新的镜像   </li>
+</ol>
+<p>使用命令 docker build ， 从零开始来创建一个新的镜像。为此，我们需要创建一个 Dockerfile 文件，其中包含一组指令来告诉 Docker 如何构建我们的镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FROM nginx</span><br><span class="line">RUN echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</span><br></pre></td></tr></table></figure></p>
+<p>每一个指令都会在镜像上创建一个新的层，每一个指令的前缀都必须是大写的。<br>第一条FROM，指定使用哪个镜像源<br>RUN 指令告诉docker 在镜像内执行命令，安装了什么。。。<br>然后，我们使用 Dockerfile 文件，通过 docker build 命令来构建一个镜像。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx:v3 .</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>参数说明：</p>
+<ul>
+<li>-t ：指定要创建的目标镜像名</li>
+<li>. ：docker构建时的上下文路径    </li>
+</ul>
+</blockquote>
+<p>关于镜像构建上下文：<br>理解刚才的命令 docker build -t nginx:v3 . 中的这个 .，实际上是在指定上下文的目录，docker build 命令会将该目录下的内容打包交给 Docker 引擎以帮助构建镜像。</p>
+<p>一般来说，应该会将 Dockerfile 置于一个空目录下，或者项目根目录下。如果该目录下没有所需文件，那么应该把所需文件复制一份过来。如果目录下有些东西确实不希望构建时传给 Docker 引擎，那么可以用 .gitignore 一样的语法写一个 .dockerignore，该文件是用于剔除不需要作为上下文传递给 Docker 引擎的。</p>
+<p>使用<code>docker images</code> 查看创建的镜像已经在列表中存在,<br>我们可以使用新的镜像来创建容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -t -i runoob/centos:6.7  /bin/bash</span><br><span class="line">[root@41c28d18b5fb /]# id runoob</span><br><span class="line">uid=500(runoob) gid=500(runoob) groups=500(runoob)</span><br></pre></td></tr></table></figure>
+<p>从上面看到新镜像已经包含我们创建的用户 runoob。   </p>
+<p>不推荐使用第一种方式进行构建，因为它没有使得整个流程标准化，因此，在企业的中更加推荐使用Dockerfile文件来构建我们的镜像。我们使用Dockerfile文件可以让构建镜像更具备可重复性，同时保证启动脚本和运行程序的标准化。</p>
+<h2 id="Dockerfile-指令详解"><a href="#Dockerfile-指令详解" class="headerlink" title="Dockerfile 指令详解"></a>Dockerfile 指令详解</h2><ol>
+<li><p>COPY 复制文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">COPY &lt;源路径&gt;... &lt;目标路径&gt;    </span><br><span class="line">//&lt;源路径&gt; 可以是多个，甚至可以是通配符.&lt;目标路径&gt;可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录用 WORKDIR 指令来指定）。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ADD 指令和 COPY 的格式和性质基本一致。但是在 COPY 基础上增加了一些自动解压缩功能</p>
+</li>
+<li>CMD 容器启动命令<br>CMD 指令的格式和 RUN 相似，也是两种格式：<blockquote>
+<p>shell 格式：CMD &lt;命令&gt;<br>exec 格式：CMD [“可执行文件”, “参数1”, “参数2”…]<br>参数列表格式：CMD [“参数1”, “参数2”…]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。</p>
+</blockquote>
+</li>
+<li>ENTRYPOINT 入口点<br>ENTRYPOINT 的目的和 CMD 一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 docker run 的参数 –entrypoint 来指定。<br>当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令.</li>
+<li>ENV 设置环境变量<blockquote>
+<p>ENV key value<br>ENV key1=value1 key2=value2…</p>
+</blockquote>
+</li>
+<li>ARG 构建参数<blockquote>
+<p>ARG &lt;参数名&gt;[=&lt;默认值&gt;]<br>构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的环境变量，在将来容器运行时是不会存在这些环境变量的。但是不要因此就使用 ARG 保存密码之类的信息，因为 docker history 还是可以看到所有值的。</p>
+</blockquote>
+</li>
+<li>VOLUME 定义匿名卷<blockquote>
+<p>VOLUME &lt;路径&gt;<br>VOLUME [“&lt;路径1&gt;”, “&lt;路径2&gt;”…]<br>容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中。</p>
+</blockquote>
+</li>
+<li>EXPOSE 声明端口<blockquote>
+<p>EXPOSE &lt;端口1&gt; [&lt;端口2&gt;…]<br>要将 EXPOSE 和在运行时使用 -p &lt;宿主端口&gt;:&lt;容器端口&gt; 区分开来。-p，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 EXPOSE 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。</p>
+</blockquote>
+</li>
+<li><p>WORKDIR 指定工作目录<br>每一个 RUN 都是启动一个容器、执行命令、然后提交存储层文件变更，如果把Dockfile当作shell来写的话可以会犯以下错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN cd /app</span><br><span class="line">RUN echo &quot;hello&quot; &gt; world.txt</span><br></pre></td></tr></table></figure>
+<p>第一层 RUN cd /app 的执行仅仅是当前进程的工作目录变更，一个内存上的变化而已，其结果不会造成任何文件变更。而到第二层的时候，启动的是一个全新的容器，跟第一层的容器更完全没关系，自然不可能继承前一层构建过程中的内存变化。<br>因此如果需要改变以后各层的工作目录的位置，那么应该使用 WORKDIR 指令</p>
+</li>
+<li>USER 指定当前用户<blockquote>
+<p>USER &lt;用户名&gt;<br>USER 则是改变之后层的执行 RUN, CMD 以及 ENTRYPOINT 这类命令的身份。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="Docker进阶——docker-compose-yml-配置文件"><a href="#Docker进阶——docker-compose-yml-配置文件" class="headerlink" title="Docker进阶——docker-compose.yml 配置文件"></a>Docker进阶——docker-compose.yml 配置文件</h2><p>前面我们学习到，可以通过编写Dockfile的方式来创建一个新的镜像，但是在实际项目中总是多个镜像相互依赖，这时我们可以用docker-compse.yml记录一个项目(project, 一般是多个镜像)的构建过程。<br>使用docker compose 基本可以分为3步：</p>
+<ol>
+<li>使用Dockerfile定义应用程序的环境，以便可以在任何地方复用它们。</li>
+<li>在docker-compose.yml中定义组成应用程序的服务，以便它们可以在独立的环境中一起运行。</li>
+<li>运行docker compose up和compose启动并运行整个应用程序。</li>
+</ol>
+<p>官方提供了一个 Docker Compose 配置文件的标准例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.7&quot;</span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  redis:</span><br><span class="line">    image: redis:alpine    // 从指定的镜像中启动容器，可以是存储仓库、标签以及镜像 ID</span><br><span class="line">    ports:                 // 指定端口号</span><br><span class="line">      - &quot;6379&quot;</span><br><span class="line">    networks:              // 加入指定网络</span><br><span class="line">      - frontend</span><br><span class="line">    deploy:                // 指定与部署和运行服务相关的配置</span><br><span class="line">      mode: replicated        // 两支mode: global:每个集节点只有一个容器  replicated:指定容器数量（默认）</span><br><span class="line">      replicas: 2             // 如果服务是 replicated（默认)，需要指定运行的容器数量</span><br><span class="line">      update_config:          // 配置更新服务，用于无缝更新应用</span><br><span class="line">        parallelism: 2           // 一次性更新的容器数量</span><br><span class="line">        delay: 10s               // 更新一组容器之间等待的时间</span><br><span class="line">        order: stop-first        // 更新次序设置，stop-first：旧的任务在开始新任务之前停止（默认）、start-first：新的任务首先启动，并且正在运行的任务短暂重叠</span><br><span class="line">      restart_policy:         // 配置容器的重新启动，代替 restart</span><br><span class="line">        condition: on-failure    // condition:值可以为 none 、on-failure 以及 any(默认)</span><br><span class="line">        delay: 5s                // 尝试重启的等待时间，默认为 0</span><br><span class="line">        max_attempts: 3          // 在放弃之前尝试重新启动容器次数（默认：从不放弃）</span><br><span class="line">        window: 120s             // 在决定重新启动是否成功之前的等时间，指定为持续时间（默认值：立即决定）</span><br><span class="line"></span><br><span class="line">  db:</span><br><span class="line">    image: postgres:9.4</span><br><span class="line">    volumes:                 // 挂载一个目录或者一个已存在的数据卷容器，可以直接使用 HOST:CONTAINER 这样的格式，或者使用 HOST:CONTAINER:ro 这样的格式，后者对于容器来说，数据卷是只读的，这样可以有效保护宿主机的文件系统</span><br><span class="line">      - db-data:/var/lib/postgresql/data</span><br><span class="line">    networks:</span><br><span class="line">      - backend</span><br><span class="line">    deploy:</span><br><span class="line">      placement:                // 指定 constraints 和 preferences</span><br><span class="line">        constraints:</span><br><span class="line">          - &quot;node.role==manager&quot;</span><br><span class="line"></span><br><span class="line">  vote:</span><br><span class="line">    image: dockersamples/examplevotingapp_vote:before</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5000:80&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - frontend</span><br><span class="line">    depends_on:</span><br><span class="line">      - redis</span><br><span class="line">    deploy:</span><br><span class="line">      replicas: 2</span><br><span class="line">      update_config:</span><br><span class="line">        parallelism: 2</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line"></span><br><span class="line">  result:</span><br><span class="line">    image: dockersamples/examplevotingapp_result:before</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5001:80&quot;</span><br><span class="line">    networks:</span><br><span class="line">      - backend</span><br><span class="line">    depends_on:</span><br><span class="line">      - db</span><br><span class="line">    deploy:</span><br><span class="line">      replicas: 1</span><br><span class="line">      update_config:</span><br><span class="line">        parallelism: 2</span><br><span class="line">        delay: 10s</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line"></span><br><span class="line">  worker:</span><br><span class="line">    image: dockersamples/examplevotingapp_worker</span><br><span class="line">    networks:</span><br><span class="line">      - frontend</span><br><span class="line">      - backend</span><br><span class="line">    deploy:</span><br><span class="line">      mode: replicated</span><br><span class="line">      replicas: 1</span><br><span class="line">      labels: [APP=VOTING]</span><br><span class="line">      restart_policy:</span><br><span class="line">        condition: on-failure</span><br><span class="line">        delay: 10s</span><br><span class="line">        max_attempts: 3</span><br><span class="line">        window: 120s</span><br><span class="line">      placement:</span><br><span class="line">        constraints:</span><br><span class="line">          - &quot;node.role==manager&quot;</span><br><span class="line"></span><br><span class="line">  visualizer:</span><br><span class="line">    image: dockersamples/visualizer:stable</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:8080&quot;</span><br><span class="line">    stop_grace_period: 1m30s</span><br><span class="line">    volumes:</span><br><span class="line">      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;</span><br><span class="line">    deploy:</span><br><span class="line">      placement:</span><br><span class="line">        constraints:</span><br><span class="line">          - &quot;node.role==manager&quot;</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  frontend:</span><br><span class="line">  backend:</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  db-data:</span><br></pre></td></tr></table></figure>
+<p>compose文件是一个定义了services，network, volumes的yaml配置文件，这个文件的默认路径为 ./docker-compose.yml。<br>关于docker-compose具体配置可以参考<a href="https://blog.csdn.net/qq_36148847/article/details/79427878" target="_blank" rel="noopener">docker-compose.yml 配置文件编写详解</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/20/小白入门docker指南/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-node+puppeteer定时发送微博" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/20/node+puppeteer定时发送微博/">node+puppeteer定时发送微博</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/20/node+puppeteer定时发送微博/" class="archive-article-date">
+  	<time datetime="2019-12-20T07:04:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="实现功能：登录微博自动转发特定用户的下的第一条微博"><a href="#实现功能：登录微博自动转发特定用户的下的第一条微博" class="headerlink" title="实现功能：登录微博自动转发特定用户的下的第一条微博"></a>实现功能：登录微博自动转发特定用户的下的第一条微博</h2><h2 id="实现步骤："><a href="#实现步骤：" class="headerlink" title="实现步骤："></a>实现步骤：</h2><h3 id="1-初始化项目"><a href="#1-初始化项目" class="headerlink" title="1. 初始化项目"></a>1. 初始化项目</h3><p>你需要安装版本 8 以上的 Node，你可以在<a href="https://nodejs.org/en/" target="_blank" rel="noopener">这里</a>找到安装方法。确保选择Current版本，因为它是 8+。 安装完node后新建一个项目文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir Project</span><br><span class="line">cd Project</span><br></pre></td></tr></table></figure></p>
+<p>初始化一个node项目，在交互式命令中输入依次项目名、版本号、描述…等信息。直接enter键保持默认选项即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">MacdeMacBook-Pro:Project mac$ npm init</span><br><span class="line">...</span><br><span class="line">package name: (project) test</span><br><span class="line">version: (1.0.0) </span><br><span class="line">description: </span><br><span class="line">entry point: (index.js) </span><br><span class="line">test command: </span><br><span class="line">git repository: </span><br><span class="line">keywords: </span><br><span class="line">author: </span><br><span class="line">license: (ISC) </span><br><span class="line">About to write to /Users/mac/Project/package.json:</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;name&quot;: &quot;test&quot;,</span><br><span class="line">&quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">&quot;description&quot;: &quot;&quot;,</span><br><span class="line">&quot;main&quot;: &quot;index.js&quot;,</span><br><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;author&quot;: &quot;&quot;,</span><br><span class="line">&quot;license&quot;: &quot;ISC&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Is this OK? (yes)</span><br></pre></td></tr></table></figure></p>
+<p>这是会生成一个如下目录结构的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Project</span><br><span class="line">    - index.js  // 入口文件</span><br><span class="line">    - package.json</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-安装依赖"><a href="#2-安装依赖" class="headerlink" title="2. 安装依赖"></a>2. 安装依赖</h3><h4 id="puppeteer"><a href="#puppeteer" class="headerlink" title="puppeteer"></a>puppeteer</h4><p>Puppeteer(中文翻译”木偶”) Google Chrome 团队官方的无界面（Headless）Chrome 工具。也可以通过配置使用完整的（非无头）Chrome. 使用 Puppeteer，相当于同时具有 Linux 和 Chrome 双端的操作能力，在浏览器中手动完成的大部分事情都可以使用 Puppeteer 完成，应用场景可谓非常之多。如：</p>
+<ul>
+<li>从网站抓取你需要的内容。</li>
+<li>模拟人为操作自动表单提交，UI测试，键盘输入等。</li>
+<li>创建一个最新的自动化测试环境。使用最新的JavaScript和浏览器功能，直接在最新版本的Chrome中运行测试。</li>
+<li>捕获您的网站的时间线跟踪，以帮助诊断性能问题。   </li>
+</ul>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p><code>npm i puppeteer -S -D</code></p>
+<h5 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h5><p>puppeteer的具体用法可以参考<a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/#/" target="_blank" rel="noopener">puppeteer中文文档</a></p>
+<h4 id="node-schedule"><a href="#node-schedule" class="headerlink" title="node-schedule"></a>node-schedule</h4><p>Node Schedule是用于Node.js下的灵活的cron式和非cron式任务调度程序。 它允许您使用可选的重复规则来安排任务（任意函数）在特定日期执行。    </p>
+<h5 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h5><p><code>npm i node-schedule -S -D</code></p>
+<h5 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h5><ol>
+<li>Cron风格定时器<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"></span><br><span class="line">const  scheduleCronstyle = ()=&gt;&#123;</span><br><span class="line">  //每分钟的第30秒定时执行一次:</span><br><span class="line">    schedule.scheduleJob(&apos;30 * * * * *&apos;,()=&gt;&#123;</span><br><span class="line">        console.log(&apos;scheduleCronstyle:&apos; + new Date());</span><br><span class="line">    &#125;); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">scheduleCronstyle();</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>schedule.scheduleJob的回调函数中写入要执行的任务代码，一个定时器就完成了！</p>
+<blockquote>
+<p>规则参数讲解 *代表通配符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">*  *  *  *  *  *</span><br><span class="line">┬ ┬ ┬ ┬ ┬ ┬</span><br><span class="line">│ │ │ │ │  |</span><br><span class="line">│ │ │ │ │ └ day of week (0 - 7) (0 or 7 is Sun)</span><br><span class="line">│ │ │ │ └───── month (1 - 12)</span><br><span class="line">│ │ │ └────────── day of month (1 - 31)</span><br><span class="line">│ │ └─────────────── hour (0 - 23)</span><br><span class="line">│ └──────────────────── minute (0 - 59)</span><br><span class="line">└───────────────────────── second (0 - 59, OPTIONAL)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>6个占位符从左到右分别代表：秒、分、时、日、月、周几</p>
+<p><em>表示通配符，匹配任意，当秒是</em>时，表示任意秒数都触发，其它类推</p>
+<p>关于cron表达式具体用法可以参考<a href="http://cron.qqe2.com/" target="_blank" rel="noopener">cron表达式工具</a></p>
+<ol>
+<li><p>对象文本语法定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"></span><br><span class="line">function scheduleObjectLiteralSyntax()&#123;</span><br><span class="line"></span><br><span class="line">    // 每周一的下午16：11分触发，其它组合可以根据我代码中的注释参数名自由组合</span><br><span class="line">    schedule.scheduleJob(&#123;hour: 16, minute: 11, dayOfWeek: 1&#125;, function()&#123;</span><br><span class="line">        console.log(&apos;scheduleObjectLiteralSyntax:&apos; + new Date());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">scheduleObjectLiteralSyntax();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>递归规则调度定时器</p>
+</li>
+</ol>
+<p>您可以构建重复规则以指定何时应重复作业。 例如，考虑以下规则，该规则在每小时的42分钟之后每小时执行一次函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"> </span><br><span class="line">var rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.minute = 42;</span><br><span class="line"> </span><br><span class="line">var j = schedule.scheduleJob(rule, function()&#123;</span><br><span class="line">  console.log(&apos;The answer to life, the universe, and everything!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>您还可以使用数组来指定可接受值的列表，并使用Range对象来指定起始值和结束值的范围，以及可选的step参数。 例如，这将在周四，周五，周六和周日下午5点打印一条消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.dayOfWeek = [0, new schedule.Range(4, 6)];</span><br><span class="line">rule.hour = 17;</span><br><span class="line">rule.minute = 0;</span><br><span class="line"> </span><br><span class="line">var j = schedule.scheduleJob(rule, function()&#123;</span><br><span class="line">  console.log(&apos;Today is recognized by Rebecca Black!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>RecurrenceRule属性</p>
+<ul>
+<li>second (0-59)</li>
+<li>minute (0-59)</li>
+<li>hour (0-23)</li>
+<li>date (1-31)</li>
+<li>month (0-11)</li>
+<li>year</li>
+<li>dayOfWeek (0-6) Starting with Sunday</li>
+</ul>
+</blockquote>
+<h3 id="3-代码编写"><a href="#3-代码编写" class="headerlink" title="3. 代码编写"></a>3. 代码编写</h3><h4 id="登录功能："><a href="#登录功能：" class="headerlink" title="登录功能："></a>登录功能：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const browser = await puppeteer.launch(&#123;</span><br><span class="line">    headless: false,</span><br><span class="line">    slowMo: 250,</span><br><span class="line">    executablePath: &apos;&apos;</span><br><span class="line">&#125;);  // 创建一个 Browser 实例</span><br><span class="line">const page = (await browser.pages())[0];</span><br><span class="line">await page.setViewport(&#123;</span><br><span class="line">    width: 1280,</span><br><span class="line">    height: 800</span><br><span class="line">&#125;);  // 设置视口</span><br><span class="line"></span><br><span class="line">await page.goto(&quot;https://weibo.com/&quot;); // 跳转目标页面</span><br><span class="line">await page.waitForNavigation();   //等待页面加载完成</span><br><span class="line">await page.type(&quot;#loginname&quot;, username); // 输入用户名</span><br><span class="line">await page.type(&quot;#pl_login_form &gt; div &gt; div:nth-child(3) &gt; div.info_list.password &gt; div &gt; input&quot;, password);   // 输入密码</span><br><span class="line">await page.click(&quot;#pl_login_form &gt; div &gt; div:nth-child(3) &gt; div:nth-child(6)&quot;);  // 点击登录</span><br><span class="line">await page.waitForNavigation();   //等待跳转的页面加载完成</span><br></pre></td></tr></table></figure>
+<h4 id="登录以后转发操作："><a href="#登录以后转发操作：" class="headerlink" title="登录以后转发操作："></a>登录以后转发操作：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">await page.type(&quot;.gn_search_v2&gt;input&quot;, searchText);  // 等待新窗口加载后 搜索框输入需要搜索的用户</span><br><span class="line">await page.click(&quot;.gn_search_v2&gt;a&quot;);  // 点击搜索</span><br><span class="line">await page.waitFor(3000);</span><br><span class="line">await page.click(&apos;.m-con-l&gt; div &gt; div.card-wrap:nth-child(1) .avator&apos;);  // 点击搜索后出现的用户头像</span><br><span class="line">await page.waitFor(10000); // 等待5s 新窗口打开搜索后的用户主页页面</span><br><span class="line">const page2 = ( await browser.pages() )[1]; //得到所有窗口使用列表索引得到新的窗口</span><br><span class="line">await page2.setViewport(&#123;</span><br><span class="line">    width: 1280,</span><br><span class="line">    height: 800</span><br><span class="line">&#125;);</span><br><span class="line">await page2.waitFor(&apos;.WB_feed.WB_feed_v3.WB_feed_v4&apos;); // 等待加载元素</span><br><span class="line">const result = await page2.evaluate(() =&gt; &#123;</span><br><span class="line">    let text = document.querySelector(&quot;#Pl_Official_MyProfileFeed__23 &gt; div &gt; div:nth-child(2) &gt; div.WB_feed_detail.clearfix &gt; div.WB_detail &gt; div.WB_text.W_f14&quot;).innerText;</span><br><span class="line">    return &#123;</span><br><span class="line">        text,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br><span class="line">await page2.click(&apos;#Pl_Official_MyProfileFeed__23 &gt; div &gt; div:nth-child(2) &gt; div.WB_feed_handle &gt; div &gt; ul &gt; li:nth-child(2) &gt; a &gt; span &gt; span&apos;)</span><br><span class="line">await page2.waitFor(&apos;.p_input.p_textarea&apos;);</span><br><span class="line">await page2.type(&apos;.p_input.p_textarea&apos;, result.text)</span><br><span class="line">await page2.click(&apos;div.content &gt; div.layer_forward &gt; div &gt; div:nth-child(2) &gt; div &gt; div.WB_feed_repeat.forward_rpt1 &gt; div &gt; div.WB_feed_publish.clearfix &gt; div &gt; div.p_opt.clearfix &gt; div.btn.W_fr &gt; a&apos;);</span><br><span class="line">await page.waitFor(1000);</span><br><span class="line">await browser.close();//关闭打开的浏览器</span><br></pre></td></tr></table></figure>
+<h4 id="任务定时触发"><a href="#任务定时触发" class="headerlink" title="任务定时触发"></a>任务定时触发</h4><p>这里使用的的是基于递归规则调度定时器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let rule = null;</span><br><span class="line">rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.dayOfWeek = [new schedule.Range(1, 6)];</span><br><span class="line">rule.hour = 12;</span><br><span class="line">rule.minute = 0; // 定义一个每周1到周六中午12点的规则</span><br><span class="line">try &#123;</span><br><span class="line">    login(config.username, config.password);</span><br><span class="line">&#125; catch (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">j = schedule.scheduleJob(rule, async () =&gt; &#123; // 定时任务</span><br><span class="line">    try &#123;</span><br><span class="line">        login(config.username, config.password);</span><br><span class="line">    &#125; catch (error) &#123;</span><br><span class="line">        console.log(error);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="触发任务"><a href="#触发任务" class="headerlink" title="触发任务"></a>触发任务</h3><p><code>node index.js</code></p>
+<p>源码地址：<a href="https://github.com/skique/weibopost.git" target="_blank" rel="noopener">github地址</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">爬虫</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">puppeteer</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/20/node+puppeteer定时发送微博/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1242,192 +1617,6 @@
 
 
   
-    <article id="post-独立ip划分虚拟子服务器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/22/独立ip划分虚拟子服务器/">独立ip划分虚拟子服务器</a>
-    </h1>
-  
-
-        
-        <a href="/2018/08/22/独立ip划分虚拟子服务器/" class="archive-article-date">
-  	<time datetime="2018-08-22T07:13:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Linux上面的虚拟主机配置"><a href="#Linux上面的虚拟主机配置" class="headerlink" title="Linux上面的虚拟主机配置"></a>Linux上面的虚拟主机配置</h1><p>一、 查看服务器ip:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.220.40  netmask 255.255.240.0  broadcast 172.16.223.255</span><br><span class="line">        ether 00:16:3e:0e:06:b1  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 432  bytes 75118 (73.3 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 536  bytes 63372 (61.8 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure></p>
-<p>二、 修改ip为指定ip：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0 172.16.1.9 net mask 255.255.0</span><br></pre></td></tr></table></figure></p>
-<p>修改成功后再使用ifconfig可以看到ip已经成功改成指定ip了</p>
-<p>三、分配第一个ip地址：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0:1 172.16.1.5 broadcast 172.16.223.255 netmask 255.255.255.0        // broadcast为主ip的broadcast地址，netmask为255.255.255.0</span><br></pre></td></tr></table></figure></p>
-<p>分配第n个ip由此类推， 如ifconfig eth0:2 … //分配第二个虚拟ip<br>配置成功后查看ifconfig:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.1.9  netmask 255.255.240.0  broadcast 172.16.223.255</span><br><span class="line">        ether 00:16:3e:0e:06:b1  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 655  bytes 142527 (139.1 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 798  bytes 106958 (104.4 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0:1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.1.5  netmask 255.255.255.0  broadcast 172.16.223.255</span><br><span class="line">        ether 00:16:3e:0e:06:b1  txqueuelen 1000  (Ethernet)</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure></p>
-<p>可以看到虚拟ip已经成功分配</p>
-<h1 id="Nginx虚拟主机的配置"><a href="#Nginx虚拟主机的配置" class="headerlink" title="Nginx虚拟主机的配置"></a>Nginx虚拟主机的配置</h1><p>也就是将我们刚刚配置的虚拟ip地址跟我们的虚拟主机绑定<br>一、 配置虚拟主机的nginx文件<br>nginx默认配置文件在/etc/nginx/nginx.conf下，一般轻易不做修改，我们在/etc/nginx目录下新建xnzj.conf作为虚拟主机的配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/nginx</span><br><span class="line">vi xnzj.conf</span><br></pre></td></tr></table></figure></p>
-<p>输入以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">user nginx;</span><br><span class="line">worker_processes auto;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections 1024;   // 设置最大连接数</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       172.16.1.5:81;    // 监听的ip</span><br><span class="line">        access_log  /var/log/nginx/server2/access.log  combined;  //配置日志文件</span><br><span class="line">        server_name  172.16.1.5;</span><br><span class="line">      </span><br><span class="line">        location / &#123;</span><br><span class="line">          index  index.html  index.htm;            // 监听的文件</span><br><span class="line">          root         /data/server2;              // 监听的文件目录</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>二、 配置好nginx文件后我们需要在对应目录下新建日志文件和项目启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /var/log/nginx/server2/</span><br><span class="line">touch access.log        //新建日志文件</span><br><span class="line">cd /data</span><br><span class="line">mkdir server2</span><br><span class="line">touch index.html  </span><br><span class="line">vi index.html    // vim模式下编辑index文件，仅作测试</span><br></pre></td></tr></table></figure></p>
-<p>三、将xnzj.conf作为配置文件启动nginx服务<br>先关闭现有的nginx服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep nginx   // 查看nginx进程占用的端口号</span><br><span class="line">root      1087  1053  0 14:53 pts/0    00:00:00 grep --color=auto nginx  </span><br><span class="line">kill -QUIT 1053    // 杀死nginx进程</span><br><span class="line">nginx -c /etc/nginx/xnzj.conf    // 将xnzj.conf作为配置文件启动nginx服务</span><br></pre></td></tr></table></figure></p>
-<p>大功告成<br>完成上面工作之后如果访问172.16.1.5:81会自动转为访问data/server2/index.html了</p>
-<p>四、 推荐一个命令行下的web浏览器工具links</p>
-<ul>
-<li>Links是一个运行在命令行模式下的Web浏览器，只能查看字符。Links的官网是Click here。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install links   // 可以通过yum工具安装links</span><br><span class="line">links 172.16.1.5:81    //安装完成后可以访问网址或者IP地址就可以看到刚才配置的网页内容</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/22/独立ip划分虚拟子服务器/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-centos独立服务器划分虚拟服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/20/centos独立服务器划分虚拟服务/">Centos搭建node项目</a>
-    </h1>
-  
-
-        
-        <a href="/2018/08/20/centos独立服务器划分虚拟服务/" class="archive-article-date">
-  	<time datetime="2018-08-20T08:27:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
-<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v8.11.4/node-v8.11.4-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
-<li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
-<li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
-<li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
-<li>Ctrl + Shift + P调出命令模式，输入命令Ftp-sync:Init</li>
-<li><p>配置服务器远程连接文件（项目根目录下.vscode/ftp-sync.json）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    &#123;</span><br><span class="line">    &quot;remotePath&quot;: &quot;./&quot;,   // 远程服务器路径</span><br><span class="line">    &quot;host&quot;: &quot;host&quot;,       // 服务器地址</span><br><span class="line">    &quot;username&quot;: &quot;username&quot;,    // 用户名</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,    // 密码</span><br><span class="line">    &quot;port&quot;: 21,                // 端口号</span><br><span class="line">    &quot;secure&quot;: false,        </span><br><span class="line">    &quot;protocol&quot;: &quot;ftp&quot;,         // 采用的协议</span><br><span class="line">    &quot;uploadOnSave&quot;: false,</span><br><span class="line">    &quot;passive&quot;: false,</span><br><span class="line">    &quot;debug&quot;: false,</span><br><span class="line">    &quot;privateKeyPath&quot;: null,</span><br><span class="line">    &quot;passphrase&quot;: null,</span><br><span class="line">    &quot;ignore&quot;: [</span><br><span class="line">        &quot;\\.vscode&quot;,</span><br><span class="line">        &quot;\\.git&quot;,</span><br><span class="line">        &quot;\\.DS_Store&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;generatedFiles&quot;: &#123;</span><br><span class="line">        &quot;uploadOnSave&quot;: false,</span><br><span class="line">        &quot;extensionsToInclude&quot;: [],</span><br><span class="line">        &quot;path&quot;: &quot;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置完成后在命令模式下输入Ftp-sync: Local to Remote,同步本地到远程；Ftp-sync: Remote to Local同步远程到本地<br>因为在上一篇笔记中配置了nginx以及反向代理。在项目部署到服务器后在项目目录下启动服务后即可通过域名访问</p>
-</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/20/centos独立服务器划分虚拟服务/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1525,22 +1714,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
@@ -1553,7 +1726,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1565,11 +1738,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1585,11 +1758,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1602,6 +1775,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">字符串的特征向量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1625,15 +1802,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
             
             <div class="clearfix"></div>

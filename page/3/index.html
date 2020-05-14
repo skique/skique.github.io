@@ -156,6 +156,192 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-独立ip划分虚拟子服务器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/22/独立ip划分虚拟子服务器/">独立ip划分虚拟子服务器</a>
+    </h1>
+  
+
+        
+        <a href="/2018/08/22/独立ip划分虚拟子服务器/" class="archive-article-date">
+  	<time datetime="2018-08-22T07:13:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Linux上面的虚拟主机配置"><a href="#Linux上面的虚拟主机配置" class="headerlink" title="Linux上面的虚拟主机配置"></a>Linux上面的虚拟主机配置</h1><p>一、 查看服务器ip:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.220.40  netmask 255.255.240.0  broadcast 172.16.223.255</span><br><span class="line">        ether 00:16:3e:0e:06:b1  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 432  bytes 75118 (73.3 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 536  bytes 63372 (61.8 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure></p>
+<p>二、 修改ip为指定ip：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0 172.16.1.9 net mask 255.255.0</span><br></pre></td></tr></table></figure></p>
+<p>修改成功后再使用ifconfig可以看到ip已经成功改成指定ip了</p>
+<p>三、分配第一个ip地址：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0:1 172.16.1.5 broadcast 172.16.223.255 netmask 255.255.255.0        // broadcast为主ip的broadcast地址，netmask为255.255.255.0</span><br></pre></td></tr></table></figure></p>
+<p>分配第n个ip由此类推， 如ifconfig eth0:2 … //分配第二个虚拟ip<br>配置成功后查看ifconfig:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.1.9  netmask 255.255.240.0  broadcast 172.16.223.255</span><br><span class="line">        ether 00:16:3e:0e:06:b1  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 655  bytes 142527 (139.1 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 798  bytes 106958 (104.4 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">eth0:1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 172.16.1.5  netmask 255.255.255.0  broadcast 172.16.223.255</span><br><span class="line">        ether 00:16:3e:0e:06:b1  txqueuelen 1000  (Ethernet)</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure></p>
+<p>可以看到虚拟ip已经成功分配</p>
+<h1 id="Nginx虚拟主机的配置"><a href="#Nginx虚拟主机的配置" class="headerlink" title="Nginx虚拟主机的配置"></a>Nginx虚拟主机的配置</h1><p>也就是将我们刚刚配置的虚拟ip地址跟我们的虚拟主机绑定<br>一、 配置虚拟主机的nginx文件<br>nginx默认配置文件在/etc/nginx/nginx.conf下，一般轻易不做修改，我们在/etc/nginx目录下新建xnzj.conf作为虚拟主机的配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/nginx</span><br><span class="line">vi xnzj.conf</span><br></pre></td></tr></table></figure></p>
+<p>输入以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">user nginx;</span><br><span class="line">worker_processes auto;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections 1024;   // 设置最大连接数</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       172.16.1.5:81;    // 监听的ip</span><br><span class="line">        access_log  /var/log/nginx/server2/access.log  combined;  //配置日志文件</span><br><span class="line">        server_name  172.16.1.5;</span><br><span class="line">      </span><br><span class="line">        location / &#123;</span><br><span class="line">          index  index.html  index.htm;            // 监听的文件</span><br><span class="line">          root         /data/server2;              // 监听的文件目录</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>二、 配置好nginx文件后我们需要在对应目录下新建日志文件和项目启动文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /var/log/nginx/server2/</span><br><span class="line">touch access.log        //新建日志文件</span><br><span class="line">cd /data</span><br><span class="line">mkdir server2</span><br><span class="line">touch index.html  </span><br><span class="line">vi index.html    // vim模式下编辑index文件，仅作测试</span><br></pre></td></tr></table></figure></p>
+<p>三、将xnzj.conf作为配置文件启动nginx服务<br>先关闭现有的nginx服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep nginx   // 查看nginx进程占用的端口号</span><br><span class="line">root      1087  1053  0 14:53 pts/0    00:00:00 grep --color=auto nginx  </span><br><span class="line">kill -QUIT 1053    // 杀死nginx进程</span><br><span class="line">nginx -c /etc/nginx/xnzj.conf    // 将xnzj.conf作为配置文件启动nginx服务</span><br></pre></td></tr></table></figure></p>
+<p>大功告成<br>完成上面工作之后如果访问172.16.1.5:81会自动转为访问data/server2/index.html了</p>
+<p>四、 推荐一个命令行下的web浏览器工具links</p>
+<ul>
+<li>Links是一个运行在命令行模式下的Web浏览器，只能查看字符。Links的官网是Click here。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install links   // 可以通过yum工具安装links</span><br><span class="line">links 172.16.1.5:81    //安装完成后可以访问网址或者IP地址就可以看到刚才配置的网页内容</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/08/22/独立ip划分虚拟子服务器/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-centos独立服务器划分虚拟服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/20/centos独立服务器划分虚拟服务/">Centos搭建node项目</a>
+    </h1>
+  
+
+        
+        <a href="/2018/08/20/centos独立服务器划分虚拟服务/" class="archive-article-date">
+  	<time datetime="2018-08-20T08:27:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
+<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v8.11.4/node-v8.11.4-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
+<li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
+<li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
+<li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
+<li>Ctrl + Shift + P调出命令模式，输入命令Ftp-sync:Init</li>
+<li><p>配置服务器远程连接文件（项目根目录下.vscode/ftp-sync.json）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    &#123;</span><br><span class="line">    &quot;remotePath&quot;: &quot;./&quot;,   // 远程服务器路径</span><br><span class="line">    &quot;host&quot;: &quot;host&quot;,       // 服务器地址</span><br><span class="line">    &quot;username&quot;: &quot;username&quot;,    // 用户名</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,    // 密码</span><br><span class="line">    &quot;port&quot;: 21,                // 端口号</span><br><span class="line">    &quot;secure&quot;: false,        </span><br><span class="line">    &quot;protocol&quot;: &quot;ftp&quot;,         // 采用的协议</span><br><span class="line">    &quot;uploadOnSave&quot;: false,</span><br><span class="line">    &quot;passive&quot;: false,</span><br><span class="line">    &quot;debug&quot;: false,</span><br><span class="line">    &quot;privateKeyPath&quot;: null,</span><br><span class="line">    &quot;passphrase&quot;: null,</span><br><span class="line">    &quot;ignore&quot;: [</span><br><span class="line">        &quot;\\.vscode&quot;,</span><br><span class="line">        &quot;\\.git&quot;,</span><br><span class="line">        &quot;\\.DS_Store&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;generatedFiles&quot;: &#123;</span><br><span class="line">        &quot;uploadOnSave&quot;: false,</span><br><span class="line">        &quot;extensionsToInclude&quot;: [],</span><br><span class="line">        &quot;path&quot;: &quot;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置完成后在命令模式下输入Ftp-sync: Local to Remote,同步本地到远程；Ftp-sync: Remote to Local同步远程到本地<br>因为在上一篇笔记中配置了nginx以及反向代理。在项目部署到服务器后在项目目录下启动服务后即可通过域名访问</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/08/20/centos独立服务器划分虚拟服务/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-基于CentOs搭建网站服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -796,22 +982,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
@@ -824,7 +994,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -836,11 +1006,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -856,11 +1026,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -873,6 +1043,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">字符串的特征向量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -896,15 +1070,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
             
             <div class="clearfix"></div>
