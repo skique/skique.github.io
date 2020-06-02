@@ -156,6 +156,363 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-前端工程化——CI-CD-自动化构建部署" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/">前端工程化——CI/CD 自动化构建部署</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/" class="archive-article-date">
+  	<time datetime="2020-03-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="什么是-CI-CD"><a href="#什么是-CI-CD" class="headerlink" title="什么是 CI/CD"></a>什么是 CI/CD</h2><p>CI/CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。具体而言，CI/CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为“CI/CD 管道”，由开发和运维团队以敏捷方式协同支持。<br>CI/CD 的核心概念是持续集成、持续交付和持续部署。</p>
+<ol>
+<li>持续集成<br>持续集成，是属于开发人员的自动化流程，成功的CI意味着应用代码的更改会被定期构建，测试合并到共享存储库中，解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</li>
+<li>持续交付<br>开发人员对应用的更改会自动进行测试并上传到存储库</li>
+<li>持续部署<br>自动的将开发人员的更改从存储库发布到生产环境，以供客户使用，解决因手动的流程降低应用交付速度。持续部署是以持续交付为根基，实现了管道后续阶段的自动化<br>用一张图可以清晰的理解CI/CD管道工作的整个流程<br><img src="https://www.redhat.com/cms/managed-files/ci-cd-flow-desktop_1.png" alt=""><br>CI/CD其实就是一个流程，通常形象的表述为管道，用于实现应用开发中高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于CI/CD管道的自动化程度，许多企业最先开始添加CI，然后逐步实现交付和部署的自动化</li>
+</ol>
+<h2 id="CI-CD实现"><a href="#CI-CD实现" class="headerlink" title="CI/CD实现"></a>CI/CD实现</h2><p>对于业界来说，实现CI/CD的方法不是唯一的，大家可以用自己喜欢的方式来部署。本文以drone+gogs为例搭建自己的CI/CD自动化部署系统<br><a href="https://www.cntofu.com/book/139/cases/ci/drone.md" target="_blank" rel="noopener">drone</a> 是一个基于容器的本地持续交付平台，和Jenkins是差不多的。基于 Docker 的 CI/CD 工具 Drone 所有编译、测试的流程都在 Docker 容器中进行。</p>
+<blockquote>
+<p>Drone引入了Pipelnes的概念，管道可帮助我们自动化软件交付过程中的步骤，例如启动代码构建，运行自动化测试以及部署到暂存或生产环境。<br>通过将.drone.yml文件放在git信息库的根目录中来配置管道。 yaml语法旨在易于阅读和表达，以便查看存储库的任何人都可以理解工作流程。<br>Drone通过多个step来完成一系列的指令。</p>
+</blockquote>
+<p><a href="https://gogs.io/" target="_blank" rel="noopener">gogs</a> 是一款极易搭建的自助 Git 服务, 掌握了它, 我们就可以搭建自己的git服务站点。<br>首先我们要先安装docker，这里默认已经安装好了docker,并且已经掌握了相关知识。docker基础可以参考我的上一篇文章<a href="https://taoyouyou.github.io/2020/01/20/小白入门docker指南/" target="_blank" rel="noopener">小白入门docker指南</a></p>
+<h3 id="配置-Drone"><a href="#配置-Drone" class="headerlink" title="配置 Drone"></a>配置 Drone</h3><p>我们通过使用 Docker Compose 来启动 Drone，编写 docker-compose.yml 文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;3&apos;</span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  drone-server:</span><br><span class="line">    image: drone/drone:latest</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:80&quot;</span><br><span class="line">      - 8843:443</span><br><span class="line">      - 9000</span><br><span class="line">    volumes:</span><br><span class="line">      - ./drone:/var/lib/drone/</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock</span><br><span class="line">    environment:</span><br><span class="line">      - DRONE_OPEN=true</span><br><span class="line">      - DRONE_SERVER_HOST=drone-server</span><br><span class="line">      - DRONE_DEBUG=true</span><br><span class="line">      - DRONE_GIT_ALWAYS_AUTH=false</span><br><span class="line">      - DRONE_GOGS=true</span><br><span class="line">      - DRONE_GOGS_SKIP_VERIFY=false</span><br><span class="line">      - DRONE_GOGS_SERVER=http://gogs:3000</span><br><span class="line">      - DRONE_PROVIDER=gogs</span><br><span class="line">      - DRONE_DATABASE_DATASOURCE=/var/lib/drone/drone.sqlite</span><br><span class="line">      - DRONE_DATABASE_DRIVER=sqlite3</span><br><span class="line">      - DRONE_SERVER_PROTO=http</span><br><span class="line">      - DRONE_RPC_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line">      - DRONE_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line"></span><br><span class="line">  gogs:</span><br><span class="line">    image: gogs/gogs:latest</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;10022:22&quot;</span><br><span class="line">      - &quot;3000:3000&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - ./data/gogs:/data</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line">  mysql:</span><br><span class="line">    image: mysql:5.7.16</span><br><span class="line">    volumes:</span><br><span class="line">      - ./gogs/mysql:/var/lib/mysql</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock</span><br><span class="line">    ports:</span><br><span class="line">      - 3308:3306</span><br><span class="line">    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: pass</span><br><span class="line">      MYSQL_DATABASE: gogs</span><br><span class="line">      MYSQL_USER: gogs</span><br><span class="line">      MYSQL_PASSWORD: pass</span><br><span class="line">      TZ: Asia/Shanghai</span><br><span class="line">  drone-agent:</span><br><span class="line">    image: drone/agent:latest</span><br><span class="line">    depends_on:</span><br><span class="line">      - drone-server</span><br><span class="line">    environment:</span><br><span class="line">      - DRONE_RPC_SERVER=http://drone-server</span><br><span class="line">      - DRONE_RPC_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line">      - DRONE_DEBUG=true</span><br><span class="line">      - DOCKER_HOST=tcp://docker-bind:2375</span><br><span class="line">      - DRONE_SERVER=drone-server:9000</span><br><span class="line">      - DRONE_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line">      - DRONE_MAX_PROCS=5</span><br><span class="line">  docker-bind:</span><br><span class="line">     image: docker:dind</span><br><span class="line">     privileged: true</span><br><span class="line">    #  command: --storage-driver=overlay</span><br></pre></td></tr></table></figure></p>
+<p>我们创建一个存放docker-compose.yml文件的目录比如就叫gogs，然后我们把这些yml保存成docker-compose.yml，然后执行docker-compose来安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>配合yml文件，我们就安装好了drone-server和drone-agent还有gogs。</p>
+<h3 id="初始化gogs"><a href="#初始化gogs" class="headerlink" title="初始化gogs"></a>初始化gogs</h3><p>我们用浏览器打开 <a href="http://localhost:3000/" target="_blank" rel="noopener">http://localhost:3000/</a> 来进入gogs并初始化它。<br><img src="https://upload-images.jianshu.io/upload_images/2705690-0bc116c3ceae8135.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>域名和应用URL记得一样,接着我们创建一个管理员用户，然后其他的都默认，点击立即安装完成。<br><img src="https://upload-images.jianshu.io/upload_images/2705690-54b8c484e5dbe1d3.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>初始化成功之后我们可以在gogs里边创建一个仓库，然后登陆drone。</p>
+<h3 id="登录drone"><a href="#登录drone" class="headerlink" title="登录drone"></a>登录drone</h3><p>根据docker-compose.yml可以看到drone的服务运行在8080端口下<br>打开浏览器输入<a href="http://localhost/直接进入drone，密码是gogs的你的刚刚的账户和密码。" target="_blank" rel="noopener">http://localhost/直接进入drone，密码是gogs的你的刚刚的账户和密码。</a><br><img src="https://upload-images.jianshu.io/upload_images/2705690-f90b9a41beeadd24.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>我们会看到一个刚刚创建的仓库，激活它！<br>激活之后，我们回到gogs那边，仓库的设置里边的webhook应该已经配置好了<br><img src="https://upload-images.jianshu.io/upload_images/2705690-d4371874417d862a.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>我们可以测试web hook，如果没有问题的话，应该会提示成功。</p>
+<h3 id="上传源码"><a href="#上传源码" class="headerlink" title="上传源码"></a>上传源码</h3><p>测试没有问题之后，我们初始化我们的代码文件夹为git仓库，然后push到gogos上边。<br>然后为你的仓库加上.drone.yml配置文件，drone-server会自动读取这个文件进行CI、CD操作等。以下这个是我们的示例文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">kind: pipeline</span><br><span class="line">name: demo</span><br><span class="line"></span><br><span class="line">steps:</span><br><span class="line">  - name: build</span><br><span class="line">    image: golang:1.11.4</span><br><span class="line">    commands:</span><br><span class="line">      - pwd</span><br><span class="line">      - go version</span><br><span class="line">      - go build .</span><br><span class="line">      - go test demo/util</span><br><span class="line"></span><br><span class="line">  #  - name: frontend</span><br><span class="line">  #    image: node:6</span><br><span class="line">  #    commands:</span><br><span class="line">  #      - npm install</span><br><span class="line">  #      - npm test</span><br><span class="line"></span><br><span class="line">  - name: publish</span><br><span class="line">    image: plugins/docker:latest</span><br><span class="line">    settings:</span><br><span class="line">      username:</span><br><span class="line">        from_secret: docker_username</span><br><span class="line">      password:</span><br><span class="line">        from_secret: docker_password</span><br><span class="line">      repo: example/demo</span><br><span class="line">      tags: latest</span><br><span class="line"></span><br><span class="line">  - name: deploy</span><br><span class="line">    image: appleboy/drone-ssh</span><br><span class="line">    pull: true</span><br><span class="line">    settings:</span><br><span class="line">      host: example.me</span><br><span class="line">      user: root</span><br><span class="line">      key:</span><br><span class="line">        from_secret: deploy_key</span><br><span class="line">      script:</span><br><span class="line">        - cd /data</span><br><span class="line">        - mkdir app/</span><br><span class="line">        - cd /data/app</span><br><span class="line">        - docker rmi -f example/demo</span><br><span class="line">        - echo &quot;login docker&quot;</span><br><span class="line">        - echo &quot;login success, pulling...&quot;</span><br><span class="line">        - docker pull example/demo:latest</span><br><span class="line">        - echo &quot;image running&quot;</span><br><span class="line">        - docker run -p 8088:8088 -d example/demo</span><br><span class="line">        - echo &quot;run success&quot;</span><br></pre></td></tr></table></figure></p>
+<p>我们首先进行简单的golang build和test操作然后根据Dockerfile文件把我们的程序构建成docker镜像，接着上传到docker hub中，然后通过drone-ssh插件部署这个镜像。</p>
+<h3 id="开始构建"><a href="#开始构建" class="headerlink" title="开始构建"></a>开始构建</h3><p>有了配置文件之后，推送代码我们就可以去drone查看构建进度：<br><img src="https://upload-images.jianshu.io/upload_images/2705690-5eb695ee67737000.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>等待drone构建完成，即完成了基于drone+gogs搭建的CI/CD自动化部署过程</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-如何用hexo搭出自己的博客系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/19/如何用hexo搭出自己的博客系统/">如何用hexo搭出自己的博客系统</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/19/如何用hexo搭出自己的博客系统/" class="archive-article-date">
+  	<time datetime="2020-03-19T06:07:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>关于hexo以及安装hexo可以详见<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="关于hexo"><a href="#关于hexo" class="headerlink" title="关于hexo"></a>关于hexo</h3><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装之前需要确保安装了node(Node.js 版本需不低于 8.10，建议使用 Node.js 10.0 及以上版本)和git,所有必备的应用程序安装完成后，即可使用 npm 安装 Hexo。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure></p>
+<h3 id="建站"><a href="#建站" class="headerlink" title="建站"></a>建站</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init &lt;folder&gt;  // hexo初始化项目</span><br><span class="line">cd &lt;folder&gt;         // 进入新建的文件夹</span><br><span class="line">npm install         // 安装依赖</span><br></pre></td></tr></table></figure>
+<p>新建完成后指定的文件夹目录如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── _config.yml     // 网站配置文件，配置字段可详见[官网配置详解](https://hexo.io/zh-cn/docs/configuration)</span><br><span class="line">├── package.json</span><br><span class="line">├── scaffolds       // 模版 文件夹。当您新建文章时，Hexo 会根据 scaffold 来建立文件</span><br><span class="line">├── source          // 资源文件夹是存放用户资源的地方。Markdown 和 HTML 文件会被解析并放到 public 文件夹，而其他文件会被拷贝过去。</span><br><span class="line">|   ├── _drafts</span><br><span class="line">|   └── _posts</span><br><span class="line">└── themes          // 主题 文件夹。Hexo 会根据主题来生成静态页面</span><br></pre></td></tr></table></figure></p>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>Hexo 3.0 把服务器独立成了个别模块，您必须先安装 hexo-server 才能使用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-server --save</span><br></pre></td></tr></table></figure></p>
+<p>安装完成后，输入以下命令以启动服务器，您的网站会在 <ip>:<port> 下启动。在服务器启动期间，Hexo 会监视文件变动并自动更新，您无须重启服务器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server -p 5000</span><br></pre></td></tr></table></figure></port></ip></p>
+<p>开启命令后可以在本地预览</p>
+<h3 id="写作"><a href="#写作" class="headerlink" title="写作"></a>写作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new [layout] &lt;title&gt;    // 发布一篇新的文章或者新的页面</span><br></pre></td></tr></table></figure>
+<p>Layout:<br>Hexo 有三种默认布局：post、page 和 draft。在创建者三种不同类型的文件时，它们将会被保存到不同的路径；而您自定义的其他布局和 post 相同，都将储存到 source/_posts 文件夹。<br>Title:<br>Hexo 默认以标题做为文件名称，但您可编辑 new_post_name 参数来改变默认的文件名称，举例来说，设为 :year-:month-:day-:title.md 可让您更方便的通过日期来管理文章。</p>
+<p>通过命令新建一篇文章后，会在 source 文件夹内响应的布局（_post）文件夹下生成以.md后缀结尾的文章，可以直接在这里通过markdown语言完成一篇文章</p>
+<h3 id="草稿"><a href="#草稿" class="headerlink" title="草稿"></a>草稿</h3><p>刚刚提到了 Hexo 的一种特殊布局：draft，这种布局在建立时会被保存到 source/_drafts 文件夹，您可通过 publish 命令将草稿移动到 source/_posts 文件夹，该命令的使用方式与 new 十分类似，您也可在命令中指定 layout 来指定布局。</p>
+<p>$ hexo publish [layout] [title]<br>草稿默认不会显示在页面中，您可在执行时加上 –draft 参数，或是把 render_drafts 参数设为 true 来预览草稿。</p>
+<h3 id="生成"><a href="#生成" class="headerlink" title="生成"></a>生成</h3><p>hexo中使用generate命令可以生成静态文件快速而且简单。 或者可以加上watch参数，在监听文件变动的同时生成静态文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate --watch</span><br></pre></td></tr></table></figure></p>
+<p>完成后部署<br>您可执行下列的其中一个命令，让 Hexo 在生成完毕后自动部署网站，两个命令的作用是相同的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure></p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>通过generate命令编译生成public静态文件夹以后，可以通过github pages服务，可以为您的静态文件托管一个web站点。<br>Git Pages 一个支持Jekyll、Hugo、Hexo静态网站的服务。因为网络的原因，这里以国内git服务商gitee为例简单介绍一个如何托管个人的web站点，生成一个能用于预览的网址。首先需要将生成的public项目先托管在gitee中。   </p>
+<p>Hexo 提供了快速方便的一键部署功能，让您只需一条命令就能将网站部署到服务器上。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure></p>
+<p>在开始之前，您必须先在 _config.yml 中修改参数，一个正确的部署配置中至少要有 type 参数，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br></pre></td></tr></table></figure></p>
+<p>您可同时使用多个 deployer，Hexo 会依照顺序执行每个 deployer。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">- type: git</span><br><span class="line">  repo:</span><br><span class="line">- type: heroku</span><br><span class="line">  repo:</span><br></pre></td></tr></table></figure></p>
+<p>在配置好_config.yml中配置好远程仓库地址后该不能直接用deploy命令部署，需要先安装<a href="https://github.com/hexojs/hexo-deployer-git" target="_blank" rel="noopener">hexo-deployer-git</a>插件，git插件是专门用于hexo站点部署的Git部署插件，所以正确的步骤是<br>1，执行安装命令安装hexo-deployer-git<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></p>
+<p>2，修改配置文件，为站点配置远程仓库地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: &lt;repository url&gt; #https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io</span><br><span class="line">  branch: [branch]</span><br><span class="line">  message: [message]</span><br></pre></td></tr></table></figure></p>
+<p>3， 生成站点文件并推送至远程库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d   // 让 Hexo 在生成完毕后自动部署网站</span><br></pre></td></tr></table></figure></p>
+<p>当执行 hexo deploy 时，Hexo 会将 public 目录中的文件和目录推送至 _config.yml 中指定的远端仓库和分支中，并且完全覆盖该分支下的已有内容。   </p>
+<p>4，在提供github或者gitee上有了托管的public目录文件的仓库，在仓库的服务页面找到Pages服务<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/git-pages.png" alt=""><br>需要注意的是部署的跟路径下必须存在index.html作用站点访问的入口，<br>这里为了让站点路径以 https://&lt;用户名&gt;.gitee.io 的形式访问，最好把你的远程仓库的名字以你的用户名命名。<br>点开Git Pages服务后首先会要求你填写部署的分支，以及部署的目录，并且明确提示如果目录为空的话就会部署整个仓库<br>点击确定按钮后会为这个分支以及目录开始静态网站服务，通过 https://&lt;用户名&gt;.gitee.io 即可以访问你的博客了</p>
+<h3 id="基本命令行"><a href="#基本命令行" class="headerlink" title="基本命令行"></a>基本命令行</h3><ul>
+<li><p>发布一篇文章<br>hexo new post “myFirstPost”  </p>
+</li>
+<li><p>编辑文章<br>vi myFirstPost.md</p>
+</li>
+<li><p>开启本地服务<br>hexo server -p 5000<br>简写<br>hexo s  // 默认端口为3000   </p>
+</li>
+<li><p>使用 Hexo 生成静态文件<br>hexo generate<br>或者<br>hexo g</p>
+</li>
+<li><p>完成后部署<br>hexo generate –deploy<br>hexo deploy –generate<br>简写<br>hexo g -d<br>hexo d -g   </p>
+</li>
+</ul>
+<h3 id="自定义主题"><a href="#自定义主题" class="headerlink" title="自定义主题"></a>自定义主题</h3><p> 如果您对hexo默认的主题并不满意，您可以使用其他人写好的hexo主题<br> 以下是github星标数比较高的几款hexo主题</p>
+<ol>
+<li><a href="https://www.imys.net/" target="_blank" rel="noopener">Indigo</a>，项目地址：<a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank" rel="noopener">https://github.com/yscoder/hexo-theme-indigo</a><!-- ![](https://img-blog.csdnimg.cn/20190816091540982.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3pnZDgyNjIzNzcxMA==,size_16,color_FFFFFF,t_70) --></li>
+<li><a href="https://jerryc.me/" target="_blank" rel="noopener">Butterfly</a>，项目地址：<a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">https://github.com/jerryc127/hexo-theme-butterfly</a><!-- ![](https://img-blog.csdnimg.cn/20190816091627682.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3pnZDgyNjIzNzcxMA==,size_16,color_FFFFFF,t_70) --></li>
+<li><a href="https://molunerfinn.com" target="_blank" rel="noopener">Melody</a>，项目地址：<a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener">https://github.com/Molunerfinn/hexo-theme-melody</a><!-- ![](https://img-blog.csdnimg.cn/20190816091738576.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3pnZDgyNjIzNzcxMA==,size_16,color_FFFFFF,t_70) --></li>
+<li><a href="https://nexmoe.com/" target="_blank" rel="noopener">Nexmoe</a>，项目地址：<a href="https://github.com/nexmoe/hexo-theme-nexmoe" target="_blank" rel="noopener">https://github.com/nexmoe/hexo-theme-nexmoe</a><!-- ![](https://img-blog.csdnimg.cn/20190816091825224.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3pnZDgyNjIzNzcxMA==,size_16,color_FFFFFF,t_70) --></li>
+<li><a href="https://esappear.github.io/clover/" target="_blank" rel="noopener">Clover</a>，项目地址：<a href="https://github.com/esappear/hexo-theme-clover" target="_blank" rel="noopener">https://github.com/esappear/hexo-theme-clover</a><!-- ![](https://img-blog.csdnimg.cn/20190816091859750.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3pnZDgyNjIzNzcxMA==,size_16,color_FFFFFF,t_70) --></li>
+<li><a href="http://litten.me/" target="_blank" rel="noopener">Yilia</a>，项目地址：<a href="https://github.com/litten/hexo-theme-yilia" target="_blank" rel="noopener">https://github.com/litten/hexo-theme-yilia</a><!-- ![](https://pic1.zhimg.com/80/57291a4ee84ce548460d5d226a52a2d8_1440w.jpg) -->
+</li>
+</ol>
+<p>如果您对于博客的主题有自己想法，那么您可以自定义生成一个全新的博客主题。 创建自定义的主题详见官方文档<a href="https://hexo.io/zh-cn/docs/themes" target="_blank" rel="noopener">主题</a></p>
+<p>在这里我的博客使用的主题是上述最后一个主题Yilia, 使用第三方开源的主题的很简单，</p>
+<ol>
+<li>只需要将该主题clone在本地，放入hexo项目目录中的theme文件夹中。</li>
+<li>然后在在根目录的_config.yml的theme中填入该主题对应的名字</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">web</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/19/如何用hexo搭出自己的博客系统/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-前端工程化——构建工具" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/24/前端工程化——构建工具/">前端工程化——构建工具</a>
+    </h1>
+  
+
+        
+        <a href="/2020/02/24/前端工程化——构建工具/" class="archive-article-date">
+  	<time datetime="2020-02-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="何为构建"><a href="#何为构建" class="headerlink" title="何为构建"></a>何为构建</h2><p>Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。</p>
+<p>构建其实是工程化、自动化思想在前端开发中的体现，将开发流程中让人痛苦或耗时的任务自动化，让代码自动化地执行这一系列复杂的流程，从而减少你所浪费的时间、创造更大价值。</p>
+<p>比如我们执行一些例如CoffeeScript/ES6去代替Javascript、JS或CSS压缩、用Less去写CSS、用Jade去写HTML、用Browserify去模块化、为非覆盖式部署的资源加MD5戳等，这些操作如果我们一遍遍手动执行，非常耗费时间和精力，所以前端构建工具，或者较前端自动化构建工具，就是用来让我们不再做机械重复的事情，让我们从重复性工作中脱身，更加专注于代码本身。</p>
+<p>构建可以实现如下内容：</p>
+<blockquote>
+<p>代码转换：ts/es6-&gt;js,scss-&gt;css。<br>文件优化：压缩JS、CSS、HTML，压缩合并图片等。<br>代码分割：提取公共代码。<br>模块合并：将多个模块和文件通过构建合并成一个文件。<br>自动刷新：监听本地源代码变化，自动重新构建、刷新浏览器。<br>代码校验：校验代码是否符合规范，以及单元测试是否通过。<br>自动发布：自动构建出线上发布代码并部署到服务器。</p>
+</blockquote>
+<h2 id="构建工具发展"><a href="#构建工具发展" class="headerlink" title="构建工具发展"></a>构建工具发展</h2><p>构建工具发展：Npm Scripts、Grunt、Gulp、FIS 3、Webpack、Rollup、Parcel</p>
+<h3 id="1-Npm-Scripts"><a href="#1-Npm-Scripts" class="headerlink" title="1. Npm Scripts"></a>1. Npm Scripts</h3><p>npm是nodejs附带的包管理器，npm script是npm内置的一个功能，允许在package.json文件里面使用script字段定义任务，需要注意的是node script可以结合node实现更为灵活的自动化构建任务，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;node index.js&quot;,</span><br><span class="line">  &quot;new&quot;: &quot;node generateView.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>script字段中的一个属性对应一段shell脚本，除了常用的dev命令，还可以自定义自己的命令，比如我在开发网站管理后台的时候注意到有太多相似的页面需要填充相同的html结构，为了摆脱这些重复性工作，我结合node自定义了一个新增模版页面的命令。</p>
+<p>优点:</p>
+<ul>
+<li>内置，无需安装其他依赖<br>缺点: </li>
+<li>功能简单，不方便管理多个任务依赖,对于自定义任务则需要熟悉node,编写大量代码</li>
+</ul>
+<h3 id="2-Grunt"><a href="#2-Grunt" class="headerlink" title="2. Grunt"></a>2. <a href="https://www.gruntjs.net/" target="_blank" rel="noopener">Grunt</a></h3><p>Grunt 相当于进化版的 Npm scripts，它的诞生其实是为了弥补 Npm Scripts 的不足。<br>当你在Gruntfile文件正确配置好了任务，任务运行器就会自动帮你或你的小组完成大部分无聊的工作。<br>查看一个Guntfile示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(grunt) &#123;</span><br><span class="line">  grunt.initConfig(&#123;</span><br><span class="line">    jshint: &#123;         // 检查代码是否符合语法规范</span><br><span class="line">      files: [&apos;Gruntfile.js&apos;, &apos;src/**/*.js&apos;, &apos;test/**/*.js&apos;],</span><br><span class="line">      options: &#123;</span><br><span class="line">        globals: &#123;</span><br><span class="line">          jQuery: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    watch: &#123;           ／／ 监听代码更改时检查代码</span><br><span class="line">      files: [&apos;&lt;%= jshint.files %&gt;&apos;],</span><br><span class="line">      tasks: [&apos;jshint&apos;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-jshint&apos;);</span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-watch&apos;);</span><br><span class="line"></span><br><span class="line">  grunt.registerTask(&apos;default&apos;, [&apos;jshint&apos;]);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>灵活，只执行我们定义的任务</li>
+<li>拥有数量庞大的插件可供选择<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="3-gulp"><a href="#3-gulp" class="headerlink" title="3. gulp"></a>3. <a href="https://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp</a></h3><p>Gulp 是一个基于流的自动化构建工具，是Grunt的加强版，增加文件监听，文件读写，流式处理任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);     //引用基础模块</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);    //js压缩模块</span><br><span class="line"></span><br><span class="line">gulp.task(&apos;script&apos;,function()&#123;  //启动任务script</span><br><span class="line">  gulp.src(&apos;js/*.js&apos;)           //找到文件</span><br><span class="line">  .pipe(uglify())               //压缩文件</span><br><span class="line">  .pipe(gulp.dest(&apos;dist/js&apos;))   //另存压缩文件</span><br><span class="line">&#125;);</span><br><span class="line">//监听</span><br><span class="line">gulp.task(&apos;auto&apos;,function () &#123;</span><br><span class="line">  gulp.watch(&apos;js/*.js&apos;,[&apos;script&apos;]);     //监听script任务</span><br><span class="line">  gulp.watch(&apos;css/*.css&apos;,[&apos;css&apos;]);      //监听css任务</span><br><span class="line">  gulp.watch(&apos;images/*.*&apos;,[&apos;images&apos;]);  //监听images任务</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
+<p>优点：</p>
+<ul>
+<li>灵活，可单独使用也可搭配其他工具<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="4-Webpack"><a href="#4-Webpack" class="headerlink" title="4. Webpack"></a>4. <a href="https://www.webpackjs.com/" target="_blank" rel="noopener">Webpack</a></h3><p>在Webpack里一切文件皆模块，通过loader转换文件，通过Plugin注入钩子，最后输出由多个模块组合成的文件。Webpack专注于构建模块化项目。<br>Webpack是一个打包模块化的JavaScript的工具，在官网打出的口号是“打包所有资源，脚本，图片，样式”。<br>其官网的首页图很形象的展示了 Webpack 的定义，如下图：</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png" alt=""></p>
+<p>一切文件，如JavaScript、CSS、SCSS、图片、模板，对于Webpack 来说都是一个个模块，这样的好处是能清晰地描绘各个模块之间的依赖关系，以方便Webpack进行组合和打包，经过Webpack的处理，最终会输出浏览器能使用的静态资源。</p>
+<p>Webpack具有很大的灵活性，能配置处理文件的方式，使用方法大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,     // 所有模块的入口，webpack从入口开始递归解析出所有依赖的模块</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),    // 设置打包输出文件生成的文件夹</span><br><span class="line">    filename: &apos;bundle.js&apos;                     // 将入口所依赖的所有模块打包成一个文件 bundle.js 输出</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>专注于模块化，开箱即用一步到位</li>
+<li>通过plugin拓展，完整好用又不失灵活</li>
+<li>使用场景不局限于web开发</li>
+<li>社区庞大活跃</li>
+<li>良好的开发体验<br>缺点：</li>
+<li>只能用于模块化开发</li>
+</ul>
+<h3 id="异同点"><a href="#异同点" class="headerlink" title="异同点"></a>异同点</h3><p>上面介绍的几种构建工具构建工具是按照他们的诞生时间排序的，他们是时代的产物，侧面反映出 Web 开发的发展趋势，如下所述：</p>
+<blockquote>
+<p>在 Npm Scripts 和 Grunt 时代，Web 开发要做的事情变多，流程复杂，自动化思想被引入，用于简化流程；<br>在 Gulp 时代，开始出现一些新语言用于提高开发效率，流程处理思想的出现是为了简化文件转换的流程，例如将ES6转换为ES5；<br>在Webpack时代，由于单页应用的流行，网页的功能和实现代码变的复杂、庞大，Web开发向模块化改进。</p>
+</blockquote>
+<p>grunt和glup几乎是为了解决同一个问题而生，那就是让自动化流程来解决你的双手。强调的是前端开发的工作流程，在glup中我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。 简单说就一个Task Runner，就是用来跑一个一个任务的。</p>
+<p>Gulp 没法解决的是 js module 的问题，是你写代码时候如何组织代码结构的问题。在以前这些问题，还是只能通过工程师在做项目前首先就要想到如何做到模块化的问题，并且在这个问题上每个工程师都有各个的一套看法和解决方案。</p>
+<p>Webpack出现后，模块化的问题才第一次被标准化，Webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、脚本、样式等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。</p>
+<p>glup和webpack的异同点：<br>相同点：文件合并与压缩（css,js），sass/less预编译，启动server，版本控制。<br>不同点，虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。<br>gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。<br>webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。</p>
+<p>经过多年的额发展，Webpack 已经成为构建工具中的首选，这是因为：<br>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack可以为这些新项目提供一站式的解决方案；<br>Webpack有良好的生态和维护团队，能提供良好的开发体验并保证质量；<br>Webpack 被全世界大量的Web开发者使用和验证，能找到各个层面所需要的教程和经验分享。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/02/24/前端工程化——构建工具/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-小白入门docker指南" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1309,314 +1666,6 @@
 
 
   
-    <article id="post-字符串的模式匹配" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/14/字符串的模式匹配/">字符串的模式匹配</a>
-    </h1>
-  
-
-        
-        <a href="/2018/11/14/字符串的模式匹配/" class="archive-article-date">
-  	<time datetime="2018-11-14T03:55:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="模式匹配-pattern-matching"><a href="#模式匹配-pattern-matching" class="headerlink" title="模式匹配 (pattern matching)"></a>模式匹配 (pattern matching)</h3><p>  一个目标对象T字符串,P字符串在目标T中寻找一个给定的模式P的过程<br>  用给定的模式P，在目标字符串T中搜索与模式P全同的一个子串，并求出T中第一个和P全同匹配的子串（简称为”配串”）,返回其首字符位置<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/字符串的模式匹配.png" alt=""><br>  如图所示：为使模式P与目标T匹配，必须满足p0 p1 p2 … pm-1 = ti ti+1 ti+2 … ti+m-1</p>
-<h2 id="朴素算法（穷举法）"><a href="#朴素算法（穷举法）" class="headerlink" title="朴素算法（穷举法）"></a>朴素算法（穷举法）</h2><h3 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h3><p>  设T = t0t1, t2, …,tn-1， P = p0, p1, …, pm-1</p>
-<ul>
-<li>i为T中字符的下标，j为P中字符的下标 </li>
-<li>匹配成功(p0 = ti , p1 = ti+1 , …,  pm-1 = ti+m-1 ) 即T.substr(i, m) == P.substr(0, m)</li>
-<li>匹配失败(pj≠ti ) 时，将 P 右一位移再行比较</li>
-<li>尝试所有的可能情况<h3 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h3>方法一：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_1(string S, string P, int startindex) &#123;  </span><br><span class="line">  int LastIndex = S.length() – P.length();                   // 两个字符串的模式长度差值</span><br><span class="line">  int count = P.length();    </span><br><span class="line">  if (LastIndex &lt; startindex)&#123;                               // 开始匹配位置startindex的值过大，匹配无法成功</span><br><span class="line">    return (-1);</span><br><span class="line">  &#125;</span><br><span class="line">  for (int g = startindex; g &lt;= LastIndex; g++)&#123;             // g为S的游标，用模式P和S第g位置子串比较，若失败则继续循环   </span><br><span class="line">    if (P == S.substr(g, count))</span><br><span class="line">      return  g;</span><br><span class="line">  &#125;     </span><br><span class="line">  return  (-1);                                              // 若for循环结束，则整个匹配失败，返回值为负</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>方法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_2(string T, string P, int  startindex)&#123;</span><br><span class="line">  int LastIndex = T.length() - P.length();</span><br><span class="line">  if  (LastIndex &lt; startindex) return (-1);              // 开始匹配位置startindex的值过大，匹配无法成功   </span><br><span class="line">  int i = startindex,   j = 0;                           // i 是指向T内部字符的游标，j 是指向P内部字符的游标   </span><br><span class="line">  while (i &lt; T.length()  &amp;&amp;  j &lt; P.length())&#123;   </span><br><span class="line">    if (P[j] == T[i]) &#123;</span><br><span class="line">      i++;  j++;                                         // 若P[j] == T[i],则继续向下比较</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      i = i - j + 1; j = 0;                              // 否则匹配的初始位置(i-j)右移一位 即：i=i-j+1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  if ( j &gt;=  P.length())&#123;</span><br><span class="line">    return (i - j);                                      // 若匹配成功，则返回该T子串的开始位置</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return -1;</span><br><span class="line">  &#125;                                                      // 若失败，函数返回值为负 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>方法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_3(string T, string P, int startindex) &#123;</span><br><span class="line">  for (int g= startindex; g &lt;= T.length() - P.length(); g++) &#123; //g为T的游标，      </span><br><span class="line">    for (int j=0; ((j&lt;P.length()) &amp;&amp; (T[g+j]==P[j])) ; j++);   //j为p的游标，满足条件则继续比较P的下一位j++,否则跳出内层循环将匹配的起始位置+1；即g++</span><br><span class="line">    if (j == P.length())</span><br><span class="line">      return  g;</span><br><span class="line">  &#125;</span><br><span class="line">  return(-1);                                                  // for结束，或startindex值过大,则匹配失败  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="效率分析"><a href="#效率分析" class="headerlink" title="效率分析"></a>效率分析</h3><ol>
-<li>第一种情况： 最坏情况<br>– 假定目标 T 的长度为 n，模式 P 长度为 m，m≤n  – 在最坏的情况下，每一次循环都不成功，则一共要进行比 较（n-m+1）次<br>– 每一次“相同匹配”比较所耗费的时间，是 P 和 T 逐个 字符比较的时间，最坏情况下，共 m 次<br>– 因此，整个算法的最坏时间开销估计为：O( m * n )</li>
-<li><p>第二种情况：没找到匹配下的最佳情况<br>• 总是在第一个字符上不匹配<br>• 总比较次数： – n – m + 1<br>• 时间复杂度： – O(n)</p>
-<h2 id="KMP算法-无回溯匹配"><a href="#KMP算法-无回溯匹配" class="headerlink" title="KMP算法(无回溯匹配)"></a>KMP算法(无回溯匹配)</h2><h3 id="算法思想-1"><a href="#算法思想-1" class="headerlink" title="算法思想"></a>算法思想</h3><p>匹配过程中，一旦pj和ti 比较不等时，即P.substr(1,j-1) == T.substr(i-j+1,j-1)但pj≠ ti<br>– 将p右移的k位，用P中pk和ti进行比较<br>– 显然有k &lt; j, 且不同的j, 其k 值不同<br>– k 值仅仅依赖于模式P 本身，而与目标对象T无关</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想.png" alt=""><br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想2.png" alt=""></p>
-<h3 id="算法实现-1"><a href="#算法实现-1" class="headerlink" title="算法实现"></a>算法实现</h3><h4 id="字符串的特征向量"><a href="#字符串的特征向量" class="headerlink" title="字符串的特征向量"></a>字符串的特征向量</h4><p>设模式P 由m 个字符组成，记为P  =  p0 p1 p2 p3……pm-1<br>令特征向量N 用来表示模式P 的字符分布特征，简称N 向量由m个特征数n0 …nm-1 整数组成，记为N ＝n0 n1 n2 n3……nm-1<br>N在很多文献中也称为next 数组，每个nj 对应next 数组中的元素next[j]</p>
-</li>
-</ol>
-<p>构造方法<br>P第j 个位置的特征数nj，首尾串最长的k<br>– 首串：p0    p1              … pk-2  pk-1<br>– 尾串：pj-k  pj-k+1        … pj-2   pj-1<br> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/特征向量构造方法.png" alt=""><br>例如：对于字符串 P = a  a  a  a  b   a   a  a   a   c<br>     p的特征向量N = -1  0  1  2  3   0   1  2  3   4<br> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP模式匹配示例.png" alt=""></p>
-<h4 id="KMP模式匹配算法"><a href="#KMP模式匹配算法" class="headerlink" title="KMP模式匹配算法"></a>KMP模式匹配算法</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int KMPStrMatching(string T, string P,  int* N, int start)&#123;</span><br><span class="line">  int j= 0;                   // 模式的下标变量</span><br><span class="line">  int i = start;              // 目标的下标变量</span><br><span class="line">  int pLen= P.length( );      // 模式的长度</span><br><span class="line">  int tLen= T.length( );      // 目标的长度</span><br><span class="line">  if(tLen-start &lt; pLen)       // 若目标比模式短，匹配无法成功</span><br><span class="line">  return(-1);          </span><br><span class="line">  while( j &lt; pLen&amp;&amp;  i &lt; tLen) &#123;  // 反复比较，进行匹配</span><br><span class="line">    if(j == -1  ||  T[i] == P[j])   </span><br><span class="line">      i++,  j++;</span><br><span class="line">    else j = N[j];</span><br><span class="line">  &#125;</span><br><span class="line">  if(j &gt;= pLen)</span><br><span class="line">    return(i-pLen);            // 注意仔细算下标</span><br><span class="line">  else</span><br><span class="line">    return(-1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="字符串的特征向量N-——非优化版"><a href="#字符串的特征向量N-——非优化版" class="headerlink" title="字符串的特征向量N ——非优化版"></a>字符串的特征向量N ——非优化版</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> int findNext(string P) &#123;</span><br><span class="line">   int j, k;</span><br><span class="line">   int m = P.length();       // m为模式P的长度</span><br><span class="line">   assert(m &gt; 0);                   // 若m＝0，退出</span><br><span class="line">   int* next = new int[m];            // 动态存储区开辟整数数组</span><br><span class="line">   assert(next != 0);               // 若开辟存储区域失败，退出</span><br><span class="line">   next[0] = -1;   </span><br><span class="line">   j = 0;  </span><br><span class="line">   k = -1;</span><br><span class="line">   while(j &lt; m-1) &#123;                 </span><br><span class="line">    while(k &gt;= 0 &amp;&amp; P[k] != P[j])    // 不等则采用KMP 自找首尾子串</span><br><span class="line">      k = next[k];                   // k 递归地向前找</span><br><span class="line">    j++; k++; next[j] = k;   </span><br><span class="line">  &#125;</span><br><span class="line">  return next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/模式右滑j-k位.png" alt=""></p>
-<p>如图：模式右滑j-k位后 p0 p1 …pk-1 = ti-k ti-k+1 … ti-1<br>对于最后一位pj!==ti, 若pk == pj则一定有 pk!== ti;造成一次冗余比较</p>
-<h4 id="字符串的特征向量N-——优化版"><a href="#字符串的特征向量N-——优化版" class="headerlink" title="字符串的特征向量N ——优化版"></a>字符串的特征向量N ——优化版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">int findNext(string P) &#123;</span><br><span class="line">  int j, k;</span><br><span class="line">  int m = P.length();               // m为模式P的长度</span><br><span class="line">  int* next = new int[m];           // 动态存储区开辟整数数组</span><br><span class="line">  next[0] = -1;   </span><br><span class="line">  j = 0;  </span><br><span class="line">  k = -1;</span><br><span class="line">  while(j &lt; m-1) &#123;                  // 若写成j &lt; m 会越界</span><br><span class="line">    while(k &gt;= 0 &amp;&amp; P[k] != P[j])&#123;  // 若不等，采用KMP 找首尾子串</span><br><span class="line">      k = next[k];                  // k 递归地向前找</span><br><span class="line">    &#125;             </span><br><span class="line">    j++;   k++; </span><br><span class="line">    if(P[k] == P[j])   </span><br><span class="line">      next[j] = next[k];           // 前面找k 值，没有受优化的影响</span><br><span class="line">    else</span><br><span class="line">      next[j] = k;                 // 取消if判断，则不优化</span><br><span class="line">  &#125;</span><br><span class="line">  return next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>next数组对比<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">序号j           0   1   2   3   4   5   6   7   8</span><br><span class="line"> P             a   b   c   a   a   b   a    b   c</span><br><span class="line"> k                 0   0   0   1   1   2    1   2        //非优化版</span><br><span class="line">pk==pj?            ≠   ≠   ==  ≠  ==   ≠   ==   ==</span><br><span class="line"> next[j]      -1   0   0  -1   1   0   2   0    0        //优化版</span><br></pre></td></tr></table></figure></p>
-<h3 id="算法效率"><a href="#算法效率" class="headerlink" title="算法效率"></a>算法效率</h3><p>求特征数组的时间为O(m)<br>KMP算法的时间为O(n+m)</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">朴素算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">KMP算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">字符串的特征向量</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/14/字符串的模式匹配/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-农夫过河算法实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/12/农夫过河算法实现/">农夫过河算法实现</a>
-    </h1>
-  
-
-        
-        <a href="/2018/11/12/农夫过河算法实现/" class="archive-article-date">
-  	<time datetime="2018-11-12T08:41:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>  一个农夫带着—只狼、一只羊和—棵白菜，身处河的南岸。他要把这些东西全部运到北岸。他面前只有一条小船，船只能容下他和—件物品，另外只有农夫才能撑船。如果农夫在场，则狼不能吃羊，羊不能吃白菜，否则狼会吃羊，羊会吃白菜，所以农夫不能留下羊和白菜自己离开，也不能留下狼和羊自己离开，而狼不吃白菜。请求出农夫将所有的东西运过河的方案。</p>
-<h2 id="问题抽象"><a href="#问题抽象" class="headerlink" title="问题抽象"></a>问题抽象</h2><p>“人狼羊菜”乘船过河<br>只有人能撑船，船只有两个位置（包括人）<br>狼羊、羊菜不能在没有人时共处</p>
-<h2 id="数据抽象"><a href="#数据抽象" class="headerlink" title="数据抽象"></a>数据抽象</h2><p>每个角色的位置进行描述<br>农夫、狼、菜和羊，四个目标各用一位（假定按照农夫、狼、白菜、羊次序），目标在起始岸位置：0，目标岸：1</p>
-<p>确定每个角色位置的函数：  返回true则在目标岸， 返回false则在起始岸<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">bool farmer(int status)&#123;</span><br><span class="line">  return ((status &amp; 0x08) != 0);</span><br><span class="line">&#125;</span><br><span class="line">bool wolf(int status)&#123;</span><br><span class="line">  return ((status &amp;0x04)!= 0);</span><br><span class="line">&#125;</span><br><span class="line">bool cabbage(int status)&#123;</span><br><span class="line">  return((status &amp; 0x02) != 0);</span><br><span class="line">&#125;</span><br><span class="line">bool goat(int status)&#123;</span><br><span class="line">  return((status &amp; 0x01) != 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>安全状态的判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bool safe(intstatus)&#123;     // 返回true:安全，false:不安全</span><br><span class="line">  if((goat(status)==cabbage(status)) &amp;&amp; (goat(status)!=farmer(status)))</span><br><span class="line">    return(false);        // 羊吃白菜</span><br><span class="line">  if((goat(status)==wolf(status)) &amp;&amp; (goat(status)!=farmer(status)))</span><br><span class="line">    return(false);        // 狼吃羊return(true);</span><br><span class="line">&#125;// 其它状态为安全</span><br></pre></td></tr></table></figure></p>
-<h2 id="算法抽象"><a href="#算法抽象" class="headerlink" title="算法抽象"></a>算法抽象</h2><p>  问题变为从状态0000（整数0）出发，寻找全部由安全状态构成的状态序列，以状态1111（整数15）为最终目标。</p>
-<ul>
-<li>状态序列中每个状态都可以从前一状态通过农夫（可以带一样东西）划船过河的动作到达。</li>
-<li>序列中不能出现重复状态<h2 id="算法设计"><a href="#算法设计" class="headerlink" title="算法设计"></a>算法设计</h2></li>
-<li>定义一个整数队列moveTo，它的每个元素表示一个可以安全到达的中间状态</li>
-<li>还需要定义一个数据结构记录已被访问过的各个状态，以及已被发现的能够到达当前这个状态的路径</li>
-<li>用顺序表route 的第i 个元素记录状态i是否已被访问过，若route[i] 已被访问过，则在这个顺序表元素中记入前驱状态值；-1表示未被访问，route 的大小（长度）为16<h2 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> void solve() &#123;</span><br><span class="line">   int movers, i, location, newlocation;</span><br><span class="line">   vector&lt;int&gt; route(END+1, -1);  // 记录已考虑的状态路径</span><br><span class="line">   queue&lt;int&gt; moveTo;// 准备初值</span><br><span class="line">   moveTo.push(0x00);</span><br><span class="line">   route[0]=0;</span><br><span class="line">   while(!moveTo.empty() &amp;&amp; route[15] == -1) &#123;// 得到现在的状态</span><br><span class="line">    status = moveTo.front();</span><br><span class="line">    moveTo.pop();</span><br><span class="line">    for(movers = 1; movers &lt;= 8; movers &lt;&lt;= 1) &#123;// 农夫总是在移动，随农夫移动的也只能是在农夫同侧的东西</span><br><span class="line">      if (farmer(status)  == (bool)(status &amp; movers)) &#123;</span><br><span class="line">        newstatus = status ^ (0x08| movers);// 安全的，并且未考虑过的走法</span><br><span class="line">        if (safe(newstatus) &amp;&amp; (route[newstatus] == -1)) &#123;</span><br><span class="line">          route[newstatus] = status;moveTo.push(newstatus); </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  // 反向打印出路径</span><br><span class="line">  if(route[15] != -1) &#123; </span><br><span class="line">    cout &lt;&lt;&quot;The reverse path is : “ &lt;&lt; endl;</span><br><span class="line">    for (intstatus = 15; status &gt;= 0; status = route[status]) &#123;</span><br><span class="line">      cout &lt;&lt; &quot;The status is : “ &lt;&lt; status &lt;&lt; endl;if(status == 0) </span><br><span class="line">      break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  else</span><br><span class="line">    cout &lt;&lt; &quot;No solution.“ &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>作为一名前端工程师，将以上逻辑使用了javascript实现了，全部代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line">class Queue &#123;</span><br><span class="line"></span><br><span class="line">  constructor() &#123;</span><br><span class="line">    // 定义一个数组来保存队列里面的元素</span><br><span class="line">    this.items = []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 在队列尾部添加一个或者多个元素</span><br><span class="line">  enqueue(element) &#123; </span><br><span class="line">    this.items.push(element)</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 移除队列顶部的元素，并返回被移除的元素</span><br><span class="line">  dequeue() &#123;</span><br><span class="line">    return this.items.shift()</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 清空队列</span><br><span class="line">  remove() &#123;</span><br><span class="line">    this.items = []</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 返回队列顶部的元素，不对队列本身做修改</span><br><span class="line">  front() &#123;</span><br><span class="line">    return this.items[0]</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 判断队列是否为空</span><br><span class="line">  isEmpty() &#123;</span><br><span class="line">    return this.items.length === 0</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 返回队列里面元素的个数</span><br><span class="line">  length() &#123;</span><br><span class="line">    return this.item.length</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function farmer(status)&#123;</span><br><span class="line">  return ((status &amp; 0x08) != 0);</span><br><span class="line">&#125;</span><br><span class="line">function wolf(status)&#123;</span><br><span class="line">  return ((status &amp;0x04)!= 0);</span><br><span class="line">&#125;</span><br><span class="line">function cabbage(status)&#123;</span><br><span class="line">  return((status &amp; 0x02) != 0);</span><br><span class="line">&#125;</span><br><span class="line">function goat(status)&#123;</span><br><span class="line">  return((status &amp; 0x01) != 0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function safe(status)&#123;    // 返回true:安全，false:不安全</span><br><span class="line">  if((goat(status)==cabbage(status)) &amp;&amp; (goat(status)!=farmer(status))) // 羊吃白菜</span><br><span class="line">    return(false);        </span><br><span class="line">  if((goat(status)==wolf(status)) &amp;&amp; (goat(status)!=farmer(status))) // 狼吃羊</span><br><span class="line">    return(false);       </span><br><span class="line">  return(true);</span><br><span class="line">&#125;// 其它状态为安全</span><br><span class="line"></span><br><span class="line">(function ()&#123;</span><br><span class="line">  let movers;   // 移动的状态</span><br><span class="line">  let route = [];      // 存储对应的状态是否重复</span><br><span class="line">  let results = [],     // 输出结果</span><br><span class="line">      aftercross,</span><br><span class="line">      counter;     // 记录移动次数</span><br><span class="line">  for(let i =0; i&lt;16; i++)&#123;</span><br><span class="line">    route.push(-1);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  let moveTo = new Queue();  // 准备初值, 队列存储目标岸状态值</span><br><span class="line">  moveTo.enqueue(0x00);</span><br><span class="line">  route[0]=0;</span><br><span class="line">  while(!moveTo.isEmpty() &amp;&amp; route[15] == -1) &#123;  // 得到现在的状态</span><br><span class="line">    status = moveTo.front();</span><br><span class="line">    moveTo.dequeue();</span><br><span class="line">    </span><br><span class="line">    for(movers = 1; movers &lt;= 8; movers &lt;&lt;= 1) &#123;</span><br><span class="line">      if (farmer(status)  == Boolean(status &amp; movers)) &#123;// 随农夫移动的也只能是在农夫同侧的东西</span><br><span class="line">        newstatus = status ^ (0x08| movers); // 渡河后的情况</span><br><span class="line">        if (safe(newstatus) &amp;&amp; (route[newstatus] == -1)) &#123; // 安全的，并且未考虑过的走法</span><br><span class="line">          route[newstatus] = status;</span><br><span class="line">          moveTo.enqueue(newstatus);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if(route[15] != -1)&#123;</span><br><span class="line">    counter = 0;</span><br><span class="line">    for(status = 15; status &gt; 0; status = route[status])&#123;</span><br><span class="line">      results.push(status);</span><br><span class="line">      counter++;      </span><br><span class="line">      if(status == 0) return;</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(results);</span><br><span class="line">    for(let i = 0; i&lt; counter; i++)&#123;</span><br><span class="line">      status= results[i];</span><br><span class="line">      aftercross = results[i+1];</span><br><span class="line">      if(status &amp; 0x08)&#123;</span><br><span class="line">        console.log(&quot;农夫从起始岸到目标岸:&quot;);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        console.log(&quot;农夫从目标岸到起始岸:&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">      switch(status^aftercross)&#123;</span><br><span class="line">      case 12:</span><br><span class="line">        console.log(&quot;把狼带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      case 10:</span><br><span class="line">        console.log(&quot;把菜带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      case 9:</span><br><span class="line">        console.log(&quot;把羊带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      default:</span><br><span class="line">        console.log(&quot;什么也不带\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">      console.log(&quot;No solution for this problem.\n&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
-<p>程序运行截图：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/农夫过河实现.png" alt=""><br>源文件已上传到gitee代码片段： <a href="https://gitee.com/taoyouyou/codes/frxzgasyvpt71bjcq59d055" target="_blank" rel="noopener">https://gitee.com/taoyouyou/codes/frxzgasyvpt71bjcq59d055</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">队列</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/12/农夫过河算法实现/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-关于区块链中的Dapp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/12/关于区块链中的Dapp/">关于区块链中的Dapp</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/12/关于区块链中的Dapp/" class="archive-article-date">
-  	<time datetime="2018-09-12T06:40:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有人说2018年是区块链元年，区块链这个概念被越炒越火，也是之前一直知道比特币，知道最近才更多的了解到区块链的发展，知道了以太坊，智能合约，看到各种系名词RAM、DAPP、OTCBTC，今天主要讲的是Dapp</p>
-<h2 id="什么是DAPP"><a href="#什么是DAPP" class="headerlink" title="什么是DAPP"></a>什么是DAPP</h2><p>  经过这几年移动互联网以及智能手机的普及，相信几乎所有人都知道了什么是APP(Application的简称)。 时间转眼迈入区块链时代， 一个新的名词DAPP(Decentralized Application)出现了。Dapp是Decentralized Application的简称，也就是分散式应用程序   </p>
-<p>  只有当满足以下所有条件时，一个应用才可以称之为DAPP：</p>
-<ul>
-<li>应用必须完全开源、自治并且没有一个实体控制着该应用的大部分代币(Token)。该应用必须能够根据市场的反馈及技术要求进行升级，但是升级必须由应用的用户达成共识之后才可以进行；</li>
-<li>应用的数据必须加密后存储在公开的区块链上；</li>
-<li>应用必须拥有代币机制（可以使用已存在的代币或者新发行一种内置代币），矿工或者应用维护节点需要得到代币奖励；</li>
-<li>应用代币的产生必须依据标准的加密算法，有价值的节点可以根据该算法获取应用的代币奖励。    </li>
-</ul>
-<p>  根据以上的标准，比特币、Asch都算是DAPP，<br>所以比特币是一个DAPP，Asch是一个DAPP，而基于Asch开发的<a href="http://link.zhihu.com/?target=https%3A//cctime.org" title="CCTIME" target="_blank" rel="noopener">CCTIME</a>。也是一个DAPP。不同的是，有些DAPP扮演了操作系统的角色(比如Ethereum、Asch)，基于这些平台可以很容易的开发出特定需求的DAPP，而有些DAPP(比如CCTIME)则是具体的应用。但它们都满足上面的标准。</p>
-<h2 id="DAPP的核心要素"><a href="#DAPP的核心要素" class="headerlink" title="DAPP的核心要素"></a>DAPP的核心要素</h2><p>对于DAPP的开发，我们可以从零开始，重新创建一个完整的区块链系统并开发自己的应用，这相当于开发一个新的区块链项目，比较费事费力且对个人能力要求较高。对于一个普通的开发者来说，如果你想基于区块链开发自己的应用，那选择一个成熟的区块链应用开发平台就好了。这些平台一般会提供完善的接口以及开发工具，只需要操心业务逻辑及其实现就好了。关于区块链的底层部分，这些平台都会帮你处理好。 </p>
-<ol>
-<li>开发平台:<br> 目前最流行的开发平台是Ethereum：Ethereum是目前全球除了比特币以外第二大的区块链项目，它就像一台遍及全世界的分布式计算机，你只需要把你的应用部署在Ethereum上，应用的运行就可以由所有的Ethereum节点来保证了。应用的运行需要支付手续费(GAS)。缺点是需要学习一门新的语言Solidity。<br> 另外一个建议就是基于笔者所在团队开发的Asch(中文名叫做阿希)。只要掌握JavaScript，就可以基于Asch开发DAPP。 Asch采用的是侧链架构，每一个DAPP就是一套侧链。侧链可以有独立的区块链和节点网络。不同的DAPP之间互相不会影响。不同于Ethereum， Asch系统上DAPP数量的增加不会增加主链的负担，是一套更加先进的机制。</li>
-<li>共识机制：<br> 共识机制决定了运行DAPP的各节点如何达成共识及获取奖励，<br> 目前最常用的共识机制有POW、POS以及DPOS等。POW依据计算资源分配奖励，目前Bitcoin、Ethereum都采用了这种机制(不过Ethereum后面可能要迁移到POS)。Asch采用的是经过PBFT优化后的DPOS机制，核心系统是由 101 个委托人节点组成，委托人是被社区选举的可信账户，得票最高的 101 个委托人负责生产区块。得票排名未进入前 101 名的账户被称为候选人，当他们将来获得足够多的选票并进入前 101 名后，将成为正式的委托人。基于阿希开发的DAPP默认采用这种共识机制，不过开发者可以自己修改并决定使用哪种共识机制。</li>
-<li>代币分发:<br> 一般DAPP都会内置代币(Token), 而想让更多用户参与到DAPP的维护与使用中的话，就需要考虑好如何把代币分发到用户手中。<br> 目前最常见的有以下几种方案：<ul>
-<li>挖矿：以Bitcoin为例，任何拥有计算资源的人都可以加入到Bitcoin的挖矿中来，通过挖矿奖励来获取新的Bitcoin。</li>
-<li>ICO: 可以简单理解为众筹。通过收集市面上已经成熟的其他代币，根据一定比例兑换为本DAPP内的代币来完成。Ethereum就是按照 1BTC/2000ETH的比例通过ICO众筹到了很多BTC作为起始资金。这种分发方式在国内已被禁止。</li>
-<li>空投： 将代币免费分发到用户手中。持有其他代币的用户只需要完成一个简单的绑定流程，就可以得到代币。最近的案例有CCTIME空投，具体方式可参考<a href="CCTime 加密货币时讯">CCTIME官网</a>。</li>
-<li>私募：这个就跟找投资一样，依个人能力而定了。</li>
-</ul>
-</li>
-</ol>
-<h2 id="DAPP的生命周期"><a href="#DAPP的生命周期" class="headerlink" title="DAPP的生命周期"></a>DAPP的生命周期</h2><p>一个DAPP的生命周期主要分为三部分：</p>
-<ol>
-<li>撰写白皮书白皮书描述了DAPP的技术原理、要解决的问题以及特点等。社区对白皮书的反馈可以添加到后期的更新中。</li>
-<li>分发代币可以采用上一章节描述的代币分发机制的一种。</li>
-<li>开发DAPP，逐步进化完善在DAPP发布之后，如果该DAPP走向了一个健康发展的道路，可以期望会有越来越多掌握各种技能的用户加入到社区，一起维护DAPP的发展。DAPP的发展交由社区整体进行运营、更新。无论是比特币还是比特股，早期开发者所起到的作用已经越来越小，去中心化的社区已经可以推动这些项目的继续发展。</li>
-</ol>
-<h2 id="为什么需要DAPP开发"><a href="#为什么需要DAPP开发" class="headerlink" title="为什么需要DAPP开发"></a>为什么需要DAPP开发</h2><p>目前社会对于dapp开发的关注还刚刚开始，市面上还难以看到流行的DAPP应用。但是随着区块链技术的发展，传统的C/S模式可能会被颠覆，开发者也不用再去买云服务器部署自己的应用。有了区块链开发平台，开发者可以很容易的把应用部署到区块链上，这是一个基于全球服务器，7*24不间断服务的应用平台。另外由于DAPP代币机制的存在，开发者可以很容易的基于代币获得价值回报。相信在不久的将来，DAPP会超越传统APP，在人们的社会生活中扮演越来越重要的角色。</p>
-<p>此文仅用于学习，原文转载自<a href="https://zhuanlan.zhihu.com/p/31578996" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/31578996</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/09/12/关于区块链中的Dapp/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1722,10 +1771,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
@@ -1742,7 +1787,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1758,14 +1819,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -1778,6 +1831,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
               </li>
              
@@ -1786,11 +1843,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1802,19 +1855,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1823,6 +1872,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
             
             <div class="clearfix"></div>
