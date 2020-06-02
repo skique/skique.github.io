@@ -156,6 +156,176 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-浅谈前端工程化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/23/浅谈前端工程化/">浅谈前端工程化</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/23/浅谈前端工程化/" class="archive-article-date">
+  	<time datetime="2020-03-23T06:57:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> <img width="600" height="400" src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/工作台.png"><br><!-- ![]( =300) --></p>
+<p>疫情之下，新年初始，发现跟随着年龄长了一岁的，还有自己的工作经验。回头看过来自己的职业生涯，这一年多以来忙忙碌碌基本已经被工作占满，996工作一年，其实是一年半的工作经验，同事之前也经常这样调侃自己。然而即便是这样，自己又有多少长进呢？被这个问题问醒，这段时间终于有机会可以从编写业务代码中抽身，我想是时候给自己的工作生涯做一个总结了。</p>
+<p>这些年来做过的大大小小的项目太多了，不能一一列出来，但是无论多少项目，核心的应该是项目设计时的思想和架构，万变不离其中，于是冒出来一个想法想把做项目的设计模式与实现写出来。这其中贯穿所有的就是前端工程化。于是这就是我们今天的主题。</p>
+<p>现如今web端可谓包罗万象，产品形态五花八门，涉猎极广，什么高大上的基础库/框架，拽炫酷的宣传页面，还有屌炸天的小游戏……不过这些一两个文件的小项目并非是前端技术的主要应用场景，更具商业价值的则是复杂的Web应用，它们功能完善，界面繁多，为用户提供了完整的产品体验，可能是新闻聚合网站，可能是在线购物平台，可能是社交网络，可能是金融信贷应用，可能是音乐互动社区，也可能是视频上传与分享平台，可能是系统应用，门户、数据可视化平台……</p>
+<p>尽管Web应用的复杂程度与日俱增，用户对其前端界面也提出了更高的要求，但时至今日仍然没有多少前端开发者会从软件工程的角度去思考前端开发，来助力团队的开发效率，更有甚者还对前端保留着”如玩具般简单“的刻板印象，日复一日，刀耕火种。</p>
+<p>随着前端开发复杂度的日益增加，各种优秀的组件框架也遍地开花。同时，我们面临业务规模的快速发展和工程师团队的不断扩张。目前来说，Web业务日益复杂化和多元化，前端开发已经由以WebPage模式为主转变为以WebApp模式为主了。现在随便找个前端项目，都已经不是过去的拼个页面+搞几个jQuery插件就能完成的了。工程复杂了就会产生许多问题，如何进行高效的多人协作？如何保证项目的可维护性？如何提高项目的开发质量？…</p>
+<p>我们希望能在日常开发中制订一个规范化的前端工作流，很好地规范统一项目的模块化开发和前端资源，让代码的维护和互相协作更加容易更加方便，令前端开发自动化成为一种习惯。同时，让大家能够释放生产力，提高开发效率，更好更快地完成团队开发以及项目后期维护和扩展。</p>
+<p>回顾一下曾经经历过的项目，为了提升其前端开发效率和运行性能，前端团队的工程建设大致会经历三个阶段：</p>
+<h3 id="第一阶段：库-框架选型"><a href="#第一阶段：库-框架选型" class="headerlink" title="第一阶段：库/框架选型"></a>第一阶段：库/框架选型</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/前端框架.png" alt=""></p>
+<p>前端工程建设的第一项任务就是根据项目特征进行技术选型（ps:以上排序不分排名先后）。<br>基本上现在没有人完全从0开始做网站，哪怕是政府项目用个jquery都很正常吧，React/Angularjs等框架横空出世，解放了不少生产力，合理的技术选型可以为项目节省许多工程量这点毋庸置疑。<br>关于前端技术框架选型，适合自己的就是做好的。</p>
+<h3 id="第二阶段：构建、管理工具"><a href="#第二阶段：构建、管理工具" class="headerlink" title="第二阶段：构建、管理工具"></a>第二阶段：构建、管理工具</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/构建工具.png" alt=""></p>
+<p>选型之后基本上就可以开始敲码了，不过光解决开发效率还不够，必须要兼顾运行性能。前端工程进行到第二阶段会选型一种或多种构建工具，对代码进行压缩、校验、管理，之后再以页面为单位进行简单的资源合并（ps:以上排序不分排名先后）<br>前端开发工程化程度之低，常常出乎我们的意料。很多人在大型互联网公司工作时是没有多少概念的，直到离开大公司的温室，去到业界与更多的团队交流才发现，能做到这个阶段在业界来说已然超出平均水平，属于“具备较高工程化程度”的团队了，查看网上形形色色的网页源代码，能做到最基本的JS/CSS压缩的Web应用都已跨入标准互联网公司行列，不难理解为什么很多前端团队对于前端工程构建的认知还仅停留在“压缩、校验、合并”这种程度。</p>
+<h3 id="第三阶段：JS-CSS模块化开发"><a href="#第三阶段：JS-CSS模块化开发" class="headerlink" title="第三阶段：JS/CSS模块化开发"></a>第三阶段：JS/CSS模块化开发</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/模块化开发.png" alt=""></p>
+<p>分而治之是软件工程中的重要思想，是复杂系统开发和维护的基石，这点放在前端开发中同样适用。在解决了基本开发效率运行效率问题之后，前端团队开始思考维护效率，模块化是目前前端最流行的分治手段（ps:以上排序不分排名先后）。</p>
+<p>很多人觉得模块化开发的工程意义是复用，其实应该是模块化开发的最大价值应该是分治。不管你将来是否要复用某段代码，你都有充分的理由将其分治为一个模块。</p>
+<p>JS模块化方案很多，AMD/CommonJS/UMD/ES6 Module等，对应的框架和工具也一大堆；<br>CSS模块化开发基本都是在less、sass、stylus等预处理器的import/mixin特性支持下实现的。</p>
+<h3 id="第四阶段：组件化开发与资源管理"><a href="#第四阶段：组件化开发与资源管理" class="headerlink" title="第四阶段：组件化开发与资源管理"></a>第四阶段：组件化开发与资源管理</h3><blockquote>
+<p>前端是一种技术问题较少、工程问题较多的软件开发领域。</p>
+</blockquote>
+<p>当我们要开发一款完整的Web应用时，前端将面临更多的工程问题，比如：</p>
+<p>大体量：多功能、多页面、多状态、多系统；<br>大规模：多人甚至多团队合作开发；<br>高性能：CDN部署、缓存控制、文件指纹、缓存复用、请求合并、按需加载、同步/异步加载、移动端首屏CSS内嵌、HTTP 2.0服务端资源推送。<br>　　<br>这些无疑是一系列严肃的系统工程问题。前面讲的三个阶段虽然相比曾经“茹毛饮血”的时代进步不少，但用于支撑第四阶段的多人合作开发以及精细的性能优化似乎还欠缺点什么。到底，缺什么呢？</p>
+<h4 id="第一件事：组件化开发"><a href="#第一件事：组件化开发" class="headerlink" title="第一件事：组件化开发"></a>第一件事：组件化开发</h4><p>整个前端项目可以划分为这么几种开发概念：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">JS模块</td>
+<td style="text-align:left">独立的算法和数据单元</td>
+<td style="text-align:left">浏览器环境检测(detect)，网络请求(ajax)，应用配置(config)，DOM操作(dom)，工具函数(utils)，以及组件里的JS单元</td>
+</tr>
+<tr>
+<td style="text-align:left">CSS模块</td>
+<td style="text-align:left">独立的功能性样式单元</td>
+<td style="text-align:left">栅格系统(grid)，字体图标(icon-fonts)，动画样式(animate)，以及组件里的CSS单元</td>
+</tr>
+<tr>
+<td style="text-align:left">UI组件</td>
+<td style="text-align:left">独立的可视/可交互功能单元</td>
+<td style="text-align:left">页头(header)，页尾(footer)，导航栏(nav)，搜索框(search)</td>
+</tr>
+<tr>
+<td style="text-align:left">页面</td>
+<td style="text-align:left">前端这种GUI软件的界面状态，是UI组件的容器</td>
+<td style="text-align:left">首页(index)，列表页(list)，用户管理(user)</td>
+</tr>
+<tr>
+<td style="text-align:left">应用</td>
+<td style="text-align:left">整个项目或整个站点被称之为应用，由多个页面组成</td>
+<td style="text-align:left">——</td>
+</tr>
+</tbody>
+</table>
+<p>以上5种开发概念以相对较少的规则组成了前端开发的基本工程结构，</p>
+<h4 id="第二件事：“智能”静态资源管理"><a href="#第二件事：“智能”静态资源管理" class="headerlink" title="第二件事：“智能”静态资源管理"></a>第二件事：“智能”静态资源管理</h4><p>上面提到的模块化/组件化开发，仅仅描述了一种开发理念，也可以认为是一种开发规范，倘若你认可这规范，对它的分治策略产生了共鸣，那我们就可以继续聊聊它的具体实现了。</p>
+<p>很明显，模块化/组件化开发之后，我们最终要解决的，就是模块/组件加载的技术问题。然而前端与客户端GUI软件有一个很大的不同：</p>
+<blockquote>
+<p>前端是一种远程部署，运行时增量下载的GUI软件。</p>
+</blockquote>
+<p>前端应用没有安装过程，其所需程序资源都部署在远程服务器，用户使用浏览器访问不同的页面来加载不同的资源，随着页面访问的增加，渐进式的将整个程序下载到本地运行，“增量下载”是前端在工程上有别于客户端GUI软件的根本原因。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/增量加载.gif" alt=""></p>
+<p>上图展示了一款界面繁多功能丰富的应用，如果采用Web实现，相信也是不小的体量，如果用户第一次访问页面就强制其加载全站静态资源再展示，相信会有很多用户因为失去耐心而流失。<br>根据“增量”的原则，我们应该精心规划每个页面的资源加载策略，使得用户无论访问哪个页面都能按需加载页面所需资源，没访问过的无需加载，访问过的可以缓存复用，最终带来流畅的应用体验。</p>
+<p>这正是Web应用“免安装”的魅力所在。</p>
+<p>由“增量加载”原则引出的前端优化技巧几乎成为了性能优化的核心：</p>
+<ol>
+<li>加载相关：按需加载，延迟加载，预加载，请求合并。</li>
+<li>缓存相关：浏览器缓存利用，缓存更新，缓存共享。非覆盖式发布。<br>这些优化方案无不围绕着如何将增量原则做到极致而展开。</li>
+</ol>
+<blockquote>
+<p>第四阶段前端开发最迫切需要做好的就是在基础架构中贯彻增量原则。</p>
+</blockquote>
+<p>相信这种贯彻不会随着时间的推移而改变，在可预见的未来，无论在HTTP1.x还是HTTP2.0时代，无论在ES5亦或者ES6/7时代，无论是AMD/CommonJS/UMD亦或者ES6 module时代，无论端内技术如何变迁，我们都有足够充分的理由要做好前端程序资源的增量加载。</p>
+<p>正如前面说到的，第三阶段前端工程缺少点什么呢？我觉得是在其基础架构中缺少这样一种“智能”的资源加载方案。没有这样的方案，很难将前端应用的规模发展到第四阶段，很难实现落地前面介绍的那种组件化开发方案，也很难让多方合作高效率的完成一项大型应用的开发，并保证其最终运行性能良好。在第四阶段，我们需要强大的工程化手段来管理”玩具般简单“的前端开发。</p>
+<h3 id="第五阶段：规范化"><a href="#第五阶段：规范化" class="headerlink" title="第五阶段：规范化"></a>第五阶段：规范化</h3><p>模块化和组件化确定了开发模型，而这些东西的实现就需要规范去落实。规范化其实是工程化中很重要的一个部分，项目初期规范制定的好坏会直接影响到后期的开发质量：</p>
+<ul>
+<li>目录结构的制定</li>
+<li>编码规范</li>
+<li>前后端接口规范</li>
+<li>前端输入输出数据文档</li>
+<li>文档规范</li>
+<li>组件管理</li>
+<li>Git分支管理</li>
+<li>Commit描述规范</li>
+<li>定期CodeReview</li>
+<li>视觉图标规范</li>
+<li>…</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在业界内有这么一句话：</p>
+<blockquote>
+<p>任何简单机械的重复劳动都应该让机器去完成。</p>
+</blockquote>
+<p>现代前端技术不再是以前刀耕火种的年代了。所以前端工程化的很多脏活累活都应该交给自动化工具来完成。</p>
+<p>个人总结经验，认为前端工程化主要应该从模块化、组件化、规范化、自动化四个方面来思考。<br>如何选型技术、如何定制规范、如何分治系统、如何优化性能、如何加载资源，当你从切图开始转变为思考这些问题的时候，我想说：你好，工程师！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/23/浅谈前端工程化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-前端工程化——CI-CD-自动化构建部署" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -208,15 +378,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
         		</li>
       		
 		</ul>
@@ -1554,121 +1724,9 @@
 
 
   
-    <article id="post-初探pupeteer——踩坑之旅" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/29/初探pupeteer——踩坑之旅/">初探pupeteer——踩坑之旅</a>
-    </h1>
-  
-
-        
-        <a href="/2018/12/29/初探pupeteer——踩坑之旅/" class="archive-article-date">
-  	<time datetime="2018-12-29T07:17:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="关于pupeteer"><a href="#关于pupeteer" class="headerlink" title="关于pupeteer"></a>关于pupeteer</h2><p>Puppeteer是一个Node库，它提供了一个高级API来控制DevTools协议上的Chrome或Chromium。 Puppeteer默认运行无头，但可以配置为运行完整（非无头）Chrome或Chromium。<br>简单的来说是一个集成在node环境之上的可以控制谷歌浏览器爬取数据的工具</p>
-<p>您可以在浏览器中手动执行的大多数操作都可以使用Puppeteer完成！ 以下一些简单的应用场景：</p>
-<ul>
-<li>生成页面的屏幕截图和PDF。</li>
-<li>抓取SPA（单页面应用程序）并生成预渲染内容（即“SSR”（服务器端渲染））。</li>
-<li>自动化表单提交，UI测试，键盘输入等。</li>
-<li>创建最新的自动化测试环境。 使用最新的JavaScript和浏览器功能直接在最新版本的Chrome中运行测试。</li>
-<li>捕获站点的时间线跟踪，以帮助诊断性能问题。</li>
-<li>测试Chrome扩展程序。</li>
-</ul>
-<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>安装pupeteer之前需要node的环境支持。node版本需要大于v6.4.0，如要使用 async / await，只有 Node v7.6.0 或更高版本才支持；另外，安装 Puppeteer 时，它会下载最新版本的 Chromium（〜71Mb Mac，〜90Mb Linux，〜110Mb Win），保证与 API 协同工作。</p>
-<p>确保node环境安装完成以后，使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init</span><br></pre></td></tr></table></figure></p>
-<p>初始化项目</p>
-<ol>
-<li>使用命令安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn add puppeteer</span><br><span class="line"># or &quot;npm i puppeteer&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>可能会出现以下报错:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Failed to download Chromium r515411! Set &quot;PUPPETEER_SKIP_CHROMIUM_DOWNLOA</span><br><span class="line">D&quot; env variable to skip download.</span><br></pre></td></tr></table></figure></p>
-<p>是因为在执行安装的过程中需要执行install.js，这里会下载Chromium,官网建议是进行跳过，我们可以执行 —ignore-scripts 忽略这个js执行。也可以通过设置环境变量set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1阻止下载 Chromium （因为封网，直接下载会失败）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D</span><br><span class="line">// npm i --save puppeteer --ignore-scripts</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>手动下载Chromium<br>下载地址：<a href="https://download-chromium.appspot.com/" target="_blank" rel="noopener">https://download-chromium.appspot.com/</a> (需要梯子…)</li>
-</ol>
-<p>把下载刚刚下载的文件解压出来会有chrome-win32文件夹，把里面的文件拷贝到项目新建的chromium文件夹中</p>
-<ol>
-<li>新建index.js,代码如下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const puppeteer = require(&apos;puppeteer&apos;);</span><br><span class="line"></span><br><span class="line">(async () =&gt; &#123;</span><br><span class="line">    const browser = await puppeteer.launch();</span><br><span class="line">    const page = await browser.newPage();</span><br><span class="line">    await page.goto(&apos;https://y.qq.com&apos;);</span><br><span class="line">    await page.screenshot(&#123;path: &apos;yqq.png&apos;&#125;);</span><br><span class="line">    browser.close();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>在命令行运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js</span><br></pre></td></tr></table></figure></p>
-<p>这时候可能出现以下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(node:8672) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejec</span><br><span class="line">tion id: 1): AssertionError [ERR_ASSERTION]: Chromium revision is not downloaded</span><br><span class="line">. Run &quot;npm install&quot;</span><br><span class="line">(node:8672) [DEP0018] DeprecationWarning: Unhandled promise rejections are depre</span><br><span class="line">cated. In the future, promise rejections that are not handled will terminate the</span><br><span class="line"> Node.js process with a non-zero exit code.</span><br></pre></td></tr></table></figure></p>
-<p>显示chromium未下载错误，因为chromium默认的下载路径是在node_modules/puppeteer/.local-chromium/目录，这时候我们的chromium是在项目根目录，所以需要配置指定路径，修改index.js文件()：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const puppeteer = require(&apos;puppeteer&apos;);</span><br><span class="line"></span><br><span class="line">(async () =&gt; &#123;</span><br><span class="line">      const browser = await puppeteer.launch(&#123;</span><br><span class="line">        executablePath: &apos;./chromium/chrome.exe&apos;,</span><br><span class="line">        headless: false</span><br><span class="line">      &#125;);</span><br><span class="line">      const page = await browser.newPage();</span><br><span class="line">      await page.goto(&apos;http://music.163.com/&apos;);</span><br><span class="line">      await page.screenshot(&#123;path: &apos;music.png&apos;&#125;);</span><br><span class="line">      browser.close();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
-<p>再次运行<br><code>node index.js</code></p>
-<p>puppeteer launch参数说明：</p>
-<ul>
-<li>executablePath： 运行Chromium或Chrome可执行文件的路径</li>
-<li>headless： 是否运行在浏览器headless模式，true为不打开浏览器执行，默认为true</li>
-<li>timeout： 等待浏览器实例启动的最长时间（以毫秒为单位）。默认为30000（30秒）。通过0禁用超时</li>
-<li>args： 传递给浏览器实例的其他参数</li>
-</ul>
-<p>更多参数请参照:<a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md" target="_blank" rel="noopener">官网</a><br>中文地址：<a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/#/" target="_blank" rel="noopener"></a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网页爬虫</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/12/29/初探pupeteer——踩坑之旅/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1767,11 +1825,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1787,23 +1857,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1819,6 +1877,18 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -1831,19 +1901,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1855,18 +1921,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
@@ -1875,7 +1929,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">

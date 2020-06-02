@@ -156,6 +156,229 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JavaScript查漏补缺——String" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/02/JavaScript查漏补缺——String/">JavaScript查漏补缺——String</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/02/JavaScript查漏补缺——String/" class="archive-article-date">
+  	<time datetime="2020-06-02T06:36:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>String 全局对象是一个用于字符串或一个字符序列的构造函数。</p>
+<p>从 ECMAScript 2015 开始，字符串字面量也可以称为模板字面量。</p>
+<p>请注意区分 基本字符串值 和 JavaScript 字符串对象 . ( 对于 Boolean 和Numbers 也同样如此.)</p>
+<p>字符串字面量 (通过单引号或双引号定义) 和 直接调用 String 方法(没有通过 new 生成字符串对象实例)的字符串都是基本字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var a = 123</span><br><span class="line">var s1 = String(a)</span><br><span class="line">type of s1       // string </span><br><span class="line">var s2 = New String(a)</span><br><span class="line">type of s2       // object</span><br></pre></td></tr></table></figure></p>
+<p>JavaScript会自动将基本字符串转换为字符串对象，只有将基本字符串转化为字符串对象之后才可以使用字符串对象的方法。<br>当基本字符串需要调用一个字符串对象才有的方法或者查询值的时候(基本字符串是没有这些方法的)，JavaScript 会自动将基本字符串转化为字符串对象并且调用相应的方法或者执行查询。</p>
+<p>当使用 eval时，基本字符串和字符串对象也会产生不同的结果。eval 会将基本字符串作为源代码处理; 而字符串对象则被看作对象处理, 返回对象。 例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s1 = &quot;2 + 2&quot;;               // creates a string primitive</span><br><span class="line">s2 = new String(&quot;2 + 2&quot;);   // creates a String object</span><br><span class="line">console.log(eval(s1));      // returns the number 4</span><br><span class="line">console.log(eval(s2));      // returns the string &quot;2 + 2&quot;</span><br></pre></td></tr></table></figure></p>
+<p>利用 valueOf 方法，我们可以将字符串对象转换为其对应的基本字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(eval(s2.valueOf())); // returns the number 4</span><br></pre></td></tr></table></figure></p>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><p>String.prototype<br>可以为 String 对象增加新的属性。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode" target="_blank" rel="noopener">String.fromCharCode()</a><br> 通过一串 Unicode 创建字符串。<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint" target="_blank" rel="noopener">String.fromCodePoint()</a><br> 通过一串 码点 创建字符串。<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/raw" target="_blank" rel="noopener">String.raw()</a><br> 通过模板字符串创建字符串。</p>
+<h2 id="String-实例"><a href="#String-实例" class="headerlink" title="String 实例"></a>String 实例</h2><h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><p>String.prototype.constructor<br>用于创造对象的原型对象的特定的函数。</p>
+<p>String.prototype.length<br>返回了字符串的长度。</p>
+<p>N<br>用于访问第N个位置的字符，其中N是小于 length 和 0之间的正整数。这些属性都是“只读”性质，不能编辑。</p>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">charAt()</td>
+<td style="text-align:center">返回特定位置的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">charCodeAt()</td>
+<td style="text-align:center">返回表示给定索引的字符的Unicode的值。</td>
+</tr>
+<tr>
+<td style="text-align:center">codePointAt()</td>
+<td style="text-align:center">返回使用UTF-16编码的给定位置的值的非负整数。</td>
+</tr>
+<tr>
+<td style="text-align:center">startsWith()</td>
+<td style="text-align:center">判断字符串的起始位置是否匹配其他字符串中的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">endsWith()</td>
+<td style="text-align:center">判断一个字符串的是否以给定字符串结尾，结果返回布尔值。</td>
+</tr>
+<tr>
+<td style="text-align:center">indexOf()</td>
+<td style="text-align:center">从字符串对象中返回首个被发现的给定值的索引值，如果没有找到则返回-1。</td>
+</tr>
+<tr>
+<td style="text-align:center">lastIndexOf()</td>
+<td style="text-align:center">从字符串对象中返回最后一个被发现的给定值的索引值，如果没有找到则返回-1。</td>
+</tr>
+<tr>
+<td style="text-align:center">localeCompare()</td>
+<td style="text-align:center">返回一个数字表示是否引用字符串在排序中位于比较字符串的前面，后面，或者二者相同。</td>
+</tr>
+<tr>
+<td style="text-align:center">match()</td>
+<td style="text-align:center">使用正则表达式与字符串相比较。</td>
+</tr>
+<tr>
+<td style="text-align:center">normalize()</td>
+<td style="text-align:center">返回调用字符串值的Unicode标准化形式。</td>
+</tr>
+<tr>
+<td style="text-align:center">padEnd()</td>
+<td style="text-align:center">在当前字符串尾部填充指定的字符串， 直到达到指定的长度。 返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">padStart()</td>
+<td style="text-align:center">在当前字符串头部填充指定的字符串， 直到达到指定的长度。 返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">quote()</td>
+<td style="text-align:center">设置嵌入引用的引号类型。</td>
+</tr>
+<tr>
+<td style="text-align:center">repeat()</td>
+<td style="text-align:center">返回指定重复次数的由元素组成的字符串对象。</td>
+</tr>
+<tr>
+<td style="text-align:center">replace()</td>
+<td style="text-align:center">被用来在正则表达式和字符串直接比较，然后用新的子串来替换被匹配的子串。</td>
+</tr>
+<tr>
+<td style="text-align:center">search()</td>
+<td style="text-align:center">对正则表达式和指定字符串进行匹配搜索，返回第一个出现的匹配项的下标。</td>
+</tr>
+<tr>
+<td style="text-align:center">concat()</td>
+<td style="text-align:center">连接两个字符串文本，并返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">includes()</td>
+<td style="text-align:center">判断一个字符串里是否包含其他字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">split()</td>
+<td style="text-align:center">通过分离字符串成字串，将字符串对象分割成字符串数组。</td>
+</tr>
+<tr>
+<td style="text-align:center">slice(start, end)</td>
+<td style="text-align:center">摘取一个字符串区域，返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">substr(index, num)</td>
+<td style="text-align:center">截取index位置的num个字符串并返回</td>
+</tr>
+<tr>
+<td style="text-align:center">substring(start ,end)</td>
+<td style="text-align:center">返回在字符串中指定两个下标之间的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLocaleLowerCase()</td>
+<td style="text-align:center">根据当前区域设置，将符串中的字符转换成小写。对于大多数语言来说，toLowerCase的返回值是一致的。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLocaleUpperCase()</td>
+<td style="text-align:center">根据当前区域设置，将字符串中的字符转换成大写，对于大多数语言来说，toUpperCase的返回值是一致的。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLowerCase()</td>
+<td style="text-align:center">将字符串转换成小写并返回。</td>
+</tr>
+<tr>
+<td style="text-align:center">toUpperCase()</td>
+<td style="text-align:center">将字符串转换成大写并返回。</td>
+</tr>
+<tr>
+<td style="text-align:center">toSource()</td>
+<td style="text-align:center">返回一个对象文字代表着特定的对象。你可以使用这个返回值来创建新的对象。重写 Object.prototype.toSource 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">toString()</td>
+<td style="text-align:center">返回用字符串表示的特定对象。重写 Object.prototype.toString 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">trim()</td>
+<td style="text-align:center">从字符串的开始和结尾去除空格。参照部分 ECMAScript 5 标准。</td>
+</tr>
+<tr>
+<td style="text-align:center">trimStart() trimLeft()</td>
+<td style="text-align:center">从字符串的左侧去除空格。</td>
+</tr>
+<tr>
+<td style="text-align:center">trimEnd() trimRight()</td>
+<td style="text-align:center">从字符串的右侧去除空格。</td>
+</tr>
+<tr>
+<td style="text-align:center">valueOf()</td>
+<td style="text-align:center">返回特定对象的原始值。重写 Object.prototype.valueOf 方法。</td>
+</tr>
+</tbody>
+</table>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JavaScript基础</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/02/JavaScript查漏补缺——String/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-善用插件统一你的代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1932,179 +2155,9 @@ Array.prototype[@@iterator]()
 
 
   
-    <article id="post-浅谈前端工程化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/23/浅谈前端工程化/">浅谈前端工程化</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/23/浅谈前端工程化/" class="archive-article-date">
-  	<time datetime="2020-03-23T06:57:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p> <img width="600" height="400" src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/工作台.png"><br><!-- ![]( =300) --></p>
-<p>疫情之下，新年初始，发现跟随着年龄长了一岁的，还有自己的工作经验。回头看过来自己的职业生涯，这一年多以来忙忙碌碌基本已经被工作占满，996工作一年，其实是一年半的工作经验，同事之前也经常这样调侃自己。然而即便是这样，自己又有多少长进呢？被这个问题问醒，这段时间终于有机会可以从编写业务代码中抽身，我想是时候给自己的工作生涯做一个总结了。</p>
-<p>这些年来做过的大大小小的项目太多了，不能一一列出来，但是无论多少项目，核心的应该是项目设计时的思想和架构，万变不离其中，于是冒出来一个想法想把做项目的设计模式与实现写出来。这其中贯穿所有的就是前端工程化。于是这就是我们今天的主题。</p>
-<p>现如今web端可谓包罗万象，产品形态五花八门，涉猎极广，什么高大上的基础库/框架，拽炫酷的宣传页面，还有屌炸天的小游戏……不过这些一两个文件的小项目并非是前端技术的主要应用场景，更具商业价值的则是复杂的Web应用，它们功能完善，界面繁多，为用户提供了完整的产品体验，可能是新闻聚合网站，可能是在线购物平台，可能是社交网络，可能是金融信贷应用，可能是音乐互动社区，也可能是视频上传与分享平台，可能是系统应用，门户、数据可视化平台……</p>
-<p>尽管Web应用的复杂程度与日俱增，用户对其前端界面也提出了更高的要求，但时至今日仍然没有多少前端开发者会从软件工程的角度去思考前端开发，来助力团队的开发效率，更有甚者还对前端保留着”如玩具般简单“的刻板印象，日复一日，刀耕火种。</p>
-<p>随着前端开发复杂度的日益增加，各种优秀的组件框架也遍地开花。同时，我们面临业务规模的快速发展和工程师团队的不断扩张。目前来说，Web业务日益复杂化和多元化，前端开发已经由以WebPage模式为主转变为以WebApp模式为主了。现在随便找个前端项目，都已经不是过去的拼个页面+搞几个jQuery插件就能完成的了。工程复杂了就会产生许多问题，如何进行高效的多人协作？如何保证项目的可维护性？如何提高项目的开发质量？…</p>
-<p>我们希望能在日常开发中制订一个规范化的前端工作流，很好地规范统一项目的模块化开发和前端资源，让代码的维护和互相协作更加容易更加方便，令前端开发自动化成为一种习惯。同时，让大家能够释放生产力，提高开发效率，更好更快地完成团队开发以及项目后期维护和扩展。</p>
-<p>回顾一下曾经经历过的项目，为了提升其前端开发效率和运行性能，前端团队的工程建设大致会经历三个阶段：</p>
-<h3 id="第一阶段：库-框架选型"><a href="#第一阶段：库-框架选型" class="headerlink" title="第一阶段：库/框架选型"></a>第一阶段：库/框架选型</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/前端框架.png" alt=""></p>
-<p>前端工程建设的第一项任务就是根据项目特征进行技术选型（ps:以上排序不分排名先后）。<br>基本上现在没有人完全从0开始做网站，哪怕是政府项目用个jquery都很正常吧，React/Angularjs等框架横空出世，解放了不少生产力，合理的技术选型可以为项目节省许多工程量这点毋庸置疑。<br>关于前端技术框架选型，适合自己的就是做好的。</p>
-<h3 id="第二阶段：构建、管理工具"><a href="#第二阶段：构建、管理工具" class="headerlink" title="第二阶段：构建、管理工具"></a>第二阶段：构建、管理工具</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/构建工具.png" alt=""></p>
-<p>选型之后基本上就可以开始敲码了，不过光解决开发效率还不够，必须要兼顾运行性能。前端工程进行到第二阶段会选型一种或多种构建工具，对代码进行压缩、校验、管理，之后再以页面为单位进行简单的资源合并（ps:以上排序不分排名先后）<br>前端开发工程化程度之低，常常出乎我们的意料。很多人在大型互联网公司工作时是没有多少概念的，直到离开大公司的温室，去到业界与更多的团队交流才发现，能做到这个阶段在业界来说已然超出平均水平，属于“具备较高工程化程度”的团队了，查看网上形形色色的网页源代码，能做到最基本的JS/CSS压缩的Web应用都已跨入标准互联网公司行列，不难理解为什么很多前端团队对于前端工程构建的认知还仅停留在“压缩、校验、合并”这种程度。</p>
-<h3 id="第三阶段：JS-CSS模块化开发"><a href="#第三阶段：JS-CSS模块化开发" class="headerlink" title="第三阶段：JS/CSS模块化开发"></a>第三阶段：JS/CSS模块化开发</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/模块化开发.png" alt=""></p>
-<p>分而治之是软件工程中的重要思想，是复杂系统开发和维护的基石，这点放在前端开发中同样适用。在解决了基本开发效率运行效率问题之后，前端团队开始思考维护效率，模块化是目前前端最流行的分治手段（ps:以上排序不分排名先后）。</p>
-<p>很多人觉得模块化开发的工程意义是复用，其实应该是模块化开发的最大价值应该是分治。不管你将来是否要复用某段代码，你都有充分的理由将其分治为一个模块。</p>
-<p>JS模块化方案很多，AMD/CommonJS/UMD/ES6 Module等，对应的框架和工具也一大堆；<br>CSS模块化开发基本都是在less、sass、stylus等预处理器的import/mixin特性支持下实现的。</p>
-<h3 id="第四阶段：组件化开发与资源管理"><a href="#第四阶段：组件化开发与资源管理" class="headerlink" title="第四阶段：组件化开发与资源管理"></a>第四阶段：组件化开发与资源管理</h3><blockquote>
-<p>前端是一种技术问题较少、工程问题较多的软件开发领域。</p>
-</blockquote>
-<p>当我们要开发一款完整的Web应用时，前端将面临更多的工程问题，比如：</p>
-<p>大体量：多功能、多页面、多状态、多系统；<br>大规模：多人甚至多团队合作开发；<br>高性能：CDN部署、缓存控制、文件指纹、缓存复用、请求合并、按需加载、同步/异步加载、移动端首屏CSS内嵌、HTTP 2.0服务端资源推送。<br>　　<br>这些无疑是一系列严肃的系统工程问题。前面讲的三个阶段虽然相比曾经“茹毛饮血”的时代进步不少，但用于支撑第四阶段的多人合作开发以及精细的性能优化似乎还欠缺点什么。到底，缺什么呢？</p>
-<h4 id="第一件事：组件化开发"><a href="#第一件事：组件化开发" class="headerlink" title="第一件事：组件化开发"></a>第一件事：组件化开发</h4><p>整个前端项目可以划分为这么几种开发概念：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">名称</th>
-<th style="text-align:left">说明</th>
-<th style="text-align:left">举例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">JS模块</td>
-<td style="text-align:left">独立的算法和数据单元</td>
-<td style="text-align:left">浏览器环境检测(detect)，网络请求(ajax)，应用配置(config)，DOM操作(dom)，工具函数(utils)，以及组件里的JS单元</td>
-</tr>
-<tr>
-<td style="text-align:left">CSS模块</td>
-<td style="text-align:left">独立的功能性样式单元</td>
-<td style="text-align:left">栅格系统(grid)，字体图标(icon-fonts)，动画样式(animate)，以及组件里的CSS单元</td>
-</tr>
-<tr>
-<td style="text-align:left">UI组件</td>
-<td style="text-align:left">独立的可视/可交互功能单元</td>
-<td style="text-align:left">页头(header)，页尾(footer)，导航栏(nav)，搜索框(search)</td>
-</tr>
-<tr>
-<td style="text-align:left">页面</td>
-<td style="text-align:left">前端这种GUI软件的界面状态，是UI组件的容器</td>
-<td style="text-align:left">首页(index)，列表页(list)，用户管理(user)</td>
-</tr>
-<tr>
-<td style="text-align:left">应用</td>
-<td style="text-align:left">整个项目或整个站点被称之为应用，由多个页面组成</td>
-<td style="text-align:left">——</td>
-</tr>
-</tbody>
-</table>
-<p>以上5种开发概念以相对较少的规则组成了前端开发的基本工程结构，</p>
-<h4 id="第二件事：“智能”静态资源管理"><a href="#第二件事：“智能”静态资源管理" class="headerlink" title="第二件事：“智能”静态资源管理"></a>第二件事：“智能”静态资源管理</h4><p>上面提到的模块化/组件化开发，仅仅描述了一种开发理念，也可以认为是一种开发规范，倘若你认可这规范，对它的分治策略产生了共鸣，那我们就可以继续聊聊它的具体实现了。</p>
-<p>很明显，模块化/组件化开发之后，我们最终要解决的，就是模块/组件加载的技术问题。然而前端与客户端GUI软件有一个很大的不同：</p>
-<blockquote>
-<p>前端是一种远程部署，运行时增量下载的GUI软件。</p>
-</blockquote>
-<p>前端应用没有安装过程，其所需程序资源都部署在远程服务器，用户使用浏览器访问不同的页面来加载不同的资源，随着页面访问的增加，渐进式的将整个程序下载到本地运行，“增量下载”是前端在工程上有别于客户端GUI软件的根本原因。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/增量加载.gif" alt=""></p>
-<p>上图展示了一款界面繁多功能丰富的应用，如果采用Web实现，相信也是不小的体量，如果用户第一次访问页面就强制其加载全站静态资源再展示，相信会有很多用户因为失去耐心而流失。<br>根据“增量”的原则，我们应该精心规划每个页面的资源加载策略，使得用户无论访问哪个页面都能按需加载页面所需资源，没访问过的无需加载，访问过的可以缓存复用，最终带来流畅的应用体验。</p>
-<p>这正是Web应用“免安装”的魅力所在。</p>
-<p>由“增量加载”原则引出的前端优化技巧几乎成为了性能优化的核心：</p>
-<ol>
-<li>加载相关：按需加载，延迟加载，预加载，请求合并。</li>
-<li>缓存相关：浏览器缓存利用，缓存更新，缓存共享。非覆盖式发布。<br>这些优化方案无不围绕着如何将增量原则做到极致而展开。</li>
-</ol>
-<blockquote>
-<p>第四阶段前端开发最迫切需要做好的就是在基础架构中贯彻增量原则。</p>
-</blockquote>
-<p>相信这种贯彻不会随着时间的推移而改变，在可预见的未来，无论在HTTP1.x还是HTTP2.0时代，无论在ES5亦或者ES6/7时代，无论是AMD/CommonJS/UMD亦或者ES6 module时代，无论端内技术如何变迁，我们都有足够充分的理由要做好前端程序资源的增量加载。</p>
-<p>正如前面说到的，第三阶段前端工程缺少点什么呢？我觉得是在其基础架构中缺少这样一种“智能”的资源加载方案。没有这样的方案，很难将前端应用的规模发展到第四阶段，很难实现落地前面介绍的那种组件化开发方案，也很难让多方合作高效率的完成一项大型应用的开发，并保证其最终运行性能良好。在第四阶段，我们需要强大的工程化手段来管理”玩具般简单“的前端开发。</p>
-<h3 id="第五阶段：规范化"><a href="#第五阶段：规范化" class="headerlink" title="第五阶段：规范化"></a>第五阶段：规范化</h3><p>模块化和组件化确定了开发模型，而这些东西的实现就需要规范去落实。规范化其实是工程化中很重要的一个部分，项目初期规范制定的好坏会直接影响到后期的开发质量：</p>
-<ul>
-<li>目录结构的制定</li>
-<li>编码规范</li>
-<li>前后端接口规范</li>
-<li>前端输入输出数据文档</li>
-<li>文档规范</li>
-<li>组件管理</li>
-<li>Git分支管理</li>
-<li>Commit描述规范</li>
-<li>定期CodeReview</li>
-<li>视觉图标规范</li>
-<li>…</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在业界内有这么一句话：</p>
-<blockquote>
-<p>任何简单机械的重复劳动都应该让机器去完成。</p>
-</blockquote>
-<p>现代前端技术不再是以前刀耕火种的年代了。所以前端工程化的很多脏活累活都应该交给自动化工具来完成。</p>
-<p>个人总结经验，认为前端工程化主要应该从模块化、组件化、规范化、自动化四个方面来思考。<br>如何选型技术、如何定制规范、如何分治系统、如何优化性能、如何加载资源，当你从切图开始转变为思考这些问题的时候，我想说：你好，工程师！</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/23/浅谈前端工程化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -2203,11 +2256,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2223,23 +2288,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2255,6 +2308,18 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -2267,19 +2332,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2291,18 +2352,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
@@ -2311,7 +2360,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">

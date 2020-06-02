@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: git | taoyouyou的博客</title>
+  <title>JavaScript查漏补缺——String | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
-<meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
-<meta property="og:type" content="website">
-<meta property="og:title" content="taoyouyou的博客">
-<meta property="og:url" content="http://yoursite.com/tags/git/index.html">
+  <meta name="description" content="String 全局对象是一个用于字符串或一个字符序列的构造函数。 从 ECMAScript 2015 开始，字符串字面量也可以称为模板字面量。 请注意区分 基本字符串值 和 JavaScript 字符串对象 . ( 对于 Boolean 和Numbers 也同样如此.) 字符串字面量 (通过单引号或双引号定义) 和 直接调用 String 方法(没有通过 new 生成字符串对象实例)的字符串都是基">
+<meta name="keywords" content="JavaScript基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript查漏补缺——String">
+<meta property="og:url" content="http://yoursite.com/2020/06/02/JavaScript查漏补缺——String/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta property="og:description" content="String 全局对象是一个用于字符串或一个字符序列的构造函数。 从 ECMAScript 2015 开始，字符串字面量也可以称为模板字面量。 请注意区分 基本字符串值 和 JavaScript 字符串对象 . ( 对于 Boolean 和Numbers 也同样如此.) 字符串字面量 (通过单引号或双引号定义) 和 直接调用 String 方法(没有通过 new 生成字符串对象实例)的字符串都是基">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-06-02T07:25:19.101Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="taoyouyou的博客">
-<meta name="twitter:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta name="twitter:title" content="JavaScript查漏补缺——String">
+<meta name="twitter:description" content="String 全局对象是一个用于字符串或一个字符序列的构造函数。 从 ECMAScript 2015 开始，字符串字面量也可以称为模板字面量。 请注意区分 基本字符串值 和 JavaScript 字符串对象 . ( 对于 Boolean 和Numbers 也同样如此.) 字符串字面量 (通过单引号或双引号定义) 和 直接调用 String 方法(没有通过 new 生成字符串对象实例)的字符串都是基">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -154,162 +155,334 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-JavaScript查漏补缺——String" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/" class="archive-article-date">
-  	<time datetime="2020-03-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-20</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/">前端工程化——CI/CD 自动化构建部署</a>
+    <h1 class="article-title" itemprop="name">
+      JavaScript查漏补缺——String
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/06/02/JavaScript查漏补缺——String/" class="archive-article-date">
+  	<time datetime="2020-06-02T06:36:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>String 全局对象是一个用于字符串或一个字符序列的构造函数。</p>
+<p>从 ECMAScript 2015 开始，字符串字面量也可以称为模板字面量。</p>
+<p>请注意区分 基本字符串值 和 JavaScript 字符串对象 . ( 对于 Boolean 和Numbers 也同样如此.)</p>
+<p>字符串字面量 (通过单引号或双引号定义) 和 直接调用 String 方法(没有通过 new 生成字符串对象实例)的字符串都是基本字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var a = 123</span><br><span class="line">var s1 = String(a)</span><br><span class="line">type of s1       // string </span><br><span class="line">var s2 = New String(a)</span><br><span class="line">type of s2       // object</span><br></pre></td></tr></table></figure></p>
+<p>JavaScript会自动将基本字符串转换为字符串对象，只有将基本字符串转化为字符串对象之后才可以使用字符串对象的方法。<br>当基本字符串需要调用一个字符串对象才有的方法或者查询值的时候(基本字符串是没有这些方法的)，JavaScript 会自动将基本字符串转化为字符串对象并且调用相应的方法或者执行查询。</p>
+<p>当使用 eval时，基本字符串和字符串对象也会产生不同的结果。eval 会将基本字符串作为源代码处理; 而字符串对象则被看作对象处理, 返回对象。 例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s1 = &quot;2 + 2&quot;;               // creates a string primitive</span><br><span class="line">s2 = new String(&quot;2 + 2&quot;);   // creates a String object</span><br><span class="line">console.log(eval(s1));      // returns the number 4</span><br><span class="line">console.log(eval(s2));      // returns the string &quot;2 + 2&quot;</span><br></pre></td></tr></table></figure></p>
+<p>利用 valueOf 方法，我们可以将字符串对象转换为其对应的基本字符串。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(eval(s2.valueOf())); // returns the number 4</span><br></pre></td></tr></table></figure></p>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><p>String.prototype<br>可以为 String 对象增加新的属性。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode" target="_blank" rel="noopener">String.fromCharCode()</a><br> 通过一串 Unicode 创建字符串。<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint" target="_blank" rel="noopener">String.fromCodePoint()</a><br> 通过一串 码点 创建字符串。<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/raw" target="_blank" rel="noopener">String.raw()</a><br> 通过模板字符串创建字符串。</p>
+<h2 id="String-实例"><a href="#String-实例" class="headerlink" title="String 实例"></a>String 实例</h2><h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><p>String.prototype.constructor<br>用于创造对象的原型对象的特定的函数。</p>
+<p>String.prototype.length<br>返回了字符串的长度。</p>
+<p>N<br>用于访问第N个位置的字符，其中N是小于 length 和 0之间的正整数。这些属性都是“只读”性质，不能编辑。</p>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">charAt()</td>
+<td style="text-align:center">返回特定位置的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">charCodeAt()</td>
+<td style="text-align:center">返回表示给定索引的字符的Unicode的值。</td>
+</tr>
+<tr>
+<td style="text-align:center">codePointAt()</td>
+<td style="text-align:center">返回使用UTF-16编码的给定位置的值的非负整数。</td>
+</tr>
+<tr>
+<td style="text-align:center">startsWith()</td>
+<td style="text-align:center">判断字符串的起始位置是否匹配其他字符串中的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">endsWith()</td>
+<td style="text-align:center">判断一个字符串的是否以给定字符串结尾，结果返回布尔值。</td>
+</tr>
+<tr>
+<td style="text-align:center">indexOf()</td>
+<td style="text-align:center">从字符串对象中返回首个被发现的给定值的索引值，如果没有找到则返回-1。</td>
+</tr>
+<tr>
+<td style="text-align:center">lastIndexOf()</td>
+<td style="text-align:center">从字符串对象中返回最后一个被发现的给定值的索引值，如果没有找到则返回-1。</td>
+</tr>
+<tr>
+<td style="text-align:center">localeCompare()</td>
+<td style="text-align:center">返回一个数字表示是否引用字符串在排序中位于比较字符串的前面，后面，或者二者相同。</td>
+</tr>
+<tr>
+<td style="text-align:center">match()</td>
+<td style="text-align:center">使用正则表达式与字符串相比较。</td>
+</tr>
+<tr>
+<td style="text-align:center">normalize()</td>
+<td style="text-align:center">返回调用字符串值的Unicode标准化形式。</td>
+</tr>
+<tr>
+<td style="text-align:center">padEnd()</td>
+<td style="text-align:center">在当前字符串尾部填充指定的字符串， 直到达到指定的长度。 返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">padStart()</td>
+<td style="text-align:center">在当前字符串头部填充指定的字符串， 直到达到指定的长度。 返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">quote()</td>
+<td style="text-align:center">设置嵌入引用的引号类型。</td>
+</tr>
+<tr>
+<td style="text-align:center">repeat()</td>
+<td style="text-align:center">返回指定重复次数的由元素组成的字符串对象。</td>
+</tr>
+<tr>
+<td style="text-align:center">replace()</td>
+<td style="text-align:center">被用来在正则表达式和字符串直接比较，然后用新的子串来替换被匹配的子串。</td>
+</tr>
+<tr>
+<td style="text-align:center">search()</td>
+<td style="text-align:center">对正则表达式和指定字符串进行匹配搜索，返回第一个出现的匹配项的下标。</td>
+</tr>
+<tr>
+<td style="text-align:center">concat()</td>
+<td style="text-align:center">连接两个字符串文本，并返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">includes()</td>
+<td style="text-align:center">判断一个字符串里是否包含其他字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">split()</td>
+<td style="text-align:center">通过分离字符串成字串，将字符串对象分割成字符串数组。</td>
+</tr>
+<tr>
+<td style="text-align:center">slice(start, end)</td>
+<td style="text-align:center">摘取一个字符串区域，返回一个新的字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">substr(index, num)</td>
+<td style="text-align:center">截取index位置的num个字符串并返回</td>
+</tr>
+<tr>
+<td style="text-align:center">substring(start ,end)</td>
+<td style="text-align:center">返回在字符串中指定两个下标之间的字符。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLocaleLowerCase()</td>
+<td style="text-align:center">根据当前区域设置，将符串中的字符转换成小写。对于大多数语言来说，toLowerCase的返回值是一致的。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLocaleUpperCase()</td>
+<td style="text-align:center">根据当前区域设置，将字符串中的字符转换成大写，对于大多数语言来说，toUpperCase的返回值是一致的。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLowerCase()</td>
+<td style="text-align:center">将字符串转换成小写并返回。</td>
+</tr>
+<tr>
+<td style="text-align:center">toUpperCase()</td>
+<td style="text-align:center">将字符串转换成大写并返回。</td>
+</tr>
+<tr>
+<td style="text-align:center">toSource()</td>
+<td style="text-align:center">返回一个对象文字代表着特定的对象。你可以使用这个返回值来创建新的对象。重写 Object.prototype.toSource 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">toString()</td>
+<td style="text-align:center">返回用字符串表示的特定对象。重写 Object.prototype.toString 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">trim()</td>
+<td style="text-align:center">从字符串的开始和结尾去除空格。参照部分 ECMAScript 5 标准。</td>
+</tr>
+<tr>
+<td style="text-align:center">trimStart() trimLeft()</td>
+<td style="text-align:center">从字符串的左侧去除空格。</td>
+</tr>
+<tr>
+<td style="text-align:center">trimEnd() trimRight()</td>
+<td style="text-align:center">从字符串的右侧去除空格。</td>
+</tr>
+<tr>
+<td style="text-align:center">valueOf()</td>
+<td style="text-align:center">返回特定对象的原始值。重写 Object.prototype.valueOf 方法。</td>
+</tr>
+</tbody>
+</table>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JavaScript基础</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2020/06/02/JavaScript查漏补缺——String/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/03/19/如何用hexo搭出自己的博客系统/" class="archive-article-date">
-  	<time datetime="2020-03-19T06:07:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-19</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/01/善用插件统一你的代码风格/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">善用工具统一你的代码风格</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/19/如何用hexo搭出自己的博客系统/">如何用hexo搭出自己的博客系统</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">web</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#属性"><span class="toc-number">1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法"><span class="toc-number">2.</span> <span class="toc-text">方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String-实例"><span class="toc-number">3.</span> <span class="toc-text">String 实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#属性-1"><span class="toc-number">3.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法-1"><span class="toc-number">3.2.</span> <span class="toc-text">方法</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/06/git简明手册/" class="archive-article-date">
-  	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/06/git简明手册/">git简明手册</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -332,9 +505,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
