@@ -156,6 +156,462 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-浅谈-JS-模块化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/21/浅谈-JS-模块化/">浅谈 JS 模块化</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/21/浅谈-JS-模块化/" class="archive-article-date">
+  	<time datetime="2020-04-21T01:56:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你是否对前端模块化的概念还傻傻分不清，特别是js模块化，闭包，CMD，AMD, commonJS，seat.js, requirejs和ES6 Modules，这些概念你都清晰了吗？如果没有的话，那啃一啃这篇文章对你或许有帮助。</p>
+<p>众所周知。js由于历史原因并没有模块的概念，Javascript不是一种模块化编程语言，它不支持”类”（class），更遑论”模块”（module）了。（正在制定中的ECMAScript标准第六版，将正式支持”类”和”模块”，但还需要很长时间才能投入实用）。 自从ajax带来了web2.0概念后，js代码已经和以前大不相同了，2009年HTML5兴起后，前端代码的行数已经呈现井喷式发展，随着代码量的增加，模块的缺失的缺点日益凸显，Javascript模块化编程，已经成为一个迫切的需求。理想情况下，开发者只需要实现核心的业务逻辑，其他都可以加载别人已经写好的模块。这方面Javascript社区做了很多努力和探索，在现有的运行环境中，实现”模块”的效果。</p>
+<h2 id="模块化的概念"><a href="#模块化的概念" class="headerlink" title="模块化的概念"></a>模块化的概念</h2><p>这一概念并不是js独有，而是借鉴了其他语言的设计思想，下面是百度百科对模块的定义：</p>
+<blockquote>
+<p>模块,又称构件,是能够单独命名并独立地完成一定功能的程序语句的集合（即程序代码和数据结构的集合体）</p>
+</blockquote>
+<p>提炼关键字：独立、集合、完成一定功能。<br>上面的提炼，再从其他语言的实现中借鉴下，总结起来，我们期待的模块有如下特性：</p>
+<ul>
+<li>独立性——能够独立完成一个功能，不受外部环境的影响</li>
+<li>完整性——完成一个特定功能</li>
+<li>集合性——一组语句的集合</li>
+<li>依赖性——可以依赖已经存在的模块</li>
+<li>被依赖——可以被其他模块依赖</li>
+<li>其实我们想要的就是一个独立的模块，并能引用依赖，及被依赖。</li>
+</ul>
+<p>C语言的库和头文件（include），java的包（import）。这在其他语言中都是原生支持的特性，在js中却是没有的。为了弥补这种缺陷，Javascript开发者们做了很多尝试，以期达到一目的。</p>
+<h2 id="js模块化发展"><a href="#js模块化发展" class="headerlink" title="js模块化发展"></a>js模块化发展</h2><p>模块化是一个语言膨胀的必经之路，它能够帮助开发者拆分和组织代码。</p>
+<h3 id="Module模式"><a href="#Module模式" class="headerlink" title="Module模式"></a>Module模式</h3><h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><p>仅从定义来看，那么一个函数即可成为一个模块（独立，集合，完成一个功能），那我们就先从最原始的探索开始，也许不经意间，我们早已在使用模块了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//最简单的函数，可以称作一个模块</span><br><span class="line">function add(x, y) &#123;</span><br><span class="line">	return x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种做法的缺点很明显：”污染”了全局变量，无法保证不与其他模块发生变量名冲突，而且模块成员之间看不出直接关系。</p>
+<h4 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h4><p>在模块化规范形成之前，JS开发者使用Module设计模式来解决JS全局作用域的污染问题。Module模式最初被定义为一种在传统软件工程中为类提供私有和公有封装的方法。在JavaScript中，Module模式使用匿名函数自调用 (闭包)来封装，通过自定义暴露行为来区分私有成员和公有成员。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">let myModule = (function (window) &#123;</span><br><span class="line">    let moduleName = &apos;module&apos;  // private</span><br><span class="line">    // public</span><br><span class="line">    function setModuleName(name) &#123;</span><br><span class="line">      moduleName = name</span><br><span class="line">    &#125;</span><br><span class="line">    // public</span><br><span class="line">    function getModuleName() &#123;</span><br><span class="line">      return moduleName</span><br><span class="line">    &#125;</span><br><span class="line">    return &#123; setModuleName, getModuleName &#125;  // 暴露行为</span><br><span class="line">&#125;)(window)</span><br></pre></td></tr></table></figure></p>
+<p>上面例子是Module模式的一种写法，它通过闭包的特性打开了一个新的作用域，缓解了全局作用域命名冲突和安全性的问题。<br>但这种实现其实并不完美，仍然需要手动维护依赖的顺序。典型的场景就是上面的jquery必须先于我们的代码引入，不然会报引用错误，这显然不是我们想要的。<br>开发者并不能够用它来组织和拆分代码，于是乎便出现了以此为基石的模块化规范。</p>
+<h3 id="模块化规范"><a href="#模块化规范" class="headerlink" title="模块化规范"></a>模块化规范</h3><p>有了模块，我们就可以更方便地使用别人的代码，想要什么功能，就加载什么模块。但是，这样做有一个前提，那就是大家必须以同样的方式编写模块，否则你有你的写法，我有我的写法，岂不是乱了套！考虑到Javascript模块现在还没有官方规范，这一点就更重要了。目前，通行的Javascript模块规范共有两种：CommonJS和AMD。</p>
+<h4 id="1、-CommonJS"><a href="#1、-CommonJS" class="headerlink" title="1、 CommonJS"></a>1、 CommonJS</h4><p>2009年，美国程序员Ryan Dahl创造了node.js项目，将javascript语言用于服务器端编程。这标志”Javascript模块化编程”正式诞生。在这之前js 只被用于浏览器编程的环境中，因为网页编程的复杂度有限，没有模块化也不是什么大不了的事，但是在服务端，一定要有模块，与操作系统和其他应用程序互动，否则根本没法编程。</p>
+<p>CommonJS主要用在Node开发上，每个文件就是一个模块，每个文件都有自己的一个作用域。通过module.exports暴露public成员。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let x = 1;</span><br><span class="line">function add() &#123;</span><br><span class="line">  x += 1;</span><br><span class="line">  return x;</span><br><span class="line">&#125;</span><br><span class="line">module.exports.x = x;</span><br><span class="line">module.exports.add = add;</span><br></pre></td></tr></table></figure></p>
+<p>此外，CommonJS通过require()引入模块依赖，require函数可以引入Node的内置模块、自定义模块和npm等第三方模块。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 文件名：main.js</span><br><span class="line">let xm = require(&apos;./x.js&apos;);</span><br><span class="line">console.log(xm.x);  // 1</span><br><span class="line">console.log(xm.add());  // 2</span><br><span class="line">console.log(xm.x);   // 1</span><br></pre></td></tr></table></figure></p>
+<p>我们说，Module模式是模块化规范的基石，CommonJS也是对Module模式的一种封装。我们完全可以用Module模式来实现上面的代码效果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">let xModule = (function ()&#123;</span><br><span class="line">  let x = 1;</span><br><span class="line">  function add() &#123;</span><br><span class="line">    x += 1;</span><br><span class="line">    return x;</span><br><span class="line">  &#125;</span><br><span class="line">  return &#123; x, add &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line">let xm = xModule;</span><br><span class="line">console.log(xm.x);  // 1</span><br><span class="line">console.log(xm.add());  // 2</span><br><span class="line">console.log(xm.x);   // 1</span><br></pre></td></tr></table></figure></p>
+<p>通过Module模式模拟的CommonJS原理，我们就可以很好的解释CommonJS的特性了。因为CommonJS需要通过赋值的方式来获取匿名函数自调用的返回值，所以require函数在加载模块是同步的。这对服务器端不是一个问题，因为所有的模块都存放在本地硬盘，可以同步加载完成，等待时间就是硬盘的读取时间。但是，对于浏览器，这却是一个大问题，因为模块都放在服务器端，等待时间取决于网速的快慢，可能要等很长时间，浏览器处于”假死”状态。CommonJS模块的加载机制局限了CommonJS在客户端上的使用，因为通过HTTP同步加载CommonJS模块是非常耗时的。</p>
+<p>因此，浏览器端的模块，不能采用”同步加载”（synchronous），只能采用”异步加载”（asynchronous）。这就是AMD规范诞生的背景。</p>
+<h4 id="2、-CMD"><a href="#2、-CMD" class="headerlink" title="2、 CMD"></a>2、 CMD</h4><p>CMD是（Common Module Definition）公共模块定义 的缩写。CMD可能是在commonjs之后抽象出来的一套模块化语法定义和使用的标准。</p>
+<p>CMD规范参照commonjs中的方式，定义模块的方式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">  //  同步加载模块</span><br><span class="line">  var a = require(&apos;./a&apos;);</span><br><span class="line">  a.doSomething();</span><br><span class="line">  // 异步加载一个模块，在加载完成时，执行回调</span><br><span class="line">  require.async([&apos;./b&apos;], function(b) &#123;</span><br><span class="line">    b.doSomething();</span><br><span class="line">  &#125;);</span><br><span class="line">  // 对外暴露成员</span><br><span class="line">  exports.doSomething = function() &#123;&#125;;</span><br><span class="line">&#125;);</span><br><span class="line">// 使用模块</span><br><span class="line">seajs.use(&apos;path&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>一个文件就是一个模块，文件名就是模块的名字，使用模块的方法也和commonjs中一致，只需require就好了，模块名字可省略后缀。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//使用event.js模块</span><br><span class="line">var ec = require(&apos;event&apos;);</span><br></pre></td></tr></table></figure>
+<p>CMD的典型实现就是seajs，应用的很广泛。</p>
+<h4 id="3、-AMD"><a href="#3、-AMD" class="headerlink" title="3、 AMD"></a>3、 AMD</h4><p>AMD是（Asynchronous Module Definition）异步模块定义 的缩写。它采用异步方式加载模块，模块的加载不影响它后面语句的运行。所有依赖这个模块的语句，都定义在一个回调函数中，等到加载完成之后，这个回调函数才会运行。</p>
+<p>AMD的核心是define函数。调用define函数最常见的方式是传入三个参数——模块名、该模块依赖的模块标识符数组、以及将会返回该模块定义的工厂函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 定义calculator（计算器）模块。此模块依赖其他模块</span><br><span class="line">define(&apos;calculator&apos;, [&apos;adder&apos;], function(adder) &#123;</span><br><span class="line">    // 返回具有add方法的匿名对象。——译注</span><br><span class="line">    return &#123;</span><br><span class="line">        add: function(n1, n2) &#123;</span><br><span class="line">            /*</span><br><span class="line">             * 实际调用的是adder（加法器）模块的add方法。</span><br><span class="line">             * 而且adder模块已在前一参数[&apos;adder&apos;]中指明了。——译注</span><br><span class="line">             */</span><br><span class="line">            return adder.add(n1, n2);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>AMD也采用require()语句加载模块，但是不同于CommonJS，它要求两个参数：<br><code>require([module], callback)</code><br> 第一个参数[module]，是一个数组，里面的成员就是要加载的模块；第二个参数callback，则是加载成功之后的回调函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">require([&apos;calculator&apos;], function (math) &#123;</span><br><span class="line">　　math.add(2, 3);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>math.add()与math模块加载不是同步的，浏览器不会发生假死。所以很显然，AMD比较适合浏览器环境。</p>
+<h4 id="4、-require-js"><a href="#4、-require-js" class="headerlink" title="4、 require.js"></a>4、 require.js</h4><p>require.js是AMD异步模块编程思想的实现，或者说 AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。</p>
+<p>require.js的诞生，就是为了解决这两个问题：</p>
+<ul>
+<li>（1）实现js文件的异步加载，避免网页失去响应；</li>
+<li>（2）管理模块之间的依赖性，便于代码的编写和维护。</li>
+</ul>
+<p>4.1、 require.js 加载</p>
+<p>使用require.js的第一步，是先去官方网站下载最新版本。下载后，假定把它放在js子目录下面，就可以加载了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;js/require.js&quot; defer async=&quot;true&quot; &gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>async属性表明这个文件需要异步加载，避免网页失去响应。IE不支持这个属性，只支持defer，所以把defer也写上。<br>加载require.js以后，下一步就要加载我们自己的代码了。假定我们自己的代码文件是main.js，也放在js目录下面。那么，只需要写成下面这样就行了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;js/require.js&quot; data-main=&quot;js/main&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>data-main属性的作用是，指定网页程序的主模块。在上例中，就是js目录下面的main.js，这个文件会第一个被require.js加载。由于require.js默认的文件后缀名是js，所以可以把main.js简写成main。</p>
+<p>4.2、 主模块编写</p>
+<p>假定主模块依赖jquery、underscore和backbone这三个模块，main.js就可以这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">require([&apos;jquery&apos;, &apos;underscore&apos;, &apos;backbone&apos;], function ($, _, Backbone)&#123;</span><br><span class="line">　　// some code here</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>require.js会先加载jQuery、underscore和backbone，然后再运行回调函数。主模块的代码就写在回调函数中。</p>
+<p>4.3、模块的加载</p>
+<p>使用require.config()方法，我们可以对模块的加载行为进行自定义。require.config()就写在主模块（main.js）的头部。参数就是一个对象，这个对象的paths属性指定各个模块的加载路径。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">　require.config(&#123;</span><br><span class="line">　　　　paths: &#123;</span><br><span class="line">　　　　　　&quot;jquery&quot;: &quot;lib/jquery.min&quot;,</span><br><span class="line">　　　　　　&quot;underscore&quot;: &quot;lib/underscore.min&quot;,</span><br><span class="line">　　　　　　&quot;backbone&quot;: &quot;lib/backbone.min&quot;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>或者直接改变基目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;</span><br><span class="line">　　　　baseUrl: &quot;js/lib&quot;,</span><br><span class="line">　　　　paths: &#123;</span><br><span class="line">　　　　　　&quot;jquery&quot;: &quot;jquery.min&quot;,</span><br><span class="line">　　　　　　&quot;underscore&quot;: &quot;underscore.min&quot;,</span><br><span class="line">　　　　　　&quot;backbone&quot;: &quot;backbone.min&quot;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>如果某个模块在另一台主机上，也可以直接指定它的网址，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;</span><br><span class="line">　　　　paths: &#123;</span><br><span class="line">　　　　　　&quot;jquery&quot;: &quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min&quot;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>4.4 加载非规范性模块</p>
+<p>理论上，require.js加载的模块，必须是按照AMD规范、用define()函数定义的模块。但是实际上，虽然已经有一部分流行的函数库（比如jQuery）符合AMD规范，更多的库并不符合。那么，require.js是否能够加载非规范的模块呢？</p>
+<p>这样的模块在用require()加载之前，要先用require.config()方法，定义它们的一些特征。</p>
+<p>require.config()接受一个配置对象，这个对象除了有前面说过的paths属性之外，还有一个shim属性，专门用来配置不兼容的模块。具体来说，每个模块要定义（1）exports值（输出的变量名），表明这个模块外部调用时的名称；（2）deps数组，表明该模块的依赖性。</p>
+<p>举例来说，underscore和backbone这两个库，都没有采用AMD规范编写。如果要加载它们的话，必须先定义它们的特征：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;</span><br><span class="line">　　　　shim: &#123;</span><br><span class="line">　　　　　　&apos;underscore&apos;:&#123;</span><br><span class="line">　　　　　　　　exports: &apos;_&apos;</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　&apos;backbone&apos;: &#123;</span><br><span class="line">　　　　　　　　deps: [&apos;underscore&apos;, &apos;jquery&apos;],</span><br><span class="line">　　　　　　　　exports: &apos;Backbone&apos;</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="ES6-module"><a href="#ES6-module" class="headerlink" title="ES6 module"></a>ES6 module</h3><p>ES6的模块化已经不是规范了，而是JS语言的特性。随着ES6的推出，AMD和CMD也随之成为了历史。ES6模块与模块化规范相比，有两大特点：</p>
+<p>模块化规范输出的是一个值的拷贝，ES6 模块输出的是值的引用。<br>模块化规范是运行时加载，ES6 模块是编译时输出接口。<br>模块化规范输出的是一个对象，该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，ES6 module 是一个多对象输出，多对象加载的模型。从原理上来说，模块化规范是匿名函数自调用的封装，而ES6 module则是用匿名函数自调用去调用输出的成员。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2012/10/javascript_module.html" target="_blank" rel="noopener">Javascript模块化编程（一）：模块的写法</a></li>
+<li><a href="https://www.jianshu.com/p/8573cdcde863" target="_blank" rel="noopener">理解javascript模块化</a></li>
+<li><a href="https://yanhaijing.com/javascript/2015/03/28/js-module/" target="_blank" rel="noopener">JavaScript模块的前世今生</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">模块化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/21/浅谈-JS-模块化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-手把手教你用vue撸一个管理后台" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/03/手把手教你用vue撸一个管理后台/">手把手教你用vue撸一个管理后台</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/03/手把手教你用vue撸一个管理后台/" class="archive-article-date">
+  	<time datetime="2020-04-03T05:59:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>敲代码等于搬砖，纯粹的体力劳动，盖不出好房子来就是在搬砖。。。搬砖。。。搬砖。。。回想下自己的搬砖经历，前前后后已经撸撸少说有五六七八个管理后台了，也许可以从中提炼出一套范式出来，可以为后来者照亮一点微光，少走一点弯路。也供自己学习总结。</p>
+<h2 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h2><p>@vue/cli + ant-design-vue + vue + vuex + vue-router + axios</p>
+<p>本项目采用vue框架进行开发，关于相关知识可以查看文档</p>
+<p><a href="https://cli.vuejs.org/zh/" target="_blank" rel="noopener">Vue CLI：Vue.js 开发的标准工具</a><br><a href="https://cn.vuejs.org/" target="_blank" rel="noopener">Vue 2.x： 渐进式JavaScript 框架</a><br><a href="https://vuex.vuejs.org/zh/" target="_blank" rel="noopener">Vuex：专为 Vue.js 应用程序开发的状态管理模式</a><br><a href="https://router.vuejs.org/zh/" target="_blank" rel="noopener">Vue Router：Vue.js 官方的路由管理器</a><br><a href="https://www.antdv.com/docs/vue/introduce-cn/" target="_blank" rel="noopener">Ant-design-vue</a></p>
+<h3 id="关于-vue-cli脚手架配置"><a href="#关于-vue-cli脚手架配置" class="headerlink" title="关于@vue/cli脚手架配置"></a>关于@vue/cli脚手架配置</h3><p>本项目使用的脚手架 vue cli 3<br>构建于 webpack，webpack-dev-server 之上，可以使用下列任一命令安装这个新 vue-cli 的包：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn global add @vue/cli</span><br></pre></td></tr></table></figure></p>
+<p>通过命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue create &lt;projectName&gt;</span><br></pre></td></tr></table></figure></p>
+<p>新建一个vue项目<br>在命令行界面，会要求你输入一些选项来初始化这个项目<br>默认选项配置了babel转译和eslint语法校验，也可以通过手动选择需要的自定义配置。因为一个完整的项目通常会集成 Vuex,Router, 所以新建本项目使用的选项如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">? Please pick a preset: Manually select features</span><br><span class="line">? Check the features needed for your project: </span><br><span class="line"> ◉ Babel</span><br><span class="line"> ◯ TypeScript</span><br><span class="line"> ◯ Progressive Web App (PWA) Support</span><br><span class="line"> ◉ Router</span><br><span class="line"> ◉ Vuex</span><br><span class="line"> ◉ CSS Pre-processors</span><br><span class="line"> ◉ Linter / Formatter</span><br><span class="line"> ◯ Unit Testing</span><br><span class="line"> ◯ E2E Testing</span><br></pre></td></tr></table></figure></p>
+<p>集成了Babael，Vuex，Router，Eslint作为格式校验方式，保存时校验格式。stylus作为css预处理器，PostCSS, Autoprefixer 和 CSS Modules 是默认被提供支持的。选择独立文件作为babel,eslint等的配置文件。vue.config.js 是一个可选的配置文件，如果项目的 (和 package.json 同级的) 根目录中存在这个文件，那么它会被 @vue/cli-service 自动加载。</p>
+<p>项目默认的 Eslint 以及 PostCSS 配置直接写在 package.json 中对应的 eslintConfig 以及 postcss 字段中，具体可以打开 package.json 文件进行查看，或者修改配置</p>
+<h3 id="Babel："><a href="#Babel：" class="headerlink" title="Babel："></a>Babel：</h3><ul>
+<li>babel.config.js: Babel 7 中的新配置格式 </li>
+<li>使用 @vue/babel-preset-app，它包含了 babel-preset-env、JSX 支持以及为最小化包体积优化过的配置。</li>
+<li>Polyfill：通过 @babel/preset-env 和 browserslist 配置来决定项目需要的 polyfill。   </li>
+</ul>
+<blockquote>
+<p>如果该依赖交付了 ES5 代码并显式地列出了需要的 polyfill: 你可以使用 @vue/babel-preset-app 的 polyfills 选项预包含所需要的 polyfill。注意 es.promise 将被默认包含，因为现在的库依赖 Promise 是非常普遍的</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  presets: [</span><br><span class="line">    [&apos;@vue/app&apos;, &#123;</span><br><span class="line">      polyfills: [</span><br><span class="line">        &apos;es.promise&apos;,</span><br><span class="line">        &apos;es.symbol&apos;</span><br><span class="line">      ]</span><br><span class="line">    &#125;]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ESLint："><a href="#ESLint：" class="headerlink" title="ESLint："></a>ESLint：</h3><p>eslint配置通过package.json中设置eslintConfig生效。采用vue提供的’vue/essential’和’airbnb’代码风格。   </p>
+<p>可以通过eslint配置文件的rule字段添加自定义规则。   </p>
+<p><a href="https://cn.eslint.org/docs/rules/" target="_blank" rel="noopener">Eslint规则说明文档</a></p>
+<h3 id="Css预处理器："><a href="#Css预处理器：" class="headerlink" title="Css预处理器："></a>Css预处理器：</h3><p><a href="https://stylus.bootcss.com/" target="_blank" rel="noopener">Stylus</a><br>特性</p>
+<ul>
+<li>冒号可有可无</li>
+<li>分号可有可无</li>
+<li>逗号可有可无</li>
+<li>括号可有可无</li>
+<li>变量</li>
+<li>插值（Interpolation）</li>
+<li>混合（Mixin）</li>
+<li>数学计算</li>
+<li>强制类型转换</li>
+<li>动态引入</li>
+<li>条件表达式</li>
+<li>迭代</li>
+<li>嵌套选择器</li>
+<li>父级引用</li>
+<li>Variable function calls</li>
+<li>词法作用域</li>
+<li>内置函数（超过 60 个）</li>
+<li>语法内函数（In-language functions）</li>
+<li>压缩可选</li>
+<li>图像内联可选</li>
+<li>Stylus 可执行程序</li>
+<li>健壮的错误报告</li>
+<li>单行和多行注释</li>
+<li>CSS 字面量</li>
+<li>字符转义</li>
+<li>TextMate 捆绑<br>…</li>
+</ul>
+<h3 id="项目目录"><a href="#项目目录" class="headerlink" title="项目目录"></a>项目目录</h3><p>项目初始化后</p>
+<ol>
+<li>src下新建assets文件夹作为资源文件夹 </li>
+<li>src下新建api文件夹封装axios</li>
+<li>src下新建config.js<br>此时文件的目录结构如下，<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── public</span><br><span class="line">│   ├-- favicon.ico </span><br><span class="line">│   └-- index.html                       // 入口页面</span><br><span class="line">│── src</span><br><span class="line">│   ├── api                              // 封装axios</span><br><span class="line">│   ├── assets                           // 资源文件夹</span><br><span class="line">│   │   ├── css</span><br><span class="line">│   │   ├── js</span><br><span class="line">│   │   └── img</span><br><span class="line">│   ├── components                       // 放置组件的目录</span><br><span class="line">│   ├── router                           // 路由文件夹</span><br><span class="line">│   ├── store                            // vuex全局状态管理文件夹</span><br><span class="line">│   ├── views                       // 页面</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── config.js                    // 配置全局变量    </span><br><span class="line">│   └── App.vue                         </span><br><span class="line">├── babel.config.js                  // babel转译配置</span><br><span class="line">├── vue.config.js                    // 自定义webpack项目配置</span><br><span class="line">├── .gitignore                       // git上传需要忽略的文件格式</span><br><span class="line">├── README.md                        // 项目说明                   </span><br><span class="line">└── package.json                     // 项目基本信息</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="组件库"><a href="#组件库" class="headerlink" title="组件库"></a>组件库</h3><p>项目集成了 <a href="https://www.antdv.com/docs/vue/introduce-cn/" target="_blank" rel="noopener">ant-design-vue</a> 组件库，ant-design-vue作为 Ant Design 的 Vue 实现，一般用于开发和服务于企业级后台产品。拥有开箱即用的高质量 Vue 组件，共享Ant Design of React设计工具体系，提炼自企业级中后台产品的交互语言和视觉风格，满足开发中的一般要求。</p>
+<h4 id="在-vue-cli-3-中定制主题"><a href="#在-vue-cli-3-中定制主题" class="headerlink" title="在 vue cli 3 中定制主题"></a>在 vue cli 3 中定制主题</h4><p>本项目在 ant-design-vue 的基础上实现了自定义主题，antd 的样式使用了 Less 作为开发语言，并定义了一系列全局/组件的样式变量，我们可以根据需求进行相应调整。</p>
+<p>项目根目录下新建文件vue.config.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// vue.config.js</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  css: &#123;</span><br><span class="line">    loaderOptions: &#123;</span><br><span class="line">      less: &#123;</span><br><span class="line">        modifyVars: &#123;</span><br><span class="line">          &apos;primary-color&apos;: &apos;#3171ff&apos;,</span><br><span class="line">          &apos;link-color&apos;: &apos;#3171ff&apos;,</span><br><span class="line">          &apos;border-radius-base&apos;: &apos;4px&apos;,</span><br><span class="line">        &#125;,</span><br><span class="line">        javascriptEnabled: true,  // less版本过高时应该开启此选项</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="按需加载"><a href="#按需加载" class="headerlink" title="按需加载"></a>按需加载</h4><p>加载全部的 antd 组件的样式对前端性能是个隐患，因此我们需要对 vue-cli 的默认配置进行自定义。</p>
+<p>使用 babel-plugin-import<br>babel-plugin-import 是一个用于按需加载组件代码和样式的 babel 插件（原理）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add babel-plugin-import --dev</span><br></pre></td></tr></table></figure></p>
+<p>修改babel.config.js文件，配置 babel-plugin-import<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> module.exports = &#123;</span><br><span class="line">  presets: [&quot;@vue/app&quot;],</span><br><span class="line">  plugins: [</span><br><span class="line">    [</span><br><span class="line">      &quot;import&quot;,</span><br><span class="line">      &#123; libraryName: &quot;ant-design-vue&quot;, libraryDirectory: &quot;es&quot;, style: true &#125;</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>最后在main.js引入模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Button &#125; from &apos;ant-design-vue&apos;;</span><br><span class="line">...</span><br><span class="line">// Vue.component(Button.name, Button)</span><br><span class="line">vue.use(Button)</span><br></pre></td></tr></table></figure></p>
+<h3 id="config配置全局变量"><a href="#config配置全局变量" class="headerlink" title="config配置全局变量"></a>config配置全局变量</h3><p>关于项目全局变量配置在根目录的config.js文件夹，可以根据需要暴露全局变量<br>本项目的全局变量配置如下，可以作为一般化的全局变量配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">const domainDEV = &apos;http://xxx.xxx.xxx&apos;; // 测试环境</span><br><span class="line">const domainPRO = &apos;http://xxx.xxx.xxx&apos;; // 生产环境</span><br><span class="line"></span><br><span class="line">let domain = &apos;&apos;;</span><br><span class="line">let requestUrl = &apos;&apos;;</span><br><span class="line">const fullCurrentDomain = window.location.href;</span><br><span class="line">if (fullCurrentDomain.indexOf(domainDEV) &gt; -1) &#123; // 测试环境</span><br><span class="line">  domain = `$&#123;domainDEV&#125;`;</span><br><span class="line">  requestUrl = &apos;http://api.xxx.xxx&apos;;</span><br><span class="line">&#125; else if (fullCurrentDomain.indexOf(domainPRO) &gt; -1) &#123; // 生产环境</span><br><span class="line">  domain = `$&#123;domainPRO&#125;`;</span><br><span class="line">  requestUrl = &apos;http://api.xxx.xxx&apos;;</span><br><span class="line">&#125; else &#123; // 本地调试</span><br><span class="line">  domain = &apos;http://localhost:8080&apos;;</span><br><span class="line">  requestUrl = &apos;http://api.xxx.xxx&apos;; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">global.config = &#123;</span><br><span class="line">  domain: &apos;&apos;,            // 当前域名地址</span><br><span class="line">  requestUrl:  &apos;&apos;,       // 接口请求地址</span><br><span class="line">  exportExcel:  &apos;&apos;,      // Excel导出地址</span><br><span class="line">  uploadUrl:  &apos;&apos;,        // 文件上传地址</span><br><span class="line">  version: &apos;v2.0&apos;,       // 当前版本号</span><br><span class="line">  pageSize: 15,          // 列表单页数据条数</span><br><span class="line">  themeChangeEnable: true, // 是否开启一键换肤功能</span><br><span class="line">  enablePageTabs: false, // 是否开启标签页面</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="数据交互"><a href="#数据交互" class="headerlink" title="数据交互"></a>数据交互</h3><h4 id="二次封装axios发起请求"><a href="#二次封装axios发起请求" class="headerlink" title="二次封装axios发起请求"></a>二次封装axios发起请求</h4><p>使用<a href="https://www.kancloud.cn/yunye/axios/234845" target="_blank" rel="noopener">Axios</a>发起接口请求，实现数据交互，Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。</p>
+<p>本项目在vue的原型链上扩展了axios方法，在方法在axios的基础上进行了二次封装。</p>
+<ol>
+<li>统一处理了axios请求头部公共信息。</li>
+<li>区分了需要登录的路由以及不需要登录的路由。</li>
+<li>对于需要登录的路由， 手动解决了token两个小时后失效的问题，具体实现方式：axios响应拦截器里，在sessionStorage中写入登录时间t的参数，在axios的请求拦截器中读取现在时间与写入的登录时间做比较如果大于2小时，则重定向到login页面，清空sessionStorage变量。</li>
+<li>响应拦截器根据响应状态码对响应进行统一处理。</li>
+</ol>
+<p>封装代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line">import axios from &apos;axios&apos;;</span><br><span class="line">import &#123;</span><br><span class="line">  message,</span><br><span class="line">&#125; from &apos;ant-design-vue&apos;;</span><br><span class="line">import moment from &apos;moment&apos;;</span><br><span class="line">import utils from &apos;./utils&apos;;</span><br><span class="line">import router from &apos;@/router&apos;;</span><br><span class="line"></span><br><span class="line">const getQueryVariable = (variable) =&gt; &#123;</span><br><span class="line">  const query = window.location.search.substring(1);</span><br><span class="line">  const vars = query.split(&apos;&amp;&apos;);</span><br><span class="line">  for (let i = 0; i &lt; vars.length; i += 1) &#123;</span><br><span class="line">    const pair = vars[i].split(&apos;=&apos;);</span><br><span class="line">    if (pair[0] === variable) &#123;</span><br><span class="line">      return pair[1];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return (false);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">axios.defaults.timeout = 50000;</span><br><span class="line"></span><br><span class="line">axios.interceptors.request.use((config) =&gt; &#123;</span><br><span class="line">  const theConfig = config;</span><br><span class="line">  const configTemp = config.url;</span><br><span class="line">  if (theConfig.method === &apos;post&apos;) &#123;</span><br><span class="line">    let deviceId = localStorage.getItem(&apos;deviceId&apos;);</span><br><span class="line">    if (!deviceId || deviceId.length !== 8) &#123;</span><br><span class="line">      deviceId = utils.randomString(8);</span><br><span class="line">      localStorage.setItem(&apos;deviceId&apos;, deviceId);</span><br><span class="line">    &#125;</span><br><span class="line">    theConfig.headers.deviceId = deviceId;</span><br><span class="line"></span><br><span class="line">    const noAuthArry = [&apos;/auth&apos;, &apos;/oauth&apos;, &apos;/error&apos;, &apos;/application&apos;, &apos;/label&apos;]; // 不需要登录的path &apos;/api&apos;,</span><br><span class="line">    const needAuthArry = [&apos;/application/detail&apos;, &apos;/application/view/over&apos;, &apos;/application/enterprise&apos;]; // 需要登录的path</span><br><span class="line"></span><br><span class="line">    if (getQueryVariable(&apos;token&apos;)) &#123; // 因为其他页面是从vuexl里取token所以url上拿到的token要存到vuex里</span><br><span class="line">      sessionStorage.setItem(&apos;token&apos;, decodeURI(getQueryVariable(&apos;token&apos;)));</span><br><span class="line">    &#125;</span><br><span class="line">    const token = sessionStorage.getItem(&apos;token&apos;);</span><br><span class="line"></span><br><span class="line">    if ((noAuthArry.every(x =&gt; configTemp.indexOf(x) === -1) &amp;&amp; token) || (needAuthArry.some(x =&gt; configTemp.indexOf(x) !== -1) &amp;&amp; token)) &#123;</span><br><span class="line">      // eslint-disable-next-line</span><br><span class="line">      if (!global.config.isProEnv) &#123;</span><br><span class="line">        // eslint-disable-next-line no-console</span><br><span class="line">        console.log(`距离上一次请求：$&#123;(moment().valueOf() - sessionStorage.getItem(&apos;t&apos;)) / 1000&#125;秒`);</span><br><span class="line">      &#125;</span><br><span class="line">      if (sessionStorage.getItem(&apos;t&apos;) &amp;&amp; (moment().valueOf() - sessionStorage.getItem(&apos;t&apos;)) &gt; 2 * 3600 * 1000) &#123; // 如果token两小时过期</span><br><span class="line">        // message.error(&apos;登录过期，请先登录&apos;);</span><br><span class="line">        router.push(&#123;</span><br><span class="line">          path: &apos;/login&apos;,</span><br><span class="line">        &#125;);</span><br><span class="line">        sessionStorage.clear();</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        theConfig.headers.Authorization = sessionStorage.getItem(&apos;token&apos;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  // console.log(theConfig);</span><br><span class="line">  return theConfig;</span><br><span class="line">&#125;, (error) =&gt; &#123;</span><br><span class="line">  window.location.reload();</span><br><span class="line">  return Promise.reject(error);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// http响应拦截器</span><br><span class="line">axios.interceptors.response.use((res) =&gt; &#123;</span><br><span class="line">  sessionStorage.setItem(&apos;t&apos;, moment().valueOf());</span><br><span class="line">  if (!res.data) &#123;</span><br><span class="line">    message.error(&apos;请求错误&apos;);</span><br><span class="line">    return false;</span><br><span class="line">  &#125; // 请求成功</span><br><span class="line">  return res.data;</span><br><span class="line">&#125;, (error) =&gt; &#123;</span><br><span class="line">  switch (error.response.status) &#123;</span><br><span class="line">    case 401:</span><br><span class="line">      // message.error(&apos;登录过期，请先登录&apos;);</span><br><span class="line">      router.push(&#123;</span><br><span class="line">        path: &apos;/login&apos;,</span><br><span class="line">      &#125;);</span><br><span class="line">      sessionStorage.clear();</span><br><span class="line">      break;</span><br><span class="line">    case 400:</span><br><span class="line">      if (error.response.data.code === 9999100) &#123;</span><br><span class="line">        message.error(&apos;登录过期，请重新登录&apos;);</span><br><span class="line">        sessionStorage.clear();</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        message.error(error.response.data.message);</span><br><span class="line">      &#125;</span><br><span class="line">      break;</span><br><span class="line">    default:</span><br><span class="line">      message.error(error.response.data.message);</span><br><span class="line">      break;</span><br><span class="line">  &#125;</span><br><span class="line">  return Promise.reject(error);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">Vue.prototype.$axios = axios;</span><br></pre></td></tr></table></figure></p>
+<h4 id="登录及用户校验"><a href="#登录及用户校验" class="headerlink" title="登录及用户校验"></a>登录及用户校验</h4><p>每个请求都会在header里带Authorization，Authorization的值由登录接口返回，状态管理中对应的是token，如需更改，提交mutations中的setToken方法，为了XX天免登陆功能，以及防止刷新页面丢失，token还存cookie中，可根据需要改为存sessionStorage或localStorage，注意assets/js/axios.js也需要更改。<br>登录判断只要判断store里的token有没有值就行了。if(!this.$store.token){do someThing}<br><!-- Authorization由程序做对称加密或者由OAuth服务提供，如果加密算法需要其他字段请直接与token拼接，比如用户id为86232，则Authorization为token_86232。 --><br>除了非必要登录的接口程序需获取header里的Authorization对用户进行校验。</p>
+<h3 id="处理后台管理业务逻辑"><a href="#处理后台管理业务逻辑" class="headerlink" title="处理后台管理业务逻辑"></a>处理后台管理业务逻辑</h3><p>前期的准备工作就绪，先来看看一个最简单的后台管理系统都有些什么。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/后台管理@2x.png" alt=""></p>
+<p>一个后台管理骨架框包括，头部header， 侧边栏菜单导航，面包屑组件。所以我们可以先封装这几个公共组件。</p>
+<h3 id="自定义组件"><a href="#自定义组件" class="headerlink" title="自定义组件"></a>自定义组件</h3><h4 id="封装Header组件"><a href="#封装Header组件" class="headerlink" title="封装Header组件"></a>封装Header组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;a-layout-header</span><br><span class="line">    class=&quot;header-wrap&quot;&gt;</span><br><span class="line">    &lt;!-- &lt;a-icon</span><br><span class="line">      class=&quot;trigger&quot;</span><br><span class="line">      :type=&quot;collapsed ? &apos;menu-unfold&apos; : &apos;menu-fold&apos;&quot;</span><br><span class="line">      @click=&quot;statusChange&quot;</span><br><span class="line">    /&gt; --&gt;</span><br><span class="line">    &lt;div class=&quot;info-right&quot;&gt;</span><br><span class="line">        &lt;span class=&quot;avatar-wrap hover&quot;&gt;</span><br><span class="line">          &lt;span class=&quot;avatar&quot;&gt;</span><br><span class="line">            &lt;!-- &lt;img src=&quot;../assets/img/avatar.png&quot; alt=&quot;avatar&quot;&gt; --&gt;</span><br><span class="line">          &lt;/span&gt;</span><br><span class="line">          &lt;span class=&quot;name btn&quot;&gt;</span><br><span class="line">            &#123;&#123;loginName&#125;&#125;!</span><br><span class="line">          &lt;/span&gt;</span><br><span class="line">        &lt;/span&gt;</span><br><span class="line">      &lt;span class=&quot;hover btn&quot;&gt;</span><br><span class="line">        &lt;span style=&quot;text-align: center;&quot;&gt;</span><br><span class="line">          &lt;router-link to=&quot;/setting/resetPwd&quot;&gt;&lt;span class=&quot;btn&quot;&gt;修改密码&lt;/span&gt;&lt;/router-link&gt;</span><br><span class="line">        &lt;/span&gt;</span><br><span class="line">      &lt;/span&gt;</span><br><span class="line">      &lt;span class=&quot;hover btn&quot; @click=&quot;logout&quot;&gt;</span><br><span class="line">        &lt;span style=&quot;text-align: center;&quot;&gt;</span><br><span class="line">          退出</span><br><span class="line">        &lt;/span&gt;</span><br><span class="line">      &lt;/span&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/a-layout-header&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    collapsed: &#123;</span><br><span class="line">      type: Boolean,</span><br><span class="line">      default: false,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    loginName() &#123;</span><br><span class="line">      return sessionStorage.getItem(&apos;loginName&apos;) || &apos;真实姓名&apos;;</span><br><span class="line">    &#125;,</span><br><span class="line">    sayHiMsg() &#123;</span><br><span class="line">      const now = new Date();</span><br><span class="line">      const hour = now.getHours();</span><br><span class="line">      if (hour &lt; 12) &#123;</span><br><span class="line">        return &apos;morning&apos;;</span><br><span class="line">      &#125; if (hour &lt; 19) &#123;</span><br><span class="line">        return &apos;afternoon&apos;;</span><br><span class="line">      &#125;</span><br><span class="line">      return &apos;night&apos;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted() &#123;</span><br><span class="line">    // this.$store.dispatch(&apos;commonOptions&apos;, this);</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    statusChange() &#123;</span><br><span class="line">      this.$emit(&apos;statusChange&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">    changeTheme(primaryColor) &#123;</span><br><span class="line">      window.less.modifyVars(&#123;</span><br><span class="line">        &apos;@primary-color&apos;: primaryColor,</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    logout() &#123;</span><br><span class="line">      sessionStorage.clear();</span><br><span class="line">      localStorage.clear();</span><br><span class="line">      this.$store.commit(&apos;setPwdFlag&apos;, null);</span><br><span class="line">      this.$store.commit(&apos;setToken&apos;, null);</span><br><span class="line">      this.$router.push(&apos;/login&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style lang=&quot;scss&quot; scoped&gt;</span><br><span class="line">.header-wrap&#123;</span><br><span class="line">  background: #2B303B;</span><br><span class="line">  padding: 0;</span><br><span class="line">  box-shadow: 0 1px 4px rgba(0,21,41,.08);</span><br><span class="line">  z-index:9;</span><br><span class="line">  .info-right&#123;</span><br><span class="line">    float: right;</span><br><span class="line">    height: 100%;</span><br><span class="line">    display: flex;</span><br><span class="line">    align-content: flex-end;</span><br><span class="line">    .dashboard&#123;</span><br><span class="line">      padding: 0 10px;</span><br><span class="line">      display: flex;</span><br><span class="line">      align-items: center;</span><br><span class="line">      .icon&#123;</span><br><span class="line">         font-size: 25px;</span><br><span class="line">         margin: 6px;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    .notify&#123;</span><br><span class="line">      padding: 0 10px;</span><br><span class="line">      display: flex;</span><br><span class="line">      align-items: center;</span><br><span class="line">      .notify-icon&#123;</span><br><span class="line">        font-size: 18px;</span><br><span class="line">        display: flex;</span><br><span class="line">        align-items: center;</span><br><span class="line">        position: relative;</span><br><span class="line">        .ant-badge&#123;</span><br><span class="line">          position: absolute;</span><br><span class="line">          top: -14px;</span><br><span class="line">          right: -15px;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    .avatar-wrap&#123;</span><br><span class="line">      // width: 140px;</span><br><span class="line">      height: 100%;</span><br><span class="line">      padding: 0 12px;</span><br><span class="line">      cursor: pointer;</span><br><span class="line">      transition: all .3s;</span><br><span class="line">      display: flex;</span><br><span class="line">      align-items: center;</span><br><span class="line">      .avatar&#123;</span><br><span class="line">        display: block;</span><br><span class="line">        width: 30px;</span><br><span class="line">        height: 30px;</span><br><span class="line">        line-height: 30px;</span><br><span class="line">        border-radius: 50%;</span><br><span class="line">        img&#123;</span><br><span class="line">          display: block;</span><br><span class="line">          height: 100%;</span><br><span class="line">          object-fit: contain;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      .name&#123;</span><br><span class="line">        padding:0 30px 0 10px;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    .setting,.btn&#123;</span><br><span class="line">      // width: 40px;</span><br><span class="line">      text-align: center;</span><br><span class="line">      cursor: pointer;</span><br><span class="line">      color: #fff;</span><br><span class="line">      font-size:14px;</span><br><span class="line">      font-weight:400;</span><br><span class="line">      // color:rgba(185,185,185,1);</span><br><span class="line">      padding-right: 20px;</span><br><span class="line">    &#125;</span><br><span class="line">    // .logout&#123;</span><br><span class="line">    //   text-align: center;</span><br><span class="line">    //   cursor: pointer;</span><br><span class="line">    // &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">.block&#123;</span><br><span class="line">  display: inline-block;</span><br><span class="line">  width: 20px;</span><br><span class="line">  height: 20px;</span><br><span class="line">  border-radius: 5px;</span><br><span class="line">  margin-right: 10px;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="封装Navi组件"><a href="#封装Navi组件" class="headerlink" title="封装Navi组件"></a>封装Navi组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;a-menu theme=&quot;dark&quot; mode=&quot;inline&quot;</span><br><span class="line">    :defaultSelectedKeys=&quot;[&apos;1&apos;]&quot; :openKeys=&quot;openKeys&quot; :selectedKeys=&quot;selectedKeys&quot;</span><br><span class="line">    @openChange=&quot;onOpenChange&quot;&gt;</span><br><span class="line">    &lt;template v-for=&quot;item in items&quot;&gt;</span><br><span class="line">      &lt;template v-if=&quot;item.subs&quot;&gt;</span><br><span class="line">        &lt;a-sub-menu :key=&quot;item.index&quot;&gt;</span><br><span class="line">          &lt;span slot=&quot;title&quot;&gt;</span><br><span class="line">            &lt;a-icon :type=&quot;item.icon&quot;/&gt;&lt;span&gt;&#123;&#123; item.name &#125;&#125;&lt;/span&gt;</span><br><span class="line">          &lt;/span&gt;</span><br><span class="line">          &lt;a-menu-item</span><br><span class="line">            v-waves</span><br><span class="line">            v-for=&quot;(subItem) in item.subs&quot;</span><br><span class="line">            :key=&quot;subItem.index&quot;</span><br><span class="line">            @click.native=&quot;goPath(</span><br><span class="line">              subItem.path,</span><br><span class="line">              subItem.index,</span><br><span class="line">              subItem.name,</span><br><span class="line">              item.index,</span><br><span class="line">              item.name)&quot;&gt;</span><br><span class="line">            &lt;a-badge dot v-if=&quot;subItem.done&quot;&gt;&#123;&#123; subItem.name &#125;&#125;&lt;/a-badge&gt;</span><br><span class="line">            &lt;template v-else&gt;&#123;&#123; subItem.name &#125;&#125;&lt;/template&gt;</span><br><span class="line">          &lt;/a-menu-item&gt;</span><br><span class="line">        &lt;/a-sub-menu&gt;</span><br><span class="line">      &lt;/template&gt;</span><br><span class="line">      &lt;template v-else&gt;</span><br><span class="line">        &lt;a-menu-item</span><br><span class="line">          :key=&quot;item.index&quot;</span><br><span class="line">          @click.native=&quot;goPath(item.path, item.index, item.name, null, null)&quot;&gt;</span><br><span class="line">          &lt;a-icon :type=&quot;item.icon&quot; /&gt;&lt;span&gt;&#123;&#123; item.name &#125;&#125;&lt;/span&gt;</span><br><span class="line">        &lt;/a-menu-item&gt;</span><br><span class="line">      &lt;/template&gt;</span><br><span class="line">    &lt;/template&gt;</span><br><span class="line">  &lt;/a-menu&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      openKeys: [],</span><br><span class="line">      openKeysOld: [],</span><br><span class="line">      selectedKeys: [],</span><br><span class="line">      items: [],</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    naviKey(val) &#123;</span><br><span class="line">      if (typeof val !== &apos;object&apos;) &#123;</span><br><span class="line">        this.openKeys = [];</span><br><span class="line">        this.openKeys.push(val);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    naviSubKey(val) &#123;</span><br><span class="line">      this.selectedKeys = [];</span><br><span class="line">      this.selectedKeys.push(val);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState([&apos;naviKey&apos;, &apos;naviSubKey&apos;, &apos;naviItems&apos;]),</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted() &#123;</span><br><span class="line">    // 页面刷新初始化vuex数据</span><br><span class="line">    const openKeyInit = sessionStorage.getItem(&apos;openKeys&apos;);</span><br><span class="line">    const selectedKeyInit = sessionStorage.getItem(&apos;selectedKey&apos;);</span><br><span class="line">    const naviItemsInit = sessionStorage.getItem(&apos;naviItems&apos;);</span><br><span class="line">    this.$store.commit(&apos;setNaviItems&apos;, JSON.parse(naviItemsInit));</span><br><span class="line">    const menuLevel = sessionStorage.getItem(&apos;menuLevel&apos;) || &apos;[]&apos;;</span><br><span class="line">    this.$store.commit(&apos;setMenuLevel&apos;, JSON.parse(menuLevel));</span><br><span class="line">    const openKeyInitTemp = (openKeyInit === null || openKeyInit === &apos;null&apos;) ? &apos;&apos; : openKeyInit;</span><br><span class="line">    const selectedKeyInitTemp = (selectedKeyInit === null || selectedKeyInit === &apos;null&apos;) ? &apos;1&apos; : selectedKeyInit;</span><br><span class="line">    this.openKeys.push(openKeyInitTemp);</span><br><span class="line">    this.selectedKeys.push(selectedKeyInitTemp);</span><br><span class="line">    this.$store.dispatch(&apos;updateNaviData&apos;, &#123; key: openKeyInitTemp, subKey: selectedKeyInitTemp &#125;);</span><br><span class="line">    this.fetchMenu();</span><br><span class="line">    if (global.config.enablePageTabs) &#123;</span><br><span class="line">      this.$store.dispatch(&apos;onOpenPagesChange&apos;, &#123; path: &apos;&apos;, name: &apos;&apos;, init: true &#125;);// 初始化tab栏已打开的页面</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    fetchMenu() &#123;</span><br><span class="line">      this.items = this.naviItems;</span><br><span class="line">    &#125;,</span><br><span class="line">    goPath(path, key, name, subKey, subName) &#123;</span><br><span class="line">      this.$router.push(path, () =&gt; &#123;&#125;);</span><br><span class="line">      this.$store.dispatch(&apos;updateNaviData&apos;, &#123; key: false, subKey: key &#125;);</span><br><span class="line">      this.selectedKeys = [];</span><br><span class="line">      this.selectedKeys.push(key);</span><br><span class="line">      const menuLevel = [</span><br><span class="line">        subName, name,</span><br><span class="line">      ];</span><br><span class="line">      sessionStorage.setItem(&apos;menuLevel&apos;, JSON.stringify(menuLevel));</span><br><span class="line">      this.$store.commit(&apos;setMenuLevel&apos;, menuLevel);</span><br><span class="line">      if (global.config.enablePageTabs) &#123;</span><br><span class="line">        this.$store.dispatch(&apos;onOpenPagesChange&apos;, &#123;</span><br><span class="line">          path, name, init: false, key, subName, subKey,</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    onOpenChange(openKeys) &#123;</span><br><span class="line">      if (openKeys.length &gt; 1) &#123;</span><br><span class="line">        this.openKeys = [openKeys[1]];</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        this.openKeys = openKeys;</span><br><span class="line">      &#125;</span><br><span class="line">      this.$store.dispatch(&apos;updateNaviData&apos;, &#123; key: this.openKeys, subKey: false &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="封装Title"><a href="#封装Title" class="headerlink" title="封装Title"></a>封装Title</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">&lt;div class=&quot;wrap&quot; :class=&quot;!enablePageTabs?&apos;title-card&apos;:&apos;&apos;&quot;&gt;</span><br><span class="line">  &lt;!-- 面包屑 --&gt;</span><br><span class="line">  &lt;div class=&quot;breadcrumb&quot;&gt;</span><br><span class="line">    &lt;a-breadcrumb&gt;</span><br><span class="line">      &lt;a-breadcrumb-item</span><br><span class="line">        class=&quot;f16&quot;</span><br><span class="line">        v-for=&quot;(item, index) in titleList&quot;</span><br><span class="line">        :key=&quot;index&quot;</span><br><span class="line">        :class=&quot;&#123;current_breadcrumb:index===titleList.length-1&#125;&quot;&gt;</span><br><span class="line">          &#123;&#123;item&#125;&#125;</span><br><span class="line">      &lt;/a-breadcrumb-item&gt;</span><br><span class="line">    &lt;/a-breadcrumb&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">  &lt;!-- 标签页 --&gt;</span><br><span class="line">  &lt;div v-if=&quot;enablePageTabs&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;page_border mt15&quot; v-if=&quot;!closeOpenMenu&quot; ref=&quot;page_border&quot;&gt;</span><br><span class="line">      &lt;span</span><br><span class="line">        @click=&quot;goPath(item)&quot;</span><br><span class="line">        @contextmenu.prevent=&quot;rightClick(index, item, $event)&quot;</span><br><span class="line">        class=&quot;cp menu_x&quot;</span><br><span class="line">        :class=&quot;[&#123;active:currentPath.split(&apos;?&apos;)[0]===item.path.split(&apos;?&apos;)[0]&#125;]&quot;</span><br><span class="line">        v-for=&quot;(item, index) in pages&quot;</span><br><span class="line">        :key=&quot;index&quot; ref=&quot;page_tab&quot;&gt;&#123;&#123;item.name&#125;&#125;</span><br><span class="line">        &lt;a-icon</span><br><span class="line">          v-if=&quot;pages.length !== 1&quot;</span><br><span class="line">          @click=&quot;closePage(item.path, item.subKey, item.key, $event)&quot;</span><br><span class="line">          class=&quot;ml5 close&quot; type=&quot;close&quot; /&gt;</span><br><span class="line">      &lt;/span&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div v-if=&quot;rightMenu&quot; class=&quot;right_menu&quot; :style=&quot;menuStyle&quot;&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &lt;li @click=&quot;closeOthers&quot;&gt;关闭其它标签页&lt;/li&gt;</span><br><span class="line">      &lt;/ul&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState([&apos;pages&apos;, &apos;currentPath&apos;, &apos;docClickEleClass&apos;]),</span><br><span class="line">    menuStyle() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        left: this.menuData.left,</span><br><span class="line">        top: this.menuData.top,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      enablePageTabs: global.config.enablePageTabs,</span><br><span class="line">      rightMenu: false,</span><br><span class="line">      menuData: &#123;</span><br><span class="line">        left: &apos;&apos;,</span><br><span class="line">        top: &apos;&apos;,</span><br><span class="line">        path: &apos;&apos;,</span><br><span class="line">        name: &apos;&apos;,</span><br><span class="line">        key: &apos;&apos;,</span><br><span class="line">        subKey: &apos;&apos;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted() &#123;</span><br><span class="line">    this.$nextTick(() =&gt; &#123;</span><br><span class="line">      if (this.$refs.page_tab) &#123;</span><br><span class="line">        let spanTotalWidth = 0;</span><br><span class="line">        this.$refs.page_tab.forEach((item) =&gt; &#123;</span><br><span class="line">          spanTotalWidth += item.offsetWidth;</span><br><span class="line">        &#125;);</span><br><span class="line">        if (spanTotalWidth &gt; window.innerWidth - 400) &#123;</span><br><span class="line">          this.closeFirstPage();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    docClickEleClass(val) &#123;</span><br><span class="line">      if (this.enablePageTabs) &#123;</span><br><span class="line">        if (val.indexOf(&apos;menu_x&apos;) === -1) &#123;</span><br><span class="line">          this.rightMenu = false;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    titleList: &#123;</span><br><span class="line">      type: Array,</span><br><span class="line">      default() &#123;</span><br><span class="line">        return [];</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    closeOpenMenu: &#123;</span><br><span class="line">      type: Boolean,</span><br><span class="line">      default: false,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    goPath(item) &#123;</span><br><span class="line">      this.$router.push(item.path);</span><br><span class="line">      const menuLevel = [</span><br><span class="line">        item.subName, item.name,</span><br><span class="line">      ];</span><br><span class="line">      sessionStorage.setItem(&apos;menuLevel&apos;, JSON.stringify(menuLevel));</span><br><span class="line">      this.$store.commit(&apos;setMenuLevel&apos;, menuLevel);</span><br><span class="line">      this.$store.dispatch(&apos;updateNaviData&apos;, &#123; key: item.subKey, subKey: item.key &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    rightClick(index, item, e) &#123; // 右键菜单</span><br><span class="line">      if (this.pages.length !== 1) &#123;</span><br><span class="line">        this.rightMenu = true;</span><br><span class="line">        this.menuData = &#123;</span><br><span class="line">          left: `$&#123;e.pageX&#125;px`,</span><br><span class="line">          top: `$&#123;e.pageY&#125;px`,</span><br><span class="line">          path: item.path,</span><br><span class="line">          name: item.name,</span><br><span class="line">          key: item.key,</span><br><span class="line">          subKey: item.subKey,</span><br><span class="line">        &#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    closeFirstPage() &#123; // 关闭第一个页面</span><br><span class="line">      const pages = JSON.parse(localStorage.getItem(&apos;pages&apos;));</span><br><span class="line">      pages.splice(0, 1);</span><br><span class="line">      localStorage.setItem(&apos;pages&apos;, JSON.stringify(pages));</span><br><span class="line">      this.$store.commit(&apos;setPages&apos;, pages);</span><br><span class="line">      // this.$message.info(&apos;已关闭不常用的页面&apos;)</span><br><span class="line">    &#125;,</span><br><span class="line">    closeOthers() &#123; // 关闭其他页面</span><br><span class="line">      const pages = JSON.parse(localStorage.getItem(&apos;pages&apos;));</span><br><span class="line">      let theLeftPage = &#123;&#125;;</span><br><span class="line">      pages.forEach((item) =&gt; &#123;</span><br><span class="line">        if (item.path === this.menuData.path) &#123;</span><br><span class="line">          theLeftPage = item;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      localStorage.setItem(&apos;pages&apos;, JSON.stringify([theLeftPage]));</span><br><span class="line">      this.$store.commit(&apos;setPages&apos;, [theLeftPage]);</span><br><span class="line">      // eslint-disable-next-line</span><br><span class="line">      this.goPath(&#123; path: this.menuData.path, key: this.menuData.key, subKey: this.menuData.subKey &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    closePage(path, key, subKey, e) &#123; // 关闭页面</span><br><span class="line">      e.stopPropagation();</span><br><span class="line">      const localPage = JSON.parse(localStorage.getItem(&apos;pages&apos;));</span><br><span class="line">      Object.keys(localPage).forEach((x) =&gt; &#123;</span><br><span class="line">        if (typeof localPage[x] !== &apos;undefined&apos;) &#123;</span><br><span class="line">          if (localPage[x].path === path) &#123;</span><br><span class="line">            localPage.splice(x, 1);</span><br><span class="line">            localStorage.setItem(&apos;pages&apos;, JSON.stringify(localPage));</span><br><span class="line">            this.$store.commit(&apos;setPages&apos;, localPage);</span><br><span class="line">            if (this.currentPath === path.split(&apos;?&apos;)[0]) &#123; // 关闭当前页</span><br><span class="line">              const localPageTempFlag = typeof localPage[x - 1] !== &apos;undefined&apos;;</span><br><span class="line">              this.$router.push(localPageTempFlag ? localPage[x - 1].path : localPage[x].path);</span><br><span class="line">              const keyTemp = localPageTempFlag ? localPage[x - 1].key : localPage[x].key;</span><br><span class="line">              const subKeyTemp = localPageTempFlag ? localPage[x - 1].subKey : localPage[x].subKey;</span><br><span class="line">              this.$store.dispatch(&apos;updateNaviData&apos;, &#123; key: subKeyTemp, subKey: keyTemp &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style lang=&quot;less&quot; scoped&gt;</span><br><span class="line"></span><br><span class="line">.right_menu&#123;</span><br><span class="line">  position: absolute;</span><br><span class="line">  z-index: 100;</span><br><span class="line">  border-radius: 5px;</span><br><span class="line">  user-select: none;</span><br><span class="line">  background-color: white;</span><br><span class="line">  box-shadow: 0 0 10px rgba(0, 0, 0, .1);</span><br><span class="line">  ul&#123;</span><br><span class="line">    padding: 0;</span><br><span class="line">    margin: 0;</span><br><span class="line">    li&#123;</span><br><span class="line">      list-style: none;</span><br><span class="line">      display: inline-block;</span><br><span class="line">      padding: 5px 8px;</span><br><span class="line">      border-radius: 5px;</span><br><span class="line">      transition: .3s all ease-in;</span><br><span class="line">      cursor: pointer;</span><br><span class="line">      &amp;:hover&#123;</span><br><span class="line">        background-color: #eff0ff;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">.title-card&#123;</span><br><span class="line">  box-sizing: border-box;</span><br><span class="line"></span><br><span class="line">  color: rgba(0,0,0,.65);</span><br><span class="line">  font-size: 14px;</span><br><span class="line">  font-variant: tabular-nums;</span><br><span class="line">  line-height: 1.5;</span><br><span class="line">  list-style: none;</span><br><span class="line">  font-feature-settings: &quot;tnum&quot;;</span><br><span class="line">  position: relative;</span><br><span class="line">  padding: 5px 0;</span><br><span class="line">  // background: #fff;</span><br><span class="line">  // box-shadow: 0 1px 4px rgba(0,21,41,.08);</span><br><span class="line">&#125;</span><br><span class="line">.breadcrumb&#123;</span><br><span class="line">  padding: 10px 0;</span><br><span class="line">  .span&#123;</span><br><span class="line">    margin-top: 2px;</span><br><span class="line">  &#125;</span><br><span class="line">  // @include center(row, flex-start);</span><br><span class="line">  .ant-breadcrumb-link&#123;</span><br><span class="line">    color: #B7BDC9;</span><br><span class="line">  &#125;</span><br><span class="line">  .current_breadcrumb&#123;</span><br><span class="line">    color: #2B303B;</span><br><span class="line">    // color: @primary-color;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">.page_title&#123;</span><br><span class="line">  font-size: 20px;</span><br><span class="line">  font-weight: 300;</span><br><span class="line">  color: @primary-color;</span><br><span class="line">  // @include center(row, flex-start);</span><br><span class="line">  border-radius: 5px;</span><br><span class="line">  padding: 5px 5px 5px 0;</span><br><span class="line">&#125;</span><br><span class="line">.page_border&#123;</span><br><span class="line">  // @include center(row, flex-start);</span><br><span class="line">  background-color: transparent !important;</span><br><span class="line">  padding: 0 !important;</span><br><span class="line">  span&#123;</span><br><span class="line">    margin-right: 3px;</span><br><span class="line">    display: inline-block;</span><br><span class="line">    border-radius: 5px 5px 0 0;</span><br><span class="line">    box-sizing: border-box;</span><br><span class="line">    padding: 10px;</span><br><span class="line">    background-color: #e9ecef;</span><br><span class="line">    color: #B7BDC9;</span><br><span class="line">    user-select: none;</span><br><span class="line">    // @include center(row, flex-start);</span><br><span class="line">    font-weight: 300;</span><br><span class="line">    height: 41px;</span><br><span class="line">    .close&#123;</span><br><span class="line">      transition: .3s all ease-in;</span><br><span class="line">      border-radius: 50%;</span><br><span class="line">      &amp;:hover&#123;</span><br><span class="line">        background-color: #dadada;</span><br><span class="line">        color: white;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  .active&#123;</span><br><span class="line">    background-color: white;</span><br><span class="line">    color: @primary-color;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>剩下的就是编写页面和配置路由，自由发挥吧</p>
+<h3 id="命令行自动化流程"><a href="#命令行自动化流程" class="headerlink" title="命令行自动化流程"></a>命令行自动化流程</h3><ol>
+<li>安装依赖<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn install</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="开发环境上进行编译和热加载"><a href="#开发环境上进行编译和热加载" class="headerlink" title="开发环境上进行编译和热加载"></a>开发环境上进行编译和热加载</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn run serve</span><br></pre></td></tr></table></figure>
+<h4 id="生产环境上进行打包"><a href="#生产环境上进行打包" class="headerlink" title="生产环境上进行打包"></a>生产环境上进行打包</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn run build</span><br></pre></td></tr></table></figure>
+<h4 id="检查格式语法"><a href="#检查格式语法" class="headerlink" title="检查格式语法"></a>检查格式语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn run lint</span><br></pre></td></tr></table></figure>
+<ul>
+<li>每次build前先运行风格检查npm run lint，没有报错则表示没问题，npm run lint:fix会修复一些错误，但很多还得自己改</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/03/手把手教你用vue撸一个管理后台/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-玩转webpack" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/26/玩转webpack/">玩转webpack——从零配置一个react项目</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/26/玩转webpack/" class="archive-article-date">
+  	<time datetime="2020-03-26T08:27:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>近来得闲，重新撸了一边webpack文档，将webpack的用法以及作用基本理清了脉络，虽然各大前端框架的生态系统越来越完善，每个框架基本都搭配了一套标准的脚手架工具，但是那是搭配好的套餐，用起来虽然也还行，还是总觉得哪里不得劲儿，就像开车开了个自动档模式，不能根据自己的项目随心所欲的搭配功能。所以今天我们就来好好啃一啃webpack,知其然也知其所以然。</p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p>webpack的核心功能就是模块化打包，既然是打包就一定涉及到entry(入口)和output(出口)，剩下的两个核心概念是loader(加载器)和plugin(插件)以及mode(模式)。</p>
+<h3 id="entry-amp-amp-output"><a href="#entry-amp-amp-output" class="headerlink" title="entry &amp;&amp; output"></a>entry &amp;&amp; output</h3><p>entry和output就是字面意思上的入口和出口，就是打包过程当中读取代码的入口以及编译输出文件。</p>
+<h3 id="mode"><a href="#mode" class="headerlink" title="mode"></a>mode</h3><p>mode有点类似于半自动挡模式：提供mode配置选项，webpack会使用相应模式的内置功能进行自动优化。就这么一句话就可以概括了模式。至于在哪种模式下，webpack会开启那些功能，可以看如下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">development</td>
+<td style="text-align:left">会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。</td>
+</tr>
+<tr>
+<td style="text-align:left">production</td>
+<td style="text-align:left">会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h3><p>loader是加载器，用于对模块的源代码进行转换。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。</p>
+<p>在 webpack 的配置中 loader 有两个目标：</p>
+<ol>
+<li>test 属性，用于标识出应该被对应的 loader 进行转换的某个或某些文件。</li>
+<li>use 属性，表示进行转换时，应该使用哪个 loader。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const config = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123; test: /\.txt$/, use: &apos;raw-loader&apos; &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以上配置中，对一个单独的 module 对象定义了 rules 属性，里面包含两个必须属性：test 和 use。这告诉 webpack 编译器(compiler) 如下信息：</p>
+<blockquote>
+<p>“嘿，webpack 编译器，当你碰到「在 require()/import 语句中被解析为 ‘.txt’ 的路径」时，在你对它打包之前，先使用 raw-loader 转换一下。”</p>
+</blockquote>
+<p>当你需要对各个文件转为webpack能够处理的有效模块时可以去<a href="https://www.webpackjs.com/loaders/" target="_blank" rel="noopener">loader列表</a>选择一个合适的加载器</p>
+<h3 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h3><p>插件则可以用于执行范围更广的任务。插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>想要使用一个插件，你只需要 require() 它，然后把它添加到 plugins 数组中。多数插件可以通过选项(option)自定义。你也可以在一个配置文件中因为不同目的而多次使用同一个插件，这时需要通过使用 new 操作符来创建它的一个实例。<br>当你想用某些实现某些任务优化时可以去<a href="https://www.webpackjs.com/plugins/html-webpack-plugin/" target="_blank" rel="noopener">插件列表</a>看没有现成的插件开箱即用，</p>
+<p>这里有个例子可以说明loader以及plugin用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;); // 通过 npm 安装</span><br><span class="line">const webpack = require(&apos;webpack&apos;); // 用于访问内置插件</span><br><span class="line"></span><br><span class="line">const config = &#123;</span><br><span class="line">    ...</span><br><span class="line">    plugins: [</span><br><span class="line">        new HtmlWebpackPlugin(&#123;template: &apos;./src/index.html&apos;&#125;)</span><br><span class="line">    ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports = config;</span><br></pre></td></tr></table></figure></p>
+<p>引入了HtmlWebpackPlugin插件自动生成一个HTML文件。</p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>虽然webpack支持在命令行中手动敲下webpack-cli命中以构建文件，但是一般的项目要复杂的多，<br>所以webpack支持提供配置文件。这比在终端(terminal)中手动输入大量命令要高效的多。所以让我们创建一个取代以上使用 CLI 选项方式的配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: &apos;bundle.js&apos;,</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这是一个最简单的配置文件，定义了输入文件与输出文件，读取并运行src下的index.js文件将生成的bundle.js输出到dist文件夹中。<br>有了这样的一个配置文件之后，有两中方式启动它</p>
+<ol>
+<li>通过命令行工具运行<code>npx webpack --config webpack.config.js</code><br>这行命令表示以指定的webpack配置文件运行webpack命令<blockquote>
+<p>如果 webpack.config.js 存在，则 webpack 命令将默认选择使用它。我们在这里使用 –config 选项只是向你表明，可以传递任何名称的配置文件。这对于需要拆分成多个文件的复杂配置是非常有用。</p>
+</blockquote>
+</li>
+<li>NPM 脚本(NPM Scripts)<br>考虑到用 CLI 这种方式来运行本地的 webpack 不是特别方便，我们可以设置一个快捷方式。在 package.json 添加一个 npm 脚本(npm script)：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;,</span><br><span class="line">    &quot;build&quot;: &quot;webpack&quot;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>现在，可以使用 npm run build 命令，来替代我们之前使用的 npx 命令。</p>
+<p>谈谈我自己对webpack的理解，把webpack看作是要编织一条美丽的珍珠项链的话，那么配置文件则是项链的链子，而webpack中<a href="https://www.webpackjs.com/loaders/" target="_blank" rel="noopener">loader列表</a>和<a href="https://www.webpackjs.com/plugins/html-webpack-plugin/" target="_blank" rel="noopener">插件列表</a>则相当于原料库，我们可以从原料库中挑出我们所需要的珍珠，entry和output则是选择以及打磨这条项链的入口及出口。好了一切准备就绪了，我们要学习的变成如何打造一条美丽的珍珠项链。首先是要学习如何打磨完美的入口和出口。然后我们要学习应该在什么地方放上怎样的珠子，以及如何放上去。</p>
+<h2 id="实例——从零创建一个React应用"><a href="#实例——从零创建一个React应用" class="headerlink" title="实例——从零创建一个React应用"></a>实例——从零创建一个React应用</h2><p>现在我们可以从简单到复杂一步一步来完成一个针对react的从0到1的配置文件：</p>
+<h3 id="实现流程"><a href="#实现流程" class="headerlink" title="实现流程"></a>实现流程</h3><p>1，初始化npm项目，生成package.json。</p>
+<p>2，添加public/index.html。</p>
+<p>3, 安装Babel，创建.babelrc进行配置。</p>
+<p>4，安装react、react-dom、热更新react-hot-loader。</p>
+<p>5，安装webpack，创建webpack.config.js进行配置。</p>
+<p>6，添加src/index.js、src/App.js、src/App.css。</p>
+<p>7，配置package.json，修改启动命令。</p>
+<p>8，启动项目</p>
+<h3 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h3><h4 id="1-初始化npm项目，生成package-json"><a href="#1-初始化npm项目，生成package-json" class="headerlink" title="1. 初始化npm项目，生成package.json"></a>1. 初始化npm项目，生成package.json</h4><p>创建一个新项目，并cd进入。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir webpack-demo</span><br><span class="line">$ cd webpack-demo</span><br></pre></td></tr></table></figure></p>
+<p>创建package.json文件, 如果你想跳过初始化时的问题，加上 -y，以默认选项安装:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-添加public-index-html。"><a href="#2-添加public-index-html。" class="headerlink" title="2. 添加public/index.html。"></a>2. 添加public/index.html。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir public</span><br><span class="line">cd public</span><br><span class="line">touch index.html</span><br></pre></td></tr></table></figure>
+<p>index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- sourced from https://raw.githubusercontent.com/reactjs/reactjs.org/master/static/html/single-file-example.html --&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot; /&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&gt;</span><br><span class="line">  &lt;title&gt;React Starter&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;noscript&gt;</span><br><span class="line">    You need to enable JavaScript to run this app.</span><br><span class="line">  &lt;/noscript&gt;</span><br><span class="line">  &lt;script src=&quot;../dist/bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里引入的bundle.js后面会用到。</p>
+<h4 id="3-安装Babel，创建-babelrc进行配置。"><a href="#3-安装Babel，创建-babelrc进行配置。" class="headerlink" title="3. 安装Babel，创建.babelrc进行配置。"></a>3. 安装Babel，创建.babelrc进行配置。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ../</span><br><span class="line">npm install -D @babel/core@7.1.0 @babel/cli@7.1.0 @babel/preset-env@7.1.0 @babel/preset-react@7.0.0</span><br><span class="line">touch .babelrc</span><br></pre></td></tr></table></figure>
+<p>.babelrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;: [&quot;@babel/env&quot;, &quot;@babel/preset-react&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-安装react、react-dom、热更新react-hot-loader"><a href="#4-安装react、react-dom、热更新react-hot-loader" class="headerlink" title="4. 安装react、react-dom、热更新react-hot-loader"></a>4. 安装react、react-dom、热更新react-hot-loader</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i react react-dom -S</span><br><span class="line">npm i react-hot-loader -D</span><br></pre></td></tr></table></figure>
+<h4 id="5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置"><a href="#5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置" class="headerlink" title="5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置"></a>5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader --save-dev</span><br><span class="line">touch webpack.config.js</span><br></pre></td></tr></table></figure>
+<p>webpack.config.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&quot;path&quot;);</span><br><span class="line">const webpack = require(&quot;webpack&quot;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &quot;./src/index.js&quot;,</span><br><span class="line">  mode: &quot;development&quot;,</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.(js|jsx)$/,</span><br><span class="line">        exclude: /(node_modules|bower_components)/,</span><br><span class="line">        loader: &quot;babel-loader&quot;,</span><br><span class="line">        options: &#123; presets: [&quot;@babel/env&quot;] &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.css$/,</span><br><span class="line">        use: [&quot;style-loader&quot;, &quot;css-loader&quot;]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  resolve: &#123; extensions: [&quot;*&quot;, &quot;.js&quot;, &quot;.jsx&quot;] &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &quot;dist/&quot;),</span><br><span class="line">    publicPath: &quot;/dist/&quot;,</span><br><span class="line">    filename: &quot;bundle.js&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    contentBase: path.join(__dirname, &quot;public/&quot;),</span><br><span class="line">    port: 3000,</span><br><span class="line">    publicPath: &quot;http://localhost:3000/dist/&quot;,</span><br><span class="line">    hotOnly: true</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [new webpack.HotModuleReplacementPlugin()]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-添加src-index-js、src-App-js、src-App-css。"><a href="#6-添加src-index-js、src-App-js、src-App-css。" class="headerlink" title="6. 添加src/index.js、src/App.js、src/App.css。"></a>6. 添加src/index.js、src/App.js、src/App.css。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir src</span><br><span class="line">cd src</span><br><span class="line">touch index.js</span><br><span class="line">touch App.js</span><br><span class="line">touch App.css</span><br></pre></td></tr></table></figure>
+<p>index.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import React from &quot;react&quot;;</span><br><span class="line">import ReactDOM from &quot;react-dom&quot;;</span><br><span class="line">import App from &quot;./App.js&quot;;</span><br><span class="line">ReactDOM.render(&lt;App /&gt;, document.getElementById(&quot;root&quot;));</span><br></pre></td></tr></table></figure></p>
+<p>App.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component&#125; from &quot;react&quot;;</span><br><span class="line">import &#123;hot&#125; from &apos;react-hot-loader&apos;;</span><br><span class="line">import &quot;./App.css&quot;;</span><br><span class="line"></span><br><span class="line">class App extends Component&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    return(</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;h1&gt; Hello&lt;/h1&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default hot(module)(App);</span><br></pre></td></tr></table></figure></p>
+<p>App.css<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.App &#123;</span><br><span class="line">  margin: 1rem;</span><br><span class="line">  font-family: Arial, Helvetica, sans-serif;</span><br><span class="line">  border: 1px solid red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="7-配置package-json，修改启动命令。"><a href="#7-配置package-json，修改启动命令。" class="headerlink" title="7. 配置package.json，修改启动命令。"></a>7. 配置package.json，修改启动命令。</h4><p>在package.json里配置scripts字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;start&quot;: &quot;webpack-dev-server --mode development&quot;,</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="8-启动项目。"><a href="#8-启动项目。" class="headerlink" title="8. 启动项目。"></a>8. 启动项目。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p>在浏览器键入<a href="http://localhost:3000以启动项目" target="_blank" rel="noopener">http://localhost:3000以启动项目</a></p>
+<p><a href="https://gitee.com/taoyouyou/react-demo.git" target="_blank" rel="noopener">Github地址</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">webpack</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/26/玩转webpack/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-浅谈前端工程化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -378,15 +834,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
         		</li>
       		
 		</ul>
@@ -1199,531 +1655,6 @@
 
 
   
-    <article id="post-如何使用ESLint-Prettier来统一我们的前端代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">如何使用ESLint + Prettier来统一我们的前端代码风格</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/" class="archive-article-date">
-  	<time datetime="2019-06-21T01:57:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少数服从多数来确定一种合适的书写规范，通过工具统一风格。    </p>
-<p>本文将介绍，如何使用ESLint + Prettier来统一我们的前端代码风格。   </p>
-<p>首先，对应ESLint大多都很熟悉，用来进行代码的校验，js作为一门灵活的弱类型语言，代码风格千奇百怪，一千个人写js就有一千种写法。虽然js没有官方推荐的代码规范，不过社区有些比较热门的代码规范，比如standardjs、airbnb。使用ESLint配合这些规范，能够检测出代码中的潜在问题，提高代码质量，但是并不能完全统一代码风格，因为这些代码规范的重点并不在代码风格上（虽然有一些限制）。</p>
-<p>Prettier 是一个漂亮代码格式工具。prettier 通过将JavaScript解析为AST来去除原来的代码样式，并且将其按照一致的格式的方式输出。只要代码的内容是一样的，那么输出的代码就将会是一致的。 prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突。而且prettier独断自行一套格式化风格，虽然提供配置，也只是配置少量的关键属性，能在一定程度上保证的代码的风格统一，而且使用门槛极低， 关键的他的风格并不丑，更容易让大家接受。<br>同时，prettier支持我们大前端目前大部分语言处理，包括JavaScript · Flow · TypeScript · CSS · SCSS · Less · JSX · Vue · GraphQL · JSON · Markdown，唯一的遗憾是，暂时还不能格式化vue模版文件中template部分。</p>
-<h2 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h2><p>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
-<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
-<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
-<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上文提到prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突,这里我们需要来讲一下如果存在冲突怎么办<br><code>npm i -D eslint-config-prettier</code><br>通过使用eslint-config-prettier配置，能够关闭一些不必要的或者是与prettier冲突的lint选项。这样我们就不会看到一些error同时出现两次。使用的时候需要确保，这个配置在extends的最后一项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;@vue/airbnb&apos;, //使用standard做代码规范</span><br><span class="line">    &quot;prettier&quot;,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果你同时使用了上述的两种配置，那么你可以通过如下方式，简化你的配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>最后贴一下我们项目中的完整配置，是在vue-cli生成的代码基础上修改的，并且使用airbnb做代码规范：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  root: true,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;plugin:vue/essential&apos;,</span><br><span class="line">    &apos;@vue/airbnb&apos;,</span><br><span class="line">    &quot;plugin:prettier/recommended&quot;,</span><br><span class="line">  ],</span><br><span class="line">  plugins: [&quot;prettier&quot;],</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;comma-dangle&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;linebreak-style&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;consistent-return&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;no-param-reassign&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;max-len&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/no-use-v-if-with-v-for&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/require-valid-default-prop&apos;: &apos;off&apos;,</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;,</span><br><span class="line">    &apos;no-console&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">    &apos;no-debugger&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: &apos;babel-eslint&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h2 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h2><p>一共有三种方式支持对Prettier进行配置：</p>
-<ol>
-<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
-<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
-<li>在package.json中新建prettier属性。   </li>
-</ol>
-<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
-<p>注意一点，parser的配置项官网列出了如下可选项：</p>
-<ul>
-<li>babylon</li>
-<li>flow</li>
-<li>typescript Since v1.4.0</li>
-<li>postcss Since v1.4.0</li>
-<li>json Since v1.5.0</li>
-<li>graphql Since v1.5.0</li>
-<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-极简白话金融学" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/15/极简白话金融学/">极简白话金融学</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/15/极简白话金融学/" class="archive-article-date">
-  	<time datetime="2019-05-15T09:01:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="微观金融学——商学院的金融学"><a href="#微观金融学——商学院的金融学" class="headerlink" title="微观金融学——商学院的金融学"></a>微观金融学——商学院的金融学</h2><p>微观金融学就是研究人们如何在不确定的环境下进行资源跨期配置的学科，通俗地说，就是研究个体的金融决策的学问。这也就是我们市场上最热门的学问——公开上市、兼并收购、私募、股票涨跌、期货期权、资产证券化、基金、债券，高频交易、量化交易，甚至现在热炒的互联网金融……莫不属于这个领域。可以说，凡是和我们个体财富相关的投融资决策和背景都属于微观金融学的研究范畴，不确定环境和跨期资源配置因此成了这个学科最典型的标志。与此相适应，对于风险、风险收益、对风险证券的定价、公司投融资决策，以及影响这些因素的市场结构和制度安排成为其主要内容。</p>
-<p>在传统的西方学科语系中，现代金融学一般指的就是微观金融学。根据研究对象的不同，我们将其大概分为“公司金融”和“投资学”两部分内容。</p>
-<ul>
-<li>公司金融是从企业角度出发，研究企业筹融资（比如上市、发行债券、增发、私有化等），企业发展扩张（比如兼并收购、分拆、寻找项目、分红决策等），以及企业治理（比如股东权利、董事会、管理层薪酬激励等）。</li>
-<li>投资学则是从投资者角度出发，研究证券的合理定价（比如依据股票/债券/期货的风险程度，判断现在价格是被高估或者低估），进行资产管理（比如在不同的资产种类中，寻找最优化的资产组合），以及与资产管理相关的市场结构和制度安排。</li>
-</ul>
-<h3 id="历史大纪事："><a href="#历史大纪事：" class="headerlink" title="历史大纪事："></a>历史大纪事：</h3><ol>
-<li><p>1952年，马科维茨（Markowitz）的年轻人提出了 <strong>投资组合理论</strong>。被称为“现代金融学的大爆炸”：将收益率视为一个数学上的随机变量。证券的期望收益则是该随机变量的数学期望（均值）；而风险则可以用该随机变量的方差来表示。将各证券的投资比例设定为变量，将这个问题转化为设计一个数学规划，如何使得证券组合的收益最大、风险最小。对于每一固定收益率求最小方差，或者对于每一个固定的方差求最大收益率，这个多元方程的解可以决定一条曲线。这条曲线上的每个点都对应着最优投资组合（给定风险水平下，收益率最大的组合），这条线的名字就叫“有效前沿”。对于投资者而言，不存在比有效前沿上更优的组合。这样一来，投资者面临的决策就被简化了许多。换句话说，所有投资者都可以根据自己的风险偏好在这个“有效前沿”上寻找自己的最优策略。 由于这是一个纯技术性的理论，完全脱离了经典经济学的一般均衡的框架，因而被视为异端。著名的经济学家米尔顿·弗里德曼教授（Milton Friedman）指责说：“这可不是经济学。”————第一次华尔街革命</p>
-</li>
-<li><p>20世纪60年代, 马科维茨的学生威廉·夏普（W.Sharpe），进一步在一般均衡的框架下，假定证券市场中所有投资人都有相同的初始偏好，以“风险—收益”函数来决策，从而推导出一个单个证券（投资组合）的期望受益率与相对风险程度间的关系式, 所谓“相对风险程度”，是指该证券（证券组合）和市场组合之间的联动性（术语叫“协方差”）。在理论的模型里，这个“市场组合”可以在一系列严格的假设下被推算出来。而在一般现实世界中，我们常常会用市场指数（比如道琼斯指数、上证指数、日经指数等）来近似表示这个市场组合。这就是金融学里最著名的 <strong>资产定价模型</strong></p>
-</li>
-<li><p>20世纪60年代中期到70年代, 尤金·法玛（Eugene Fama）提出了 <strong>有效市场假说</strong>。所谓市场有效性是指市场价格能否充分反映市场价格。</p>
-</li>
-<li><p>1979年丹石尔·卡尼曼（Daniel Kahneman）和阿莫斯·特维尔斯基（Amas Tversky）通过一系列的实验证明，长期以来主宰金融经济学的“理性人”的假定常常受到约束。人类的决策过程往往受到个人偏好、社会规范、观念习惯的影响，因而导致“理性预期”出现系统性的偏差。除此之外，卡尼曼和特维尔斯基还发现了人类在决策中会体现出如“损失规避”“框架效应”等系统性的特征，这些特征构成了“预期理论”的基础。以此为起点，金融学家们开始探讨“非理性预期”下的资产定价和投融资决策行为——<strong>行为金融学</strong>因此在20世纪80年代后蓬勃发展。</p>
-</li>
-</ol>
-<ol>
-<li><p>1956年，默顿·米勒和莫迪利安尼（Modigliani）于1956年提出了另一个划时代的理论——<strong>资本结构理论</strong>：米勒和莫迪利安尼首次阐述了无套利假设。无套利假设是指在一个完善的金融市场里，不存在确定的高卖低买的套利机会。米勒和莫迪利安尼证明了理想市场条件下，公司价值与财务政策无关。MM定理的精妙之处在于，它设定了一个“理想市场”的简单框架讨论公司的资本结构。而现实世界中，每一种和“理想市场”相违背的条件都有可能对企业投融资决策造成影响，以MM定理作为参照点，我们可以精确地量化估算这种影响在最终企业价值上的体现——这些影响正是所有公司投资决策都要理解和考虑的问题。以此为起点，对公司的投融资决策的研究开始进入一个有体系的时期，因此，这条定理被视为是现代公司金融的开山之作。同时，基于无套利假设的分析框架也开始成为金融学研究中具有代表性的研究思路。</p>
-</li>
-<li><p>在1972年， 费雪·布莱克（Fischer Black）和迈伦·舒尔斯（Myron Scholes）合作的文章中提出了一种 <strong>基于无套利假设的模型为期权产品定价</strong>。某只股票的买入（卖出）期权就是指以某个固定的执行价格在一定的期限内买入（卖出）该证券的权利。无套利假设告诉我们，在一定的价格随机过程假设下，每一时刻都可通过股票和股票期权的适当组合对冲风险，使该组合变成无风险证券，从而就可得到期权价格与股票价格之间的一个偏微分方程。只要解出这个偏微分方程，期权的价格就得以确定。 ————第二次华尔街革命</p>
-</li>
-</ol>
-<h2 id="宏观金融学——经济系的金融学"><a href="#宏观金融学——经济系的金融学" class="headerlink" title="宏观金融学——经济系的金融学"></a>宏观金融学——经济系的金融学</h2><p>研究宏观的总量的金融问题的学问，比如货币的供求、银行的运营、利息决定、汇率变动，以及金融市场与经济增长经济危机等等。宏观金融学有时候也叫作“货币经济学”。</p>
-<h3 id="历史大纪事：-1"><a href="#历史大纪事：-1" class="headerlink" title="历史大纪事："></a>历史大纪事：</h3><p>1936年。就在这一年，凯恩斯出版了一本被称为“拯救了资本主义”的不朽著作——《就业、利息和货币通论》（The General Theory of Employment,Interest,and Money），现代宏观经济学就此产生。其中，凯恩斯关于货币供给调节、利率决定，以及汇率决定的理论被后来者不断延伸拓展，宏观金融学由此形成，其核心就是货币经济学</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/15/极简白话金融学/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-吃透js中正则表达式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/02/22/吃透js中正则表达式/">吃透js中正则表达式</a>
-    </h1>
-  
-
-        
-        <a href="/2019/02/22/吃透js中正则表达式/" class="archive-article-date">
-  	<time datetime="2019-02-22T02:29:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我们在开发的过程中总会碰到一些需求需要做字符串匹配，当遇到一些稍微复杂一点的匹配规则时，如果我们对正则还不那么清晰,我们总是会去网上搜索一些现成的正则匹配，ctrl+c,ctrl+v。时间长了我们对这种修修补补的方式不厌其烦。那么今天就对正则表达式做足功夫，磨刀不误砍柴工，首先推荐一个学习正则的一个可视化的工具网址： <a href="https://regexper.com" target="_blank" rel="noopener">https://regexper.com</a>，输入正则规则即可生成匹配规则的流程图。了解并吃透正则会为我们以后开发节省很多时间和精力，一劳永逸。先从最基本的概念开始吧，let go!</p>
-<h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>概念：有特殊含义的特殊字符，eg： * + ? $ ^ . | \ ( ) { } [ ]等</p>
-<h4 id="通用含义元字符"><a href="#通用含义元字符" class="headerlink" title="通用含义元字符"></a>通用含义元字符</h4><p>在大部分语言语境中代表同一种含义，如下表：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">\t</td>
-<td style="text-align:left">水平制表符</td>
-</tr>
-<tr>
-<td style="text-align:left">\v</td>
-<td style="text-align:left">垂直制表符</td>
-</tr>
-<tr>
-<td style="text-align:left">\n</td>
-<td style="text-align:left">换行符</td>
-</tr>
-<tr>
-<td style="text-align:left">\r</td>
-<td style="text-align:left">回车符</td>
-</tr>
-<tr>
-<td style="text-align:left">\0</td>
-<td style="text-align:left">空字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\f</td>
-<td style="text-align:left">换页符</td>
-</tr>
-<tr>
-<td style="text-align:left">\cX</td>
-<td style="text-align:left">Ctrl+X</td>
-</tr>
-</tbody>
-</table>
-<h4 id="其他含义元字符"><a href="#其他含义元字符" class="headerlink" title="其他含义元字符"></a>其他含义元字符</h4><h5 id="1-字符类"><a href="#1-字符类" class="headerlink" title="1. 字符类"></a>1. 字符类</h5><ul>
-<li>我们可以使用元字符[]来构建一个简单的字符类</li>
-<li>所谓的类是指符合某些特性的对象，一个泛指，而不是特指某个字符</li>
-<li>表达式[abc]归为一类，表达式可以匹配这些类的字符<br><img src="https://user-gold-cdn.xitu.io/2019/2/22/1691537782c64cc4" alt=""><h5 id="2-字符类取反"><a href="#2-字符类取反" class="headerlink" title="2. 字符类取反"></a>2. 字符类取反</h5></li>
-<li>我们可以使用元字符^来创建反向类/负向类</li>
-<li>反向类的意思是不属于某个类的内容</li>
-<li>表达式[^abc]表示不是字符a或b或c的内容<br><img src="https://user-gold-cdn.xitu.io/2019/2/22/169153777e9b7144" alt=""><h5 id="3-范围类"><a href="#3-范围类" class="headerlink" title="3. 范围类"></a>3. 范围类</h5></li>
-<li>正则表达式还提供了范围类</li>
-<li>我们使用[a-z]来连接两个字符表示从a到z的任意字符</li>
-<li>这是个闭区间也就包含a和z本身<br><img src="https://user-gold-cdn.xitu.io/2019/2/22/1691537781734783" alt=""><h5 id="4-预定义类"><a href="#4-预定义类" class="headerlink" title="4. 预定义类"></a>4. 预定义类</h5></li>
-<li>正则表达式提供了一些特殊字符表示自一组比较复杂的匹配规则，如下表：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">等价</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">.</td>
-<td style="text-align:left">[^\r\n]</td>
-<td style="text-align:left">除了回车符和换行符之外的所有字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\d</td>
-<td style="text-align:left">[0-9]</td>
-<td style="text-align:left">数字字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\D</td>
-<td style="text-align:left">[^0-9]</td>
-<td style="text-align:left">非数字字符</td>
-</tr>
-<tr>
-<td style="text-align:left">\s</td>
-<td style="text-align:left">[\t\n\x0B\f\r]</td>
-<td style="text-align:left">空白符</td>
-</tr>
-<tr>
-<td style="text-align:left">\0</td>
-<td style="text-align:left">[^\t\n\x0B\f\r]</td>
-<td style="text-align:left">非空白符</td>
-</tr>
-<tr>
-<td style="text-align:left">\w</td>
-<td style="text-align:left">[a-zA-Z_0-9]</td>
-<td style="text-align:left">单词字符(字母数字下划线)</td>
-</tr>
-<tr>
-<td style="text-align:left">\W</td>
-<td style="text-align:left">[^a-zA-Z_0-9]</td>
-<td style="text-align:left">非单词字符</td>
-</tr>
-</tbody>
-</table>
-<h5 id="5-边界"><a href="#5-边界" class="headerlink" title="5. 边界"></a>5. 边界</h5><ul>
-<li>正则表达式还提供了几个常用的边界匹配字符，如下表：</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">^</td>
-<td style="text-align:left">以xxx开始</td>
-</tr>
-<tr>
-<td style="text-align:left">$</td>
-<td style="text-align:left">以xxx结束</td>
-</tr>
-<tr>
-<td style="text-align:left">\b</td>
-<td style="text-align:left">单词边界</td>
-</tr>
-<tr>
-<td style="text-align:left">\B</td>
-<td style="text-align:left">非单词边界</td>
-</tr>
-</tbody>
-</table>
-<h5 id="6-量词"><a href="#6-量词" class="headerlink" title="6. 量词"></a>6. 量词</h5><table>
-<thead>
-<tr>
-<th style="text-align:left">字符</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">?</td>
-<td style="text-align:left">出现一次或0次（最多出现一次）</td>
-</tr>
-<tr>
-<td style="text-align:left">+</td>
-<td style="text-align:left">出现一次或多次（最少出现一次）</td>
-</tr>
-<tr>
-<td style="text-align:left">*</td>
-<td style="text-align:left">出现0次或多次（任意次）</td>
-</tr>
-<tr>
-<td style="text-align:left">{n}</td>
-<td style="text-align:left">出现n次</td>
-</tr>
-<tr>
-<td style="text-align:left">{n, m}</td>
-<td style="text-align:left">出现n到m次</td>
-</tr>
-<tr>
-<td style="text-align:left">{n, }</td>
-<td style="text-align:left">至少出现n次</td>
-</tr>
-</tbody>
-</table>
-<h3 id="js正则的贪婪模式和非贪婪模式"><a href="#js正则的贪婪模式和非贪婪模式" class="headerlink" title="js正则的贪婪模式和非贪婪模式"></a>js正则的贪婪模式和非贪婪模式</h3><ol>
-<li><p>贪婪模式：\d{3,6}匹配数字3到6次，那么在匹配的过程中会尽可能多的的匹配。如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;12345678&apos;.replace(/\d&#123;3,6&#125;/, &apos;X&apos;)  // &quot;X78&quot;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>非贪婪模式：在量词后面加上 ? ,可以让正则表达式尽可能少的匹配，也就是非贪婪模式。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;12345678&apos;.replace(/\d&#123;3,6&#125;?/, &apos;X&apos;)  // &quot;X45678&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>对一组正则规则加(),可以对正则进行分组，   </p>
-<p>比如：对taoyouyou这组单词匹配三次<br>taoyouyou{3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组1.svg" alt=""><br>可视化后能看到只是最后一个单词u重复了3次，并没有达到目的<br>(taoyouyou){3}<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组2.svg" alt=""><br>taoyouyou重复了3次</p>
-<h4 id="捕获组引用"><a href="#捕获组引用" class="headerlink" title="捕获组引用"></a>捕获组引用</h4><p>对字符串进行分组后，   </p>
-<p>捕获组的编号是按照“(”出现的顺序，从左到右，从1开始进行编号的 。   </p>
-<p>在replace方法中可以通过$number(number表示捕获组的编号)进行引用      </p>
-<p>在js表达式中分组引用通过RegExp对象暴露出来，    </p>
-<p>即通过RegExp.$number引用   </p>
-<p>例如实现2019-02-22 =&gt; 02/22/2019的转化。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组3.svg" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;2019-02-22&apos;.replace(/(\d&#123;4&#125;)-(\d&#123;2&#125;)-(\d&#123;2&#125;)/,&apos;$2/$3/$1&apos;)   //  &quot;02/22/2019&quot;</span><br></pre></td></tr></table></figure></p>
-<h4 id="反向引用"><a href="#反向引用" class="headerlink" title="反向引用"></a>反向引用</h4><p>正则表达式中所定义的捕获的反向引用指的是 </p>
-<blockquote>
-<p>将捕获作为正则表达式中能够成功匹配术语时的候选字符串      </p>
-</blockquote>
-<p>这种术语表示法是在反斜杆后面加一个要引用的捕获数量。<br>捕获组捕获到的内容，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用。反向引用的作用通常是用来查找或限定重复、查找或限定指定标识配对出现等等。<br>例如:([a-z])\1{2}也就表达连续三个相同的小写字母。   </p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组5.svg" alt=""></p>
-<h4 id="忽略分组"><a href="#忽略分组" class="headerlink" title="忽略分组"></a>忽略分组</h4><p>不需要捕获某些分组只需要在分组内加 ?: 就可以了。<br>(?:taoyouyou).(ok)<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/regex分组4.svg" alt=""></p>
-<h3 id="前瞻"><a href="#前瞻" class="headerlink" title="前瞻"></a>前瞻</h3><ul>
-<li>正则表达式从文本头部向尾部解析，文本尾部方向称为 “前”</li>
-<li>前瞻：正则表达式匹配到规则的时候，向前检查是否符合断言，后顾/后瞻方向相反</li>
-<li>JavaScript不支持后顾</li>
-<li>符合和不符合某项断言称为肯定/正向匹配和否定/负向匹配</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">名称</th>
-<th style="text-align:left">正则</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">正向前瞻</td>
-<td style="text-align:left">exp(?=assert)</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td style="text-align:left">负向前瞻</td>
-<td style="text-align:left">exp(?!assert)</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td style="text-align:left">正向后顾</td>
-<td style="text-align:left">exp(?&lt;=assert)</td>
-<td style="text-align:left">JavaScript不支持</td>
-</tr>
-<tr>
-<td style="text-align:left">负向后顾</td>
-<td style="text-align:left">exp(?&lt;!assert)</td>
-<td style="text-align:left">JavaScript不支持</td>
-</tr>
-</tbody>
-</table>
-<h3 id="正则对象属性"><a href="#正则对象属性" class="headerlink" title="正则对象属性"></a>正则对象属性</h3><ul>
-<li>global: 是否全文匹配，默认false，匹配规则后面加g开启</li>
-<li>ignoreCase: 是否大小写敏感， 默认false，匹配规则后面加i开启</li>
-<li>multiline: 多行搜索， 默认false，匹配规则后面加m开启</li>
-<li>lastIndex: 当前表达式匹配内容最后一个字符的下一个位置</li>
-<li>source: 正则表达式的文本字符串<br>这几个属性都是只读属性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">reg=/\d/gmi</span><br><span class="line">reg.global  // true</span><br><span class="line">reg.ignoreCase  // true</span><br><span class="line">reg.multiline  // true</span><br><span class="line">reg.lastIndex  // 0</span><br><span class="line">reg.source  // &quot;\d&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h3><h4 id="1-正则test方法"><a href="#1-正则test方法" class="headerlink" title="1. 正则test方法"></a>1. 正则test方法</h4><p> RegExp.prototype.test(str)</p>
-<ul>
-<li>用于测试字符串参数中是否存在匹配正则表达式模式的字符串</li>
-<li>如果存在则返回true，否则返回false   </li>
-</ul>
-<p>需要注意的是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var reg2=/\w/g;</span><br></pre></td></tr></table></figure></p>
-<p>进行reg2.test(‘ab’)时，第三次会变成false<br>原因：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">while(reg2.test(&apos;ab&apos;))&#123;</span><br><span class="line">  console.log(reg2.lastIndex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>即进行test时，正则表达式的lastIndex会发生变化<br>输出：1  2    表示第一个匹配上了、第二个匹配上了</p>
-<h4 id="2-正则exec方法"><a href="#2-正则exec方法" class="headerlink" title="2. 正则exec方法"></a>2. 正则exec方法</h4><p> RegExp.prototype.exec(str)</p>
-<ul>
-<li>使用正则表达式模式对字符串参数进行匹配搜索，并将更新全局对象属性以反映匹配结果</li>
-<li>如果没有匹配则返回null,否则返回一个结果数组：<br>属性index(声明匹配文本的第一个字符的位置), input(存放被检索的字符串string)<br>数组本身: [与正则表达式相匹配的文本，与正则对象的第一个子表达式（分组）相匹配的文本， 与正则对象的第二个子表达式（分组）相匹配的文本，…… ]<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var reg3=/\d(\w)(\w)\d/;    // 非全局搜索只能匹配到第一个结果</span><br><span class="line">var reg4=/\d(\w)(\w)\d/g;   // 全局搜索匹配全文</span><br><span class="line">var ts = &apos;$1az2bb3cy4dd5ee&apos;</span><br><span class="line">var ret1= reg3.exec(ts)     // (3) [&quot;1az2&quot;, &quot;a&quot;, &quot;z&quot;, index: 1, input: &quot;$1az2bb3cy4dd5ee&quot;, groups: undefined]</span><br><span class="line">console.log(reg3.lastIndex+&apos;\t&apos;+ret1.index+&apos;\t&apos;+ret1.toString())</span><br><span class="line">// &quot;0 1 1az2, a, z&quot;</span><br><span class="line">while(ret2 = reg4.exec(ts))&#123;</span><br><span class="line">  console.log(reg4.lastIndex+&apos;\t&apos;+ret2.index+&apos;\t&apos;+ret2.toString())</span><br><span class="line">&#125;</span><br><span class="line">// &quot;5 1 1az2, a, z&quot;</span><br><span class="line">// &quot;11 7 1az2, a, z&quot;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h4 id="3-字符串对象search方法"><a href="#3-字符串对象search方法" class="headerlink" title="3. 字符串对象search方法"></a>3. 字符串对象search方法</h4><p> String.prototype.search(reg)</p>
-<ul>
-<li>search方法用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串</li>
-<li>返回第一个匹配结果index，查不到返回-1</li>
-<li>search()不执行全局匹配，它将忽略标志g, 并总是从字符串的开始进行检索</li>
-</ul>
-<h4 id="4-字符串对象match方法"><a href="#4-字符串对象match方法" class="headerlink" title="4. 字符串对象match方法"></a>4. 字符串对象match方法</h4><p> String.prototype.match(reg)</p>
-<ul>
-<li>match方法将检索字符串，以找到一个或多个与regexp相匹配的字符串</li>
-<li>regexp是否具有标志g对结果影响很大<h5 id="非全局调用"><a href="#非全局调用" class="headerlink" title="非全局调用"></a>非全局调用</h5></li>
-<li>返回数组的第一个元素存放的是匹配文本,而其余的元素存放的是与正则表达式的子表达式匹配的文本</li>
-<li>除了常规的数组元素之外,返回的数组还含有2个对象属性：index声明匹配文本的起始字符在字符串的位置,input声明对stringObject的引用</li>
-<li>全局调用的返回与正则表达式的exec方法相类似，即：[与正则表达式相匹配的文本，与正则对象的第一个子表达式（分组）相匹配的文本， 与正则对象的第二个子表达式（分组）相匹配的文本，…… ]，数组有index和input属性<h5 id="全局调用"><a href="#全局调用" class="headerlink" title="全局调用"></a>全局调用</h5></li>
-<li>如果regexp具有标志g则match方法将执行全局检索,找到字符串中的所有匹配子字符串</li>
-<li>没有找到任何匹配的子串,则返回null</li>
-<li>如果找到了一个或多个匹配子串,则返回-一个数组</li>
-<li>数组元素中存放的是字符串中所有的匹配子串,而且也没有index属性或input属性<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var reg3=/\d(\w)(\w)\d/;    // 非全局搜索只能匹配到第一个结果</span><br><span class="line">var reg4=/\d(\w)(\w)\d/g;   // 全局搜索匹配全文</span><br><span class="line">var ts = &apos;$1az2bb3cy4dd5ee&apos;</span><br><span class="line">var ret1= ts.match(reg3)   // (3) [&quot;1az2&quot;, &quot;a&quot;, &quot;z&quot;, index: 1, input: &quot;$1az2bb3cy4dd5ee&quot;, groups: undefined]   </span><br><span class="line">console.log(reg3.lastIndex+&apos;\t&apos;+ret1.index)  // 0, 1</span><br><span class="line">var ret2 = ts.match(reg4)  // (2) [&quot;1az2&quot;, &quot;3cy4&quot;]</span><br><span class="line">console.log(reg4.lastIndex+&apos;\t&apos;+ret2.index)   // 0 undefined</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h4 id="5-字符串对象split方法"><a href="#5-字符串对象split方法" class="headerlink" title="5. 字符串对象split方法"></a>5. 字符串对象split方法</h4><p>String.prototype.split(reg)</p>
-<ul>
-<li>我们经常使用split方法把字符串分割为字符数组<br>eg: ‘a,b,c,d’.split(‘,’); //[“a”, “b”, “c”, “d”]</li>
-<li>在一些复杂的分割情况下我们可以使用正则表达式解决<br>eg: ‘alb2c3d’.split(/\d/; //[“a”, “b”, “c”, “d”]</li>
-</ul>
-<h4 id="6-字符串对象replace方法"><a href="#6-字符串对象replace方法" class="headerlink" title="6. 字符串对象replace方法"></a>6. 字符串对象replace方法</h4><p>String.prototype.replace</p>
-<ul>
-<li>String.prototype.replace(str, replaceStr)</li>
-<li>String.prototype.replace(reg, replaceStr)</li>
-<li>String.prototype.replace(reg, function)<br>function参数含义<br>function会在每次匹配替换的时候调用,有四个参数<br>1、匹配字符串<br>2、正则表达式分组内容,没有分组则没有该参数<br>3、匹配项在字符串中的index<br>4、原字符串<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&apos;a1b2c3d4e5&apos;.replace(/\d/g, function(match, index, origin)&#123;</span><br><span class="line">  return parseInt(match) + 1;</span><br><span class="line">&#125;)  // &quot;a2b3c4d5e6&quot;</span><br><span class="line"></span><br><span class="line">&apos;a1b2c3d4e5&apos;.replace(/(\d)(\w)(\d)/g, function(match, group1, group2, group3, index, origin)&#123;</span><br><span class="line">  console.log(match)</span><br><span class="line">  return group1 + group3;</span><br><span class="line">&#125;)  </span><br><span class="line">// 1b2</span><br><span class="line">// 3d4</span><br><span class="line">// &quot;a12c34e5&quot;</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">正则表达式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/02/22/吃透js中正则表达式/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1821,27 +1752,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1865,6 +1780,18 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -1874,18 +1801,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1901,6 +1816,26 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
@@ -1909,7 +1844,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1926,10 +1861,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
