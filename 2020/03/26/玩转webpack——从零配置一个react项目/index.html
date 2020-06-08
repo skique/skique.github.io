@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2020/2 | taoyouyou的博客</title>
+  <title>玩转webpack——从零配置一个react项目 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
-<meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
-<meta property="og:type" content="website">
-<meta property="og:title" content="taoyouyou的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2020/02/index.html">
+  <meta name="description" content="近来得闲，重新撸了一边webpack文档，将webpack的用法以及作用基本理清了脉络，虽然各大前端框架的生态系统越来越完善，每个框架基本都搭配了一套标准的脚手架工具，但是那是搭配好的套餐，用起来虽然也还行，还是总觉得哪里不得劲儿，就像开车开了个自动档模式，不能根据自己的项目随心所欲的搭配功能。所以今天我们就来好好啃一啃webpack,知其然也知其所以然。 核心概念webpack的核心功能就是模块">
+<meta name="keywords" content="webpack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="玩转webpack——从零配置一个react项目">
+<meta property="og:url" content="http://yoursite.com/2020/03/26/玩转webpack——从零配置一个react项目/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta property="og:description" content="近来得闲，重新撸了一边webpack文档，将webpack的用法以及作用基本理清了脉络，虽然各大前端框架的生态系统越来越完善，每个框架基本都搭配了一套标准的脚手架工具，但是那是搭配好的套餐，用起来虽然也还行，还是总觉得哪里不得劲儿，就像开车开了个自动档模式，不能根据自己的项目随心所欲的搭配功能。所以今天我们就来好好啃一啃webpack,知其然也知其所以然。 核心概念webpack的核心功能就是模块">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-06-08T02:05:09.892Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="taoyouyou的博客">
-<meta name="twitter:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta name="twitter:title" content="玩转webpack——从零配置一个react项目">
+<meta name="twitter:description" content="近来得闲，重新撸了一边webpack文档，将webpack的用法以及作用基本理清了脉络，虽然各大前端框架的生态系统越来越完善，每个框架基本都搭配了一套标准的脚手架工具，但是那是搭配好的套餐，用起来虽然也还行，还是总觉得哪里不得劲儿，就像开车开了个自动档模式，不能根据自己的项目随心所欲的搭配功能。所以今天我们就来好好啃一啃webpack,知其然也知其所以然。 核心概念webpack的核心功能就是模块">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -154,60 +155,269 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-玩转webpack——从零配置一个react项目" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/02/24/前端工程化——构建工具/" class="archive-article-date">
-  	<time datetime="2020-02-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-24</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/24/前端工程化——构建工具/">前端工程化——构建工具</a>
+    <h1 class="article-title" itemprop="name">
+      玩转webpack——从零配置一个react项目
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/03/26/玩转webpack——从零配置一个react项目/" class="archive-article-date">
+  	<time datetime="2020-03-26T08:27:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>近来得闲，重新撸了一边webpack文档，将webpack的用法以及作用基本理清了脉络，虽然各大前端框架的生态系统越来越完善，每个框架基本都搭配了一套标准的脚手架工具，但是那是搭配好的套餐，用起来虽然也还行，还是总觉得哪里不得劲儿，就像开车开了个自动档模式，不能根据自己的项目随心所欲的搭配功能。所以今天我们就来好好啃一啃webpack,知其然也知其所以然。</p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><p>webpack的核心功能就是模块化打包，既然是打包就一定涉及到entry(入口)和output(出口)，剩下的两个核心概念是loader(加载器)和plugin(插件)以及mode(模式)。</p>
+<h3 id="entry-amp-amp-output"><a href="#entry-amp-amp-output" class="headerlink" title="entry &amp;&amp; output"></a>entry &amp;&amp; output</h3><p>entry和output就是字面意思上的入口和出口，就是打包过程当中读取代码的入口以及编译输出文件。</p>
+<h3 id="mode"><a href="#mode" class="headerlink" title="mode"></a>mode</h3><p>mode有点类似于半自动挡模式：提供mode配置选项，webpack会使用相应模式的内置功能进行自动优化。就这么一句话就可以概括了模式。至于在哪种模式下，webpack会开启那些功能，可以看如下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">development</td>
+<td style="text-align:left">会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。</td>
+</tr>
+<tr>
+<td style="text-align:left">production</td>
+<td style="text-align:left">会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h3><p>loader是加载器，用于对模块的源代码进行转换。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。</p>
+<p>在 webpack 的配置中 loader 有两个目标：</p>
+<ol>
+<li>test 属性，用于标识出应该被对应的 loader 进行转换的某个或某些文件。</li>
+<li>use 属性，表示进行转换时，应该使用哪个 loader。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const config = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123; test: /\.txt$/, use: &apos;raw-loader&apos; &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以上配置中，对一个单独的 module 对象定义了 rules 属性，里面包含两个必须属性：test 和 use。这告诉 webpack 编译器(compiler) 如下信息：</p>
+<blockquote>
+<p>“嘿，webpack 编译器，当你碰到「在 require()/import 语句中被解析为 ‘.txt’ 的路径」时，在你对它打包之前，先使用 raw-loader 转换一下。”</p>
+</blockquote>
+<p>当你需要对各个文件转为webpack能够处理的有效模块时可以去<a href="https://www.webpackjs.com/loaders/" target="_blank" rel="noopener">loader列表</a>选择一个合适的加载器</p>
+<h3 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h3><p>插件则可以用于执行范围更广的任务。插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。<br>想要使用一个插件，你只需要 require() 它，然后把它添加到 plugins 数组中。多数插件可以通过选项(option)自定义。你也可以在一个配置文件中因为不同目的而多次使用同一个插件，这时需要通过使用 new 操作符来创建它的一个实例。<br>当你想用某些实现某些任务优化时可以去<a href="https://www.webpackjs.com/plugins/html-webpack-plugin/" target="_blank" rel="noopener">插件列表</a>看没有现成的插件开箱即用，</p>
+<p>这里有个例子可以说明loader以及plugin用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;); // 通过 npm 安装</span><br><span class="line">const webpack = require(&apos;webpack&apos;); // 用于访问内置插件</span><br><span class="line"></span><br><span class="line">const config = &#123;</span><br><span class="line">    ...</span><br><span class="line">    plugins: [</span><br><span class="line">        new HtmlWebpackPlugin(&#123;template: &apos;./src/index.html&apos;&#125;)</span><br><span class="line">    ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports = config;</span><br></pre></td></tr></table></figure></p>
+<p>引入了HtmlWebpackPlugin插件自动生成一个HTML文件。</p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>虽然webpack支持在命令行中手动敲下webpack-cli命中以构建文件，但是一般的项目要复杂的多，<br>所以webpack支持提供配置文件。这比在终端(terminal)中手动输入大量命令要高效的多。所以让我们创建一个取代以上使用 CLI 选项方式的配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: &apos;bundle.js&apos;,</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这是一个最简单的配置文件，定义了输入文件与输出文件，读取并运行src下的index.js文件将生成的bundle.js输出到dist文件夹中。<br>有了这样的一个配置文件之后，有两中方式启动它</p>
+<ol>
+<li>通过命令行工具运行<code>npx webpack --config webpack.config.js</code><br>这行命令表示以指定的webpack配置文件运行webpack命令<blockquote>
+<p>如果 webpack.config.js 存在，则 webpack 命令将默认选择使用它。我们在这里使用 –config 选项只是向你表明，可以传递任何名称的配置文件。这对于需要拆分成多个文件的复杂配置是非常有用。</p>
+</blockquote>
+</li>
+<li>NPM 脚本(NPM Scripts)<br>考虑到用 CLI 这种方式来运行本地的 webpack 不是特别方便，我们可以设置一个快捷方式。在 package.json 添加一个 npm 脚本(npm script)：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;,</span><br><span class="line">    &quot;build&quot;: &quot;webpack&quot;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>现在，可以使用 npm run build 命令，来替代我们之前使用的 npx 命令。</p>
+<p>谈谈我自己对webpack的理解，把webpack看作是要编织一条美丽的珍珠项链的话，那么配置文件则是项链的链子，而webpack中<a href="https://www.webpackjs.com/loaders/" target="_blank" rel="noopener">loader列表</a>和<a href="https://www.webpackjs.com/plugins/html-webpack-plugin/" target="_blank" rel="noopener">插件列表</a>则相当于原料库，我们可以从原料库中挑出我们所需要的珍珠，entry和output则是选择以及打磨这条项链的入口及出口。好了一切准备就绪了，我们要学习的变成如何打造一条美丽的珍珠项链。首先是要学习如何打磨完美的入口和出口。然后我们要学习应该在什么地方放上怎样的珠子，以及如何放上去。</p>
+<h2 id="实例——从零创建一个React应用"><a href="#实例——从零创建一个React应用" class="headerlink" title="实例——从零创建一个React应用"></a>实例——从零创建一个React应用</h2><p>现在我们可以从简单到复杂一步一步来完成一个针对react的从0到1的配置文件：</p>
+<h3 id="实现流程"><a href="#实现流程" class="headerlink" title="实现流程"></a>实现流程</h3><p>1，初始化npm项目，生成package.json。</p>
+<p>2，添加public/index.html。</p>
+<p>3, 安装Babel，创建.babelrc进行配置。</p>
+<p>4，安装react、react-dom、热更新react-hot-loader。</p>
+<p>5，安装webpack，创建webpack.config.js进行配置。</p>
+<p>6，添加src/index.js、src/App.js、src/App.css。</p>
+<p>7，配置package.json，修改启动命令。</p>
+<p>8，启动项目</p>
+<h3 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h3><h4 id="1-初始化npm项目，生成package-json"><a href="#1-初始化npm项目，生成package-json" class="headerlink" title="1. 初始化npm项目，生成package.json"></a>1. 初始化npm项目，生成package.json</h4><p>创建一个新项目，并cd进入。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir webpack-demo</span><br><span class="line">$ cd webpack-demo</span><br></pre></td></tr></table></figure></p>
+<p>创建package.json文件, 如果你想跳过初始化时的问题，加上 -y，以默认选项安装:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-添加public-index-html。"><a href="#2-添加public-index-html。" class="headerlink" title="2. 添加public/index.html。"></a>2. 添加public/index.html。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir public</span><br><span class="line">cd public</span><br><span class="line">touch index.html</span><br></pre></td></tr></table></figure>
+<p>index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- sourced from https://raw.githubusercontent.com/reactjs/reactjs.org/master/static/html/single-file-example.html --&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot; /&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&gt;</span><br><span class="line">  &lt;title&gt;React Starter&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;noscript&gt;</span><br><span class="line">    You need to enable JavaScript to run this app.</span><br><span class="line">  &lt;/noscript&gt;</span><br><span class="line">  &lt;script src=&quot;../dist/bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里引入的bundle.js后面会用到。</p>
+<h4 id="3-安装Babel，创建-babelrc进行配置。"><a href="#3-安装Babel，创建-babelrc进行配置。" class="headerlink" title="3. 安装Babel，创建.babelrc进行配置。"></a>3. 安装Babel，创建.babelrc进行配置。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ../</span><br><span class="line">npm install -D @babel/core@7.1.0 @babel/cli@7.1.0 @babel/preset-env@7.1.0 @babel/preset-react@7.0.0</span><br><span class="line">touch .babelrc</span><br></pre></td></tr></table></figure>
+<p>.babelrc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;: [&quot;@babel/env&quot;, &quot;@babel/preset-react&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-安装react、react-dom、热更新react-hot-loader"><a href="#4-安装react、react-dom、热更新react-hot-loader" class="headerlink" title="4. 安装react、react-dom、热更新react-hot-loader"></a>4. 安装react、react-dom、热更新react-hot-loader</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i react react-dom -S</span><br><span class="line">npm i react-hot-loader -D</span><br></pre></td></tr></table></figure>
+<h4 id="5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置"><a href="#5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置" class="headerlink" title="5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置"></a>5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader --save-dev</span><br><span class="line">touch webpack.config.js</span><br></pre></td></tr></table></figure>
+<p>webpack.config.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&quot;path&quot;);</span><br><span class="line">const webpack = require(&quot;webpack&quot;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &quot;./src/index.js&quot;,</span><br><span class="line">  mode: &quot;development&quot;,</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.(js|jsx)$/,</span><br><span class="line">        exclude: /(node_modules|bower_components)/,</span><br><span class="line">        loader: &quot;babel-loader&quot;,</span><br><span class="line">        options: &#123; presets: [&quot;@babel/env&quot;] &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.css$/,</span><br><span class="line">        use: [&quot;style-loader&quot;, &quot;css-loader&quot;]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  resolve: &#123; extensions: [&quot;*&quot;, &quot;.js&quot;, &quot;.jsx&quot;] &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &quot;dist/&quot;),</span><br><span class="line">    publicPath: &quot;/dist/&quot;,</span><br><span class="line">    filename: &quot;bundle.js&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    contentBase: path.join(__dirname, &quot;public/&quot;),</span><br><span class="line">    port: 3000,</span><br><span class="line">    publicPath: &quot;http://localhost:3000/dist/&quot;,</span><br><span class="line">    hotOnly: true</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [new webpack.HotModuleReplacementPlugin()]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-添加src-index-js、src-App-js、src-App-css。"><a href="#6-添加src-index-js、src-App-js、src-App-css。" class="headerlink" title="6. 添加src/index.js、src/App.js、src/App.css。"></a>6. 添加src/index.js、src/App.js、src/App.css。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir src</span><br><span class="line">cd src</span><br><span class="line">touch index.js</span><br><span class="line">touch App.js</span><br><span class="line">touch App.css</span><br></pre></td></tr></table></figure>
+<p>index.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import React from &quot;react&quot;;</span><br><span class="line">import ReactDOM from &quot;react-dom&quot;;</span><br><span class="line">import App from &quot;./App.js&quot;;</span><br><span class="line">ReactDOM.render(&lt;App /&gt;, document.getElementById(&quot;root&quot;));</span><br></pre></td></tr></table></figure></p>
+<p>App.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component&#125; from &quot;react&quot;;</span><br><span class="line">import &#123;hot&#125; from &apos;react-hot-loader&apos;;</span><br><span class="line">import &quot;./App.css&quot;;</span><br><span class="line"></span><br><span class="line">class App extends Component&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    return(</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;h1&gt; Hello&lt;/h1&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default hot(module)(App);</span><br></pre></td></tr></table></figure></p>
+<p>App.css<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.App &#123;</span><br><span class="line">  margin: 1rem;</span><br><span class="line">  font-family: Arial, Helvetica, sans-serif;</span><br><span class="line">  border: 1px solid red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="7-配置package-json，修改启动命令。"><a href="#7-配置package-json，修改启动命令。" class="headerlink" title="7. 配置package.json，修改启动命令。"></a>7. 配置package.json，修改启动命令。</h4><p>在package.json里配置scripts字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;start&quot;: &quot;webpack-dev-server --mode development&quot;,</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="8-启动项目。"><a href="#8-启动项目。" class="headerlink" title="8. 启动项目。"></a>8. 启动项目。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p>在浏览器键入<a href="http://localhost:3000以启动项目" target="_blank" rel="noopener">http://localhost:3000以启动项目</a></p>
+<p><a href="https://gitee.com/taoyouyou/react-demo.git" target="_blank" rel="noopener">Github地址</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">webpack</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2020/03/26/玩转webpack——从零配置一个react项目/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2020/04/03/手把手教你用vue撸一个管理后台/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          手把手教你用vue撸一个管理后台
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2020/03/23/浅谈前端工程化/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">浅谈前端工程化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#核心概念"><span class="toc-number">1.</span> <span class="toc-text">核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#entry-amp-amp-output"><span class="toc-number">1.1.</span> <span class="toc-text">entry &amp;&amp; output</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mode"><span class="toc-number">1.2.</span> <span class="toc-text">mode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#loader"><span class="toc-number">1.3.</span> <span class="toc-text">loader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#plugin"><span class="toc-number">1.4.</span> <span class="toc-text">plugin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件"><span class="toc-number">1.5.</span> <span class="toc-text">配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例——从零创建一个React应用"><span class="toc-number">2.</span> <span class="toc-text">实例——从零创建一个React应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实现流程"><span class="toc-number">2.1.</span> <span class="toc-text">实现流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体步骤"><span class="toc-number">2.2.</span> <span class="toc-text">具体步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-初始化npm项目，生成package-json"><span class="toc-number">2.2.1.</span> <span class="toc-text">1. 初始化npm项目，生成package.json</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-添加public-index-html。"><span class="toc-number">2.2.2.</span> <span class="toc-text">2. 添加public/index.html。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-安装Babel，创建-babelrc进行配置。"><span class="toc-number">2.2.3.</span> <span class="toc-text">3. 安装Babel，创建.babelrc进行配置。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-安装react、react-dom、热更新react-hot-loader"><span class="toc-number">2.2.4.</span> <span class="toc-text">4. 安装react、react-dom、热更新react-hot-loader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-我们需要安装webpack的以及需要的开发依赖，创建webpack-config-js进行配置"><span class="toc-number">2.2.5.</span> <span class="toc-text">5. 我们需要安装webpack的以及需要的开发依赖，创建webpack.config.js进行配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-添加src-index-js、src-App-js、src-App-css。"><span class="toc-number">2.2.6.</span> <span class="toc-text">6. 添加src/index.js、src/App.js、src/App.css。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-配置package-json，修改启动命令。"><span class="toc-number">2.2.7.</span> <span class="toc-text">7. 配置package.json，修改启动命令。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-启动项目。"><span class="toc-number">2.2.8.</span> <span class="toc-text">8. 启动项目。</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -230,8 +440,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

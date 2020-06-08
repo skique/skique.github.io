@@ -6,19 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2020/2 | taoyouyou的博客</title>
+  <title>从零搭建一个基于webpack的vue开发环境 | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
+  <meta name="description" content="继上文《玩转webpack——从零配置配置一个react项目》后，有童鞋建议出一篇vue的配置文件说明，所以这一篇是它的姊妹篇。说实话，webpack发展到现在，基于各大主流的前端框架都提供了相应框架下的标准开发工具。基于vue-cli或者create-react-app生成的项目，也已经一键为我们配置好了webpack，应用在项目中也可以进行快速原型开发，提升开发效率。本文仅是从理解webpa">
 <meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
-<meta property="og:type" content="website">
-<meta property="og:title" content="taoyouyou的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2020/02/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零搭建一个基于webpack的vue开发环境">
+<meta property="og:url" content="http://yoursite.com/2020/06/08/vue项目搭建以及基本配置/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta property="og:description" content="继上文《玩转webpack——从零配置配置一个react项目》后，有童鞋建议出一篇vue的配置文件说明，所以这一篇是它的姊妹篇。说实话，webpack发展到现在，基于各大主流的前端框架都提供了相应框架下的标准开发工具。基于vue-cli或者create-react-app生成的项目，也已经一键为我们配置好了webpack，应用在项目中也可以进行快速原型开发，提升开发效率。本文仅是从理解webpa">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vue文件目录.png">
+<meta property="og:updated_time" content="2020-06-08T08:27:16.790Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="taoyouyou的博客">
-<meta name="twitter:description" content="一枚嗜好太多，能力太小的普通程序媛，">
+<meta name="twitter:title" content="从零搭建一个基于webpack的vue开发环境">
+<meta name="twitter:description" content="继上文《玩转webpack——从零配置配置一个react项目》后，有童鞋建议出一篇vue的配置文件说明，所以这一篇是它的姊妹篇。说实话，webpack发展到现在，基于各大主流的前端框架都提供了相应框架下的标准开发工具。基于vue-cli或者create-react-app生成的项目，也已经一键为我们配置好了webpack，应用在项目中也可以进行快速原型开发，提升开发效率。本文仅是从理解webpa">
+<meta name="twitter:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vue文件目录.png">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -154,60 +157,267 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-vue项目搭建以及基本配置" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/02/24/前端工程化——构建工具/" class="archive-article-date">
-  	<time datetime="2020-02-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-24</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/24/前端工程化——构建工具/">前端工程化——构建工具</a>
+    <h1 class="article-title" itemprop="name">
+      从零搭建一个基于webpack的vue开发环境
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        <a href="/2020/06/08/vue项目搭建以及基本配置/" class="archive-article-date">
+  	<time datetime="2020-06-08T01:46:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!-- 搭建vue项目的过程一般会用到vue配套的脚手架工具vue-cli。 -->
+<p>继上文《玩转webpack——从零配置配置一个react项目》后，有童鞋建议出一篇vue的配置文件说明，所以这一篇是它的姊妹篇。<br>说实话，webpack发展到现在，基于各大主流的前端框架都提供了相应框架下的标准开发工具。基于vue-cli或者create-react-app生成的项目，也已经一键为我们配置好了webpack，应用在项目中也可以进行快速原型开发，提升开发效率。本文仅是从理解webpack的角度来看看搭建一个vue项目所需要的最小配置。</p>
+<h2 id="实例——从零创建一个vue应用"><a href="#实例——从零创建一个vue应用" class="headerlink" title="实例——从零创建一个vue应用"></a>实例——从零创建一个vue应用</h2><p>从零开始搭建一个简单的基于webpack的vue开发环境</p>
+<p>本文安装的版本是vue2.0，webpack4.0版本。babel 7 版本</p>
+<blockquote>
+<p>备注：当使用webpack4时，确保使用 Node.js的版本 &gt;= 8.9.4。因为webpack4使用了很多JS新的语法，它们在新版本的 v8 里经过了优化。</p>
+</blockquote>
+<h3 id="一、-项目初始化——基础环境搭建"><a href="#一、-项目初始化——基础环境搭建" class="headerlink" title="一、 项目初始化——基础环境搭建"></a>一、 项目初始化——基础环境搭建</h3><p>新建文件夹并初始化npm项目，生成package.json<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir vue-webpack-simple</span><br><span class="line">cd vue-webpack-simple</span><br><span class="line">npm init -y</span><br></pre></td></tr></table></figure></p>
+<p>安装vue webpack webpack-dev-server,注意webpack4需要单独安装webpack-cli，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i vue --save</span><br><span class="line">npm i webpack webpack-dev-server --save-dev</span><br><span class="line">npm i webpack-cli --save-dev</span><br></pre></td></tr></table></figure></p>
+<p>根目录下新建webpack.config.js，并先写入最基本的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var path = require(&apos;path&apos;);</span><br><span class="line">var webpack = require(&apos;webpack&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">    entry: &apos;./src/main.js&apos;, // 项目的入口文件，webpack会从main.js开始，把所有依赖的js都加载打包</span><br><span class="line">    output: &#123;</span><br><span class="line">        path: path.resolve(__dirname, &apos;./dist&apos;), // 项目的打包文件路径</span><br><span class="line">        publicPath: &apos;/dist/&apos;, // 通过devServer访问路径</span><br><span class="line">        filename: &apos;build.js&apos; // 打包后的文件名</span><br><span class="line">    &#125;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        historyApiFallback: true,   // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html。</span><br><span class="line">        overlay: true,               // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、引入vue（目前先不考虑单文件）"><a href="#二、引入vue（目前先不考虑单文件）" class="headerlink" title="二、引入vue（目前先不考虑单文件）"></a>二、引入vue（目前先不考虑单文件）</h3><p>index.html，引入打包后的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">        &#123;&#123;message&#125;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;script src=&quot;/dist/build.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line"></span><br><span class="line">var app = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    message: &apos;Hello Vue!&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>修改webpack.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var path = require(&apos;path&apos;);</span><br><span class="line">var webpack = require(&apos;webpack&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">    entry: &apos;./src/main.js&apos;,</span><br><span class="line">    output: &#123;</span><br><span class="line">        path: path.resolve(__dirname, &apos;./dist&apos;),</span><br><span class="line">        publicPath: &apos;/dist/&apos;,</span><br><span class="line">        filename: &apos;build.js&apos;</span><br><span class="line">    &#125;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        historyApiFallback: true,</span><br><span class="line">        overlay: true</span><br><span class="line">    &#125;,</span><br><span class="line">    resolve: &#123;</span><br><span class="line">        alias: &#123;</span><br><span class="line">            &apos;vue$&apos;: &apos;vue/dist/vue.esm.js&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p> 此时整个项目目录结构如下所示</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vue文件目录.png" alt=""></p>
+<p>配置package.json，修改启动命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;dev&quot;: &quot;webpack-dev-server --open --hot&quot;,</span><br><span class="line">    &quot;build&quot;: &quot;webpack --progress --hide-modules&quot;</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure></p>
+<p>注意：webpack-dev-server会自动启动一个静态资源web服务器 –hot参数表示启动热更新</p>
+<p>可以发现浏览器自动打开的一个页面，页面打印 Hello vue，修改main.js输出的message值，只要保存一下，页面上就会自动刷新，非常方便。</p>
+<h4 id="引入scss和css"><a href="#引入scss和css" class="headerlink" title="引入scss和css"></a>引入scss和css</h4><p>webpack默认只支持js的模块化，如果需要把其他文件也当成模块引入，就需要相对应的loader解析器。</p>
+<p>安装上scss相关插件</p>
+<p><code>npm i node-sass css-loader vue-style-loader sass-loader --save-dev</code><br>node-sass 把 sass编译成css<br>sass-loader 是webpack的加载scss一个loader<br>鉴于国内的环境安装node-sass可能会失败，这个时候需要设置一下淘宝的镜像源。</p>
+<p>webpack配置loader，webpack.config.js加入module<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">        &#123;</span><br><span class="line">            test: /\.css$/,</span><br><span class="line">            use: [</span><br><span class="line">                &apos;vue-style-loader&apos;,</span><br><span class="line">                &apos;css-loader&apos;</span><br><span class="line">            ],</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>还记得我们在上一文玩转webpack里讲的到，引入loader加载器的作用是告诉webpack编译器如下信息：</p>
+<blockquote>
+<p>嘿，webpack编译器，当你在碰到「在 require()/import 语句中被解析为 ‘.css’ 的路径」时，在你对它打包之前，先使用 分别用css-loader，vue-style-loader 去解析转换一下。”</p>
+</blockquote>
+<p>注意：因为我们这里用vue开发，所以使用vue-style-loader，其他情况使用style-loader。</p>
+<p>css-loader使得我们可以用模块化的写法引入css。<br>vue-style-loader会将引入的css插入到html页面里的style标签里。</p>
+<p>同样方法可以配置scss<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: /\.scss$/,</span><br><span class="line">    use: [</span><br><span class="line">        &apos;vue-style-loader&apos;,</span><br><span class="line">        &apos;css-loader&apos;,</span><br><span class="line">        &apos;sass-loader&apos;</span><br><span class="line">    ],</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">    test: /\.sass$/,</span><br><span class="line">    use: [</span><br><span class="line">        &apos;vue-style-loader&apos;,</span><br><span class="line">        &apos;css-loader&apos;,</span><br><span class="line">        &apos;sass-loader?indentedSyntax&apos;</span><br><span class="line">    ],</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure></p>
+<p>我们现在来试下<br>在src目录下新建style目录，style目录里新建common.scss<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">body &#123;</span><br><span class="line">    background: #fed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>main.js引入这个scss文件<br><code>import &#39;./style/common.scss&#39;;</code></p>
+<p>发现css样式有用了</p>
+<h4 id="使用babel转码"><a href="#使用babel转码" class="headerlink" title="使用babel转码"></a>使用babel转码</h4><p>ES6的语法大多数浏览器依旧不支持,bable可以把ES6转码成ES5语法，这样我们就可以大胆的在项目中使用最新特性了。<br>babel转化语法所需依赖项：</p>
+<ul>
+<li>babel-loader： 负责 es6语法转化</li>
+<li>babel-core： babel核心包</li>
+<li>babel-preset-env：告诉babel使用哪种转码规则进行文件处理<br>在babel 7版本下把所有 babel-<em> 重命名为 @babel/</em>，所以需要安装对应的@babel/core @babel/preset-env包。</li>
+</ul>
+<p><code>npm install babel-loader @babel/core @babel/preset-env --save-dev</code></p>
+<p>在项目根目录新建一个.babelrc文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;:[&quot;@babel/preset-env&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>webpack.config.js添加一个loader<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: /\.js$/,</span><br><span class="line">    loader: &apos;babel-loader&apos;,</span><br><span class="line">    exclude: /node_modules/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>exclude表示忽略node_modules文件夹下的文件，不用转码。</p>
+<p>现在我们来试下async await语法吧<br>src目录下新建util.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export default function getData() &#123;</span><br><span class="line">    return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">        resolve(&apos;ok&apos;);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>main.js 引入这个方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import getData from &apos;./util&apos;;</span><br><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line"></span><br><span class="line">import &apos;./style/common.scss&apos;;</span><br><span class="line"></span><br><span class="line">var app = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    message: &apos;Hello Vue!&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    async fetchData() &#123;</span><br><span class="line">      const data = await getData();</span><br><span class="line">      this.message = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created() &#123;</span><br><span class="line">    this.fetchData();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这时控制台会报一个错误regeneratorRuntime is not defined，因为浏览器不支持新版本的api,而babel只转换新的js语法，不转换新的API。上面的设置能够在打包时把es6转为es5,但不包括es6的一些新特征，比如promise。<br>解决上面问题的方法是：</p>
+<p>安装 @babel/polyfill；<br><code>npm i @babel/polyfill --save-dev</code></p>
+<p>但是babel-polyfill 主要有两个缺点：<br>使用 babel-polyfill 会导致打出来的包非常大，很多其实没有用到，对资源来说是一种浪费。<br>babel-polyfill 可能会污染全局变量，给很多类的原型链上都作了修改，这就有不可控的因素存在。</p>
+<p>基于这种原因Babel7: 新增了 babel-preset-env，设置</p>
+<blockquote>
+<p>“useBuiltIns”:”usage”这个参数值就可以实现按需加载 babel-polyfill 。</p>
+</blockquote>
+<p>全局引入 babel-polyfill，这样打包后的整个文件体积必然是会变大，通过设置 “useBuiltIns”:”usage”能够把 babel-polyfill 中你需要用到的部分提取出来，不需要的去除。</p>
+<blockquote>
+<p>useBuiltIns 参数说明：</p>
+<ul>
+<li>false: 不对 polyfills 做任何操作</li>
+<li>entry: 根据 target 中浏览器版本的支持，将 polyfills 拆分引入，仅引入有浏览器不支持的 polyfill</li>
+<li>usage(新)：检测代码中 ES6/7/8 等的使用情况，仅仅加载代码中用到的 polyfills</li>
+</ul>
+</blockquote>
+<ul>
+<li>配置.babelrc，实现polyfills的按需加载。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;: [[</span><br><span class="line">      &quot;@babel/preset-env&quot;,</span><br><span class="line">      &#123;</span><br><span class="line">          &quot;useBuiltIns&quot;: &quot;usage&quot;</span><br><span class="line">      &#125;</span><br><span class="line">  ]]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>此时重新npm run dev，可以发现正常运行了</p>
+<h4 id="引入图片资源"><a href="#引入图片资源" class="headerlink" title="引入图片资源"></a>引入图片资源</h4><p>把图片也当成模块引入<br><code>npm i file-loader --save-dev</code></p>
+<p>webpack.config.js添加一个loader<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: /\.(png|jpg|gif|svg)$/,</span><br><span class="line">    loader: &apos;file-loader&apos;,</span><br><span class="line">    options: &#123;</span><br><span class="line">        name: &apos;[name].[ext]?[hash]&apos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在src目录下新建一个img目录，存放一张图片logo.png<br>修改main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import url from &apos;./img/logo.png&apos;;</span><br><span class="line"></span><br><span class="line">Vue.component(&apos;my-component&apos;, &#123;</span><br><span class="line">  template: &apos;&lt;img :src=&quot;url&quot; /&gt;&apos;,</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      url,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">var app = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    message: &apos;Hello Vue !&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    async fetchData() &#123;</span><br><span class="line">      const data = await getData();</span><br><span class="line">      this.message = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created() &#123;</span><br><span class="line">    this.fetchData()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>修改index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">        &#123;&#123;message&#125;&#125;</span><br><span class="line">        &lt;my-component/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;script src=&quot;/dist/build.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>可以看见，图片也被正确加载了</p>
+<h3 id="单文件组件"><a href="#单文件组件" class="headerlink" title="单文件组件"></a>单文件组件</h3><p>在前面的例子里，我们使用 Vue.component 来定义全局组件<br>在实际项目里，更推荐使用单文件组件。</p>
+<p>.vue 文件是一个自定义的文件类型，用类 HTML 语法描述一个 Vue 组件。每个 .vue 文件包含三种类型的顶级语言块 template、script 和 style，还允许添加可选的自定义块：</p>
+<ul>
+<li><p>template 模板块<br>一个SFC中最多一个&lt; template &gt;块；其内容将被提取为字符串传递给 vue-template-compiler ，然后 webpack 将其编译为 js 渲染函数，并最终注入到从<script> 导出的组件中；</p>
+</li>
+<li><p>script 脚本块<br>一个SFC最多一个 script 块，会作为一个模块封装。它的默认导出应该是一个 Vue.js 的组件选项对象，也可以导出由 Vue.extend() 创建的扩展对象。</p>
+</li>
+<li><p>style 样式块<br>一个 .vue 文件可以包含多个 style 标签，标签可以有 scoped 或者 module 属性。</p>
+</li>
+<li><p>自定义语言块<br>vue-loader 将会使用块名来查找对应的 loader 进行处理。</p>
+</li>
+</ul>
+<p>vue项目中使用vue-loader和vue-template-compiler来加载和就解析.vue。</p>
+<p>安装vue-loader和vue-template-compile。</p>
+<p><code>npm i vue-loader vue-template-compiler --save-dev</code></p>
+<p>Vue Loader 的配置和其它的 loader 不太一样。除了通过 rules 规则将 vue-loader 应用到 .vue 的文件上之外，还需要添加 Vue Loader Plugin 插件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const VueLoaderPlugin = require(&apos;vue-loader/lib/plugin&apos;)</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      // ... 其它规则</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.vue$/,</span><br><span class="line">        loader: &apos;vue-loader&apos;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    new VueLoaderPlugin()</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Vue Loader Plugin 的职责是将 .vue 文件中的语言块应用在相应的 rules 上。例如样式匹配 /.css$/的规则，那么它会应用到 .vue 文件里的 <style> 块，匹配 /.js$/的规则会应用到 .vue 文件里的 <script> 块。</p>
+<p>在src目录下新建一个App.vue<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;h1&gt;&#123;&#123; msg &#125;&#125;&lt;/h1&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; v-model=&quot;msg&quot;&gt;</span><br><span class="line">    &lt;img :src=&quot;url&quot;&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import url from &apos;./img/logo.png&apos;</span><br><span class="line">import getData from &apos;./util&apos;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;app&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      msg: &apos;Welcome to Your Vue.js&apos;,</span><br><span class="line">      url,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created() &#123;</span><br><span class="line">    this.fetchData();</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">     async fetchData() &#123;</span><br><span class="line">      const data = await getData();</span><br><span class="line">      this.msg = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style lang=&quot;scss&quot;&gt;</span><br><span class="line">#app &#123;</span><br><span class="line">  font-family: &quot;Avenir&quot;, Helvetica, Arial, sans-serif;</span><br><span class="line"></span><br><span class="line">  h1 &#123;</span><br><span class="line">    color: green;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure></p>
+<p>main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line">import App from &apos;./App.vue&apos;;</span><br><span class="line"></span><br><span class="line">import &apos;./style/common.scss&apos;;</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  template: &apos;&lt;App/&gt;&apos;,</span><br><span class="line">  components: &#123; App &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;</span><br><span class="line">    &lt;script src=&quot;/dist/build.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>npm run dev，可以发现单文件被正确加载了。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vue的webpack.png" alt=""></p>
+<p>现在你可以基于这个简单的webpack环境。在vue框架下进行项目开发了。</p>
+</script></p></li></ul>
+      
 
-          
-
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2020/06/08/vue项目搭建以及基本配置/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2020/06/06/RockySaaS生态云平台/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RockySaaS生态云平台</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#实例——从零创建一个vue应用"><span class="toc-number">1.</span> <span class="toc-text">实例——从零创建一个vue应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、-项目初始化——基础环境搭建"><span class="toc-number">1.1.</span> <span class="toc-text">一、 项目初始化——基础环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、引入vue（目前先不考虑单文件）"><span class="toc-number">1.2.</span> <span class="toc-text">二、引入vue（目前先不考虑单文件）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引入scss和css"><span class="toc-number">1.2.1.</span> <span class="toc-text">引入scss和css</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用babel转码"><span class="toc-number">1.2.2.</span> <span class="toc-text">使用babel转码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引入图片资源"><span class="toc-number">1.2.3.</span> <span class="toc-text">引入图片资源</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单文件组件"><span class="toc-number">1.3.</span> <span class="toc-text">单文件组件</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -230,8 +440,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

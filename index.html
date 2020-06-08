@@ -156,6 +156,229 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-vue项目搭建以及基本配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/08/vue项目搭建以及基本配置/">从零搭建一个基于webpack的vue开发环境</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/08/vue项目搭建以及基本配置/" class="archive-article-date">
+  	<time datetime="2020-06-08T01:46:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!-- 搭建vue项目的过程一般会用到vue配套的脚手架工具vue-cli。 -->
+<p>继上文《玩转webpack——从零配置配置一个react项目》后，有童鞋建议出一篇vue的配置文件说明，所以这一篇是它的姊妹篇。<br>说实话，webpack发展到现在，基于各大主流的前端框架都提供了相应框架下的标准开发工具。基于vue-cli或者create-react-app生成的项目，也已经一键为我们配置好了webpack，应用在项目中也可以进行快速原型开发，提升开发效率。本文仅是从理解webpack的角度来看看搭建一个vue项目所需要的最小配置。</p>
+<h2 id="实例——从零创建一个vue应用"><a href="#实例——从零创建一个vue应用" class="headerlink" title="实例——从零创建一个vue应用"></a>实例——从零创建一个vue应用</h2><p>从零开始搭建一个简单的基于webpack的vue开发环境</p>
+<p>本文安装的版本是vue2.0，webpack4.0版本。babel 7 版本</p>
+<blockquote>
+<p>备注：当使用webpack4时，确保使用 Node.js的版本 &gt;= 8.9.4。因为webpack4使用了很多JS新的语法，它们在新版本的 v8 里经过了优化。</p>
+</blockquote>
+<h3 id="一、-项目初始化——基础环境搭建"><a href="#一、-项目初始化——基础环境搭建" class="headerlink" title="一、 项目初始化——基础环境搭建"></a>一、 项目初始化——基础环境搭建</h3><p>新建文件夹并初始化npm项目，生成package.json<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir vue-webpack-simple</span><br><span class="line">cd vue-webpack-simple</span><br><span class="line">npm init -y</span><br></pre></td></tr></table></figure></p>
+<p>安装vue webpack webpack-dev-server,注意webpack4需要单独安装webpack-cli，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i vue --save</span><br><span class="line">npm i webpack webpack-dev-server --save-dev</span><br><span class="line">npm i webpack-cli --save-dev</span><br></pre></td></tr></table></figure></p>
+<p>根目录下新建webpack.config.js，并先写入最基本的配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var path = require(&apos;path&apos;);</span><br><span class="line">var webpack = require(&apos;webpack&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">    entry: &apos;./src/main.js&apos;, // 项目的入口文件，webpack会从main.js开始，把所有依赖的js都加载打包</span><br><span class="line">    output: &#123;</span><br><span class="line">        path: path.resolve(__dirname, &apos;./dist&apos;), // 项目的打包文件路径</span><br><span class="line">        publicPath: &apos;/dist/&apos;, // 通过devServer访问路径</span><br><span class="line">        filename: &apos;build.js&apos; // 打包后的文件名</span><br><span class="line">    &#125;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        historyApiFallback: true,   // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html。</span><br><span class="line">        overlay: true,               // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、引入vue（目前先不考虑单文件）"><a href="#二、引入vue（目前先不考虑单文件）" class="headerlink" title="二、引入vue（目前先不考虑单文件）"></a>二、引入vue（目前先不考虑单文件）</h3><p>index.html，引入打包后的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">        &#123;&#123;message&#125;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;script src=&quot;/dist/build.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line"></span><br><span class="line">var app = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    message: &apos;Hello Vue!&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>修改webpack.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var path = require(&apos;path&apos;);</span><br><span class="line">var webpack = require(&apos;webpack&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">    entry: &apos;./src/main.js&apos;,</span><br><span class="line">    output: &#123;</span><br><span class="line">        path: path.resolve(__dirname, &apos;./dist&apos;),</span><br><span class="line">        publicPath: &apos;/dist/&apos;,</span><br><span class="line">        filename: &apos;build.js&apos;</span><br><span class="line">    &#125;,</span><br><span class="line">    devServer: &#123;</span><br><span class="line">        historyApiFallback: true,</span><br><span class="line">        overlay: true</span><br><span class="line">    &#125;,</span><br><span class="line">    resolve: &#123;</span><br><span class="line">        alias: &#123;</span><br><span class="line">            &apos;vue$&apos;: &apos;vue/dist/vue.esm.js&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p> 此时整个项目目录结构如下所示</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vue文件目录.png" alt=""></p>
+<p>配置package.json，修改启动命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;dev&quot;: &quot;webpack-dev-server --open --hot&quot;,</span><br><span class="line">    &quot;build&quot;: &quot;webpack --progress --hide-modules&quot;</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure></p>
+<p>注意：webpack-dev-server会自动启动一个静态资源web服务器 –hot参数表示启动热更新</p>
+<p>可以发现浏览器自动打开的一个页面，页面打印 Hello vue，修改main.js输出的message值，只要保存一下，页面上就会自动刷新，非常方便。</p>
+<h4 id="引入scss和css"><a href="#引入scss和css" class="headerlink" title="引入scss和css"></a>引入scss和css</h4><p>webpack默认只支持js的模块化，如果需要把其他文件也当成模块引入，就需要相对应的loader解析器。</p>
+<p>安装上scss相关插件</p>
+<p><code>npm i node-sass css-loader vue-style-loader sass-loader --save-dev</code><br>node-sass 把 sass编译成css<br>sass-loader 是webpack的加载scss一个loader<br>鉴于国内的环境安装node-sass可能会失败，这个时候需要设置一下淘宝的镜像源。</p>
+<p>webpack配置loader，webpack.config.js加入module<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">        &#123;</span><br><span class="line">            test: /\.css$/,</span><br><span class="line">            use: [</span><br><span class="line">                &apos;vue-style-loader&apos;,</span><br><span class="line">                &apos;css-loader&apos;</span><br><span class="line">            ],</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>还记得我们在上一文玩转webpack里讲的到，引入loader加载器的作用是告诉webpack编译器如下信息：</p>
+<blockquote>
+<p>嘿，webpack编译器，当你在碰到「在 require()/import 语句中被解析为 ‘.css’ 的路径」时，在你对它打包之前，先使用 分别用css-loader，vue-style-loader 去解析转换一下。”</p>
+</blockquote>
+<p>注意：因为我们这里用vue开发，所以使用vue-style-loader，其他情况使用style-loader。</p>
+<p>css-loader使得我们可以用模块化的写法引入css。<br>vue-style-loader会将引入的css插入到html页面里的style标签里。</p>
+<p>同样方法可以配置scss<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: /\.scss$/,</span><br><span class="line">    use: [</span><br><span class="line">        &apos;vue-style-loader&apos;,</span><br><span class="line">        &apos;css-loader&apos;,</span><br><span class="line">        &apos;sass-loader&apos;</span><br><span class="line">    ],</span><br><span class="line">&#125;,</span><br><span class="line">&#123;</span><br><span class="line">    test: /\.sass$/,</span><br><span class="line">    use: [</span><br><span class="line">        &apos;vue-style-loader&apos;,</span><br><span class="line">        &apos;css-loader&apos;,</span><br><span class="line">        &apos;sass-loader?indentedSyntax&apos;</span><br><span class="line">    ],</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure></p>
+<p>我们现在来试下<br>在src目录下新建style目录，style目录里新建common.scss<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">body &#123;</span><br><span class="line">    background: #fed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>main.js引入这个scss文件<br><code>import &#39;./style/common.scss&#39;;</code></p>
+<p>发现css样式有用了</p>
+<h4 id="使用babel转码"><a href="#使用babel转码" class="headerlink" title="使用babel转码"></a>使用babel转码</h4><p>ES6的语法大多数浏览器依旧不支持,bable可以把ES6转码成ES5语法，这样我们就可以大胆的在项目中使用最新特性了。<br>babel转化语法所需依赖项：</p>
+<ul>
+<li>babel-loader： 负责 es6语法转化</li>
+<li>babel-core： babel核心包</li>
+<li>babel-preset-env：告诉babel使用哪种转码规则进行文件处理<br>在babel 7版本下把所有 babel-<em> 重命名为 @babel/</em>，所以需要安装对应的@babel/core @babel/preset-env包。</li>
+</ul>
+<p><code>npm install babel-loader @babel/core @babel/preset-env --save-dev</code></p>
+<p>在项目根目录新建一个.babelrc文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;:[&quot;@babel/preset-env&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>webpack.config.js添加一个loader<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: /\.js$/,</span><br><span class="line">    loader: &apos;babel-loader&apos;,</span><br><span class="line">    exclude: /node_modules/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>exclude表示忽略node_modules文件夹下的文件，不用转码。</p>
+<p>现在我们来试下async await语法吧<br>src目录下新建util.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export default function getData() &#123;</span><br><span class="line">    return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">        resolve(&apos;ok&apos;);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>main.js 引入这个方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import getData from &apos;./util&apos;;</span><br><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line"></span><br><span class="line">import &apos;./style/common.scss&apos;;</span><br><span class="line"></span><br><span class="line">var app = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    message: &apos;Hello Vue!&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    async fetchData() &#123;</span><br><span class="line">      const data = await getData();</span><br><span class="line">      this.message = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created() &#123;</span><br><span class="line">    this.fetchData();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这时控制台会报一个错误regeneratorRuntime is not defined，因为浏览器不支持新版本的api,而babel只转换新的js语法，不转换新的API。上面的设置能够在打包时把es6转为es5,但不包括es6的一些新特征，比如promise。<br>解决上面问题的方法是：</p>
+<p>安装 @babel/polyfill；<br><code>npm i @babel/polyfill --save-dev</code></p>
+<p>但是babel-polyfill 主要有两个缺点：<br>使用 babel-polyfill 会导致打出来的包非常大，很多其实没有用到，对资源来说是一种浪费。<br>babel-polyfill 可能会污染全局变量，给很多类的原型链上都作了修改，这就有不可控的因素存在。</p>
+<p>基于这种原因Babel7: 新增了 babel-preset-env，设置</p>
+<blockquote>
+<p>“useBuiltIns”:”usage”这个参数值就可以实现按需加载 babel-polyfill 。</p>
+</blockquote>
+<p>全局引入 babel-polyfill，这样打包后的整个文件体积必然是会变大，通过设置 “useBuiltIns”:”usage”能够把 babel-polyfill 中你需要用到的部分提取出来，不需要的去除。</p>
+<blockquote>
+<p>useBuiltIns 参数说明：</p>
+<ul>
+<li>false: 不对 polyfills 做任何操作</li>
+<li>entry: 根据 target 中浏览器版本的支持，将 polyfills 拆分引入，仅引入有浏览器不支持的 polyfill</li>
+<li>usage(新)：检测代码中 ES6/7/8 等的使用情况，仅仅加载代码中用到的 polyfills</li>
+</ul>
+</blockquote>
+<ul>
+<li>配置.babelrc，实现polyfills的按需加载。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;presets&quot;: [[</span><br><span class="line">      &quot;@babel/preset-env&quot;,</span><br><span class="line">      &#123;</span><br><span class="line">          &quot;useBuiltIns&quot;: &quot;usage&quot;</span><br><span class="line">      &#125;</span><br><span class="line">  ]]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>此时重新npm run dev，可以发现正常运行了</p>
+<h4 id="引入图片资源"><a href="#引入图片资源" class="headerlink" title="引入图片资源"></a>引入图片资源</h4><p>把图片也当成模块引入<br><code>npm i file-loader --save-dev</code></p>
+<p>webpack.config.js添加一个loader<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: /\.(png|jpg|gif|svg)$/,</span><br><span class="line">    loader: &apos;file-loader&apos;,</span><br><span class="line">    options: &#123;</span><br><span class="line">        name: &apos;[name].[ext]?[hash]&apos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在src目录下新建一个img目录，存放一张图片logo.png<br>修改main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import url from &apos;./img/logo.png&apos;;</span><br><span class="line"></span><br><span class="line">Vue.component(&apos;my-component&apos;, &#123;</span><br><span class="line">  template: &apos;&lt;img :src=&quot;url&quot; /&gt;&apos;,</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      url,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">var app = new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    message: &apos;Hello Vue !&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    async fetchData() &#123;</span><br><span class="line">      const data = await getData();</span><br><span class="line">      this.message = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created() &#123;</span><br><span class="line">    this.fetchData()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>修改index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">        &#123;&#123;message&#125;&#125;</span><br><span class="line">        &lt;my-component/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;script src=&quot;/dist/build.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    </span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>可以看见，图片也被正确加载了</p>
+<h3 id="单文件组件"><a href="#单文件组件" class="headerlink" title="单文件组件"></a>单文件组件</h3><p>在前面的例子里，我们使用 Vue.component 来定义全局组件<br>在实际项目里，更推荐使用单文件组件。</p>
+<p>.vue 文件是一个自定义的文件类型，用类 HTML 语法描述一个 Vue 组件。每个 .vue 文件包含三种类型的顶级语言块 template、script 和 style，还允许添加可选的自定义块：</p>
+<ul>
+<li><p>template 模板块<br>一个SFC中最多一个&lt; template &gt;块；其内容将被提取为字符串传递给 vue-template-compiler ，然后 webpack 将其编译为 js 渲染函数，并最终注入到从<script> 导出的组件中；</p>
+</li>
+<li><p>script 脚本块<br>一个SFC最多一个 script 块，会作为一个模块封装。它的默认导出应该是一个 Vue.js 的组件选项对象，也可以导出由 Vue.extend() 创建的扩展对象。</p>
+</li>
+<li><p>style 样式块<br>一个 .vue 文件可以包含多个 style 标签，标签可以有 scoped 或者 module 属性。</p>
+</li>
+<li><p>自定义语言块<br>vue-loader 将会使用块名来查找对应的 loader 进行处理。</p>
+</li>
+</ul>
+<p>vue项目中使用vue-loader和vue-template-compiler来加载和就解析.vue。</p>
+<p>安装vue-loader和vue-template-compile。</p>
+<p><code>npm i vue-loader vue-template-compiler --save-dev</code></p>
+<p>Vue Loader 的配置和其它的 loader 不太一样。除了通过 rules 规则将 vue-loader 应用到 .vue 的文件上之外，还需要添加 Vue Loader Plugin 插件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const VueLoaderPlugin = require(&apos;vue-loader/lib/plugin&apos;)</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      // ... 其它规则</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.vue$/,</span><br><span class="line">        loader: &apos;vue-loader&apos;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    new VueLoaderPlugin()</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Vue Loader Plugin 的职责是将 .vue 文件中的语言块应用在相应的 rules 上。例如样式匹配 /.css$/的规则，那么它会应用到 .vue 文件里的 <style> 块，匹配 /.js$/的规则会应用到 .vue 文件里的 <script> 块。</p>
+<p>在src目录下新建一个App.vue<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;h1&gt;&#123;&#123; msg &#125;&#125;&lt;/h1&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; v-model=&quot;msg&quot;&gt;</span><br><span class="line">    &lt;img :src=&quot;url&quot;&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import url from &apos;./img/logo.png&apos;</span><br><span class="line">import getData from &apos;./util&apos;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;app&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      msg: &apos;Welcome to Your Vue.js&apos;,</span><br><span class="line">      url,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created() &#123;</span><br><span class="line">    this.fetchData();</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">     async fetchData() &#123;</span><br><span class="line">      const data = await getData();</span><br><span class="line">      this.msg = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style lang=&quot;scss&quot;&gt;</span><br><span class="line">#app &#123;</span><br><span class="line">  font-family: &quot;Avenir&quot;, Helvetica, Arial, sans-serif;</span><br><span class="line"></span><br><span class="line">  h1 &#123;</span><br><span class="line">    color: green;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure></p>
+<p>main.js<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;;</span><br><span class="line">import App from &apos;./App.vue&apos;;</span><br><span class="line"></span><br><span class="line">import &apos;./style/common.scss&apos;;</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  template: &apos;&lt;App/&gt;&apos;,</span><br><span class="line">  components: &#123; App &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;</span><br><span class="line">    &lt;script src=&quot;/dist/build.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>npm run dev，可以发现单文件被正确加载了。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vue的webpack.png" alt=""></p>
+<p>现在你可以基于这个简单的webpack环境。在vue框架下进行项目开发了。</p>
+</script></p></li></ul>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/08/vue项目搭建以及基本配置/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-RockySaaS生态云平台" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/06/RockySaaS生态云平台/">RockySaaS生态云平台</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/06/RockySaaS生态云平台/" class="archive-article-date">
+  	<time datetime="2020-06-06T09:25:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="九机白条金融后台管理系统"><a href="#九机白条金融后台管理系统" class="headerlink" title="九机白条金融后台管理系统"></a>九机白条金融后台管理系统</h2><p>技术栈: webpack+ elementUI + vue + vuex +axios + echarts.js<br>项目描述：这是针对九机白条业务而开发的一套完整的后台管理系统，处理白条申请收集到的信息审核。<br>项目职责：<br>  1、vuex状态管理存储登录的token，操作管理员的审核权限等级等全局数据。<br>  2、封装axios发起网络请求，获取数据并渲染页面上，展示了申请人的全方面信息并提供修改功能，以便审核人员进行相应的审核的操作。针对金融数据的敏感性还设置了信审单据的锁定和解锁功能。<br>  3、针对页面可复用的需求的功能，进行了组件化开发，例如多条件过滤搜索组件等<br>  4、项目还结合的echarts.js实现了金融业务数据的可视化。</p>
+<h2 id="RockySaaS生态云平台"><a href="#RockySaaS生态云平台" class="headerlink" title="RockySaaS生态云平台"></a>RockySaaS生态云平台</h2><p>2019.06 - 2020.03<br>技术栈：@vue/cli + ant-design-vue + vue + vuex + vue-router + axios<br>项目描述：RockySaaS——打造以“高收益，高产值，高效率，低成本”为核心的全生态四位一体SaaS云生态平台，聚合saas生态、深入业务场景，为中小企业提供一站式解决方案。覆盖营销推广，客户管理，财务管理，企业管理，办公协同，人力资源管理，供应链管理等全领域云服务，助力中小企业轻松上云。完整业务流，覆盖各个端口，业务前端提供saas云应用市场，以及面向开发者提供了开放平台；业务后台提供了基于对于saas云市场的管理和信息聚合的后台管理系统。<br>项目职责：<br>1，与设计师、产品合作，实现产品UI和交互方面的开发需求，确保产品具有优质的用户使用体验。<br>2，使用@vue/cli脚手架新建项目，并且根据项目需要自定义webpack配置<br>3，封装axios,统一处理请求和响应拦截器，对接后台接口时，简化业务逻辑，进行数据交互和页面渲染。<br>4，提取项目公共变量配置成全局config文件，使得打包发布过程动态配置域名环境<br>5，自定义Node Script，根据页面模版一键生成.vue文件并注册路由，简化开发流程。</p>
+<h2 id="微流——小程序自动建站"><a href="#微流——小程序自动建站" class="headerlink" title="微流——小程序自动建站"></a>微流——小程序自动建站</h2><p>后台：vue版和react版<br>小程序端：<br>移动端h5：<br>后端：</p>
+<h2 id="仿版小红书"><a href="#仿版小红书" class="headerlink" title="仿版小红书"></a>仿版小红书</h2><p>小程序端：<br>后端：</p>
+<h2 id="愿望星球"><a href="#愿望星球" class="headerlink" title="愿望星球"></a>愿望星球</h2><p>项目描述：基于h5实现的微信生态的互动类小游戏。许下新的一年愿望，开启我的愿望星球，愿望变成围绕在星球公转的尘埃，用户邀请好友助力即可加速进入到下一个星球公转，最终到达愿望星球，寓意愿望实现，并生成用户的专属的运势图，引导用户分享朋友圈。<br>项目职责：</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/06/RockySaaS生态云平台/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-基于vue的直播播放器实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1679,492 +1902,6 @@ Array.prototype[@@iterator]()
 
 
   
-    <article id="post-Vue-Draggable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/07/Vue-Draggable/">Vue.Draggable使用文档总结</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/07/Vue-Draggable/" class="archive-article-date">
-  	<time datetime="2020-05-07T09:59:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Draggable为基于Sortable.js的vue组件，用以实现拖拽功能。<br>关于Vue.Draggable详细信息可以查看<a href="https://github.com/SortableJS/Vue.Draggable" target="_blank" rel="noopener">github地址</a></p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
-<li>支持触摸设备</li>
-<li>支持拖拽和选择文本</li>
-<li>支持智能滚动</li>
-<li>支持不同列表之间的拖拽</li>
-<li>不以jQuery为基础</li>
-<li>和视图模型同步刷新</li>
-<li>和vue2的国度动画兼容</li>
-<li>支持撤销操作</li>
-<li>当需要完全控制时，可以抛出所有变化</li>
-<li>可以和现有的UI组件兼容</li>
-</ul>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>npm install vuedraggable</code></p>
-<h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p><code>import draggable from &#39;vuedraggable&#39;</code></p>
-<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><p>定义一个json串 list，实现它的拖拽排序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;list&quot;&gt;</span><br><span class="line">    &lt;transition-group&gt;</span><br><span class="line">        &lt;div v-for=&quot;element in list&quot; :key=&quot;element.id&quot;&gt;</span><br><span class="line">            &#123;&#123;element.name&#125;&#125;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/transition-group&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">value</td>
-<td style="text-align:center">用于实现拖拽的list，通常和内部v-for循环的数组为同一数组</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">list</td>
-<td style="text-align:center">效果同value的。和v-model不能共用</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">tag</td>
-<td style="text-align:center">draggable 标签在渲染后展现出来的标签类型</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">div</td>
-</tr>
-<tr>
-<td style="text-align:center">options</td>
-<td style="text-align:center">draggable 列表配置项</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">emptyInsertThreshold</td>
-<td style="text-align:center">拖动时，鼠标必须与空的可排序对象之间的距离</td>
-<td style="text-align:center">Number</td>
-<td style="text-align:center">5</td>
-</tr>
-<tr>
-<td style="text-align:center">clone</td>
-<td style="text-align:center">返回值为true时克隆，可以理解为正常的拖拽变成了复制。当pull:’clone时的拖拽的回调函数’</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">无处理</td>
-</tr>
-<tr>
-<td style="text-align:center">move</td>
-<td style="text-align:center">如果不为空，这个函数将以类似于Sortable onMove回调的方式调用。返回false将取消拖动操作。</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">componentData</td>
-<td style="text-align:center">用来结合UI组件的，可以理解为代理了UI组件的定制信息</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-</tbody>
-</table>
-<h3 id="options配置项"><a href="#options配置项" class="headerlink" title="options配置项"></a>options配置项</h3><p>| 参数    | 说明    | 类型 |Draggable为基于Sortable.js的vue组件，用以实现拖拽功能。<br>关于Vue.Draggable详细信息可以查看<a href="https://github.com/SortableJS/Vue.Draggable" target="_blank" rel="noopener">github地址</a></p>
-<h3 id="特性-1"><a href="#特性-1" class="headerlink" title="特性"></a>特性</h3><ul>
-<li>支持触摸设备</li>
-<li>支持拖拽和选择文本</li>
-<li>支持智能滚动</li>
-<li>支持不同列表之间的拖拽</li>
-<li>不以jQuery为基础</li>
-<li>和视图模型同步刷新</li>
-<li>和vue2的国度动画兼容</li>
-<li>支持撤销操作</li>
-<li>当需要完全控制时，可以抛出所有变化</li>
-<li>可以和现有的UI组件兼容</li>
-</ul>
-<h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><p><code>npm install vuedraggable</code></p>
-<h3 id="引入-1"><a href="#引入-1" class="headerlink" title="引入"></a>引入</h3><p><code>import draggable from &#39;vuedraggable&#39;</code></p>
-<h3 id="基础用法-1"><a href="#基础用法-1" class="headerlink" title="基础用法"></a>基础用法</h3><p>定义一个json串 list，实现它的拖拽排序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;list&quot;&gt;</span><br><span class="line">    &lt;transition-group&gt;</span><br><span class="line">        &lt;div v-for=&quot;element in list&quot; :key=&quot;element.id&quot;&gt;</span><br><span class="line">            &#123;&#123;element.name&#125;&#125;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/transition-group&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">value</td>
-<td style="text-align:center">用于实现拖拽的list，通常和内部v-for循环的数组为同一数组</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">list</td>
-<td style="text-align:center">效果同value的。和v-model不能共用</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">tag</td>
-<td style="text-align:center">draggable 标签在渲染后展现出来的标签类型</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">div</td>
-</tr>
-<tr>
-<td style="text-align:center">options</td>
-<td style="text-align:center">draggable 列表配置项</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">emptyInsertThreshold</td>
-<td style="text-align:center">拖动时，鼠标必须与空的可排序对象之间的距离</td>
-<td style="text-align:center">Number</td>
-<td style="text-align:center">5</td>
-</tr>
-<tr>
-<td style="text-align:center">clone</td>
-<td style="text-align:center">返回值为true时克隆，可以理解为正常的拖拽变成了复制。当pull:’clone时的拖拽的回调函数’</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">无处理</td>
-</tr>
-<tr>
-<td style="text-align:center">move</td>
-<td style="text-align:center">如果不为空，这个函数将以类似于Sortable onMove回调的方式调用。返回false将取消拖动操作。</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">componentData</td>
-<td style="text-align:center">用来结合UI组件的，可以理解为代理了UI组件的定制信息</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>注意：vuedraggable新版本废弃了options属性，建议使用v-bind属性作为配置项</p>
-</blockquote>
-<h3 id="options配置项-1"><a href="#options配置项-1" class="headerlink" title="options配置项"></a>options配置项</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">group</td>
-<td style="text-align:center">用于分组，同一组的不同list可以相互拖动</td>
-<td style="text-align:center">String/Array</td>
-</tr>
-<tr>
-<td style="text-align:center">sort</td>
-<td style="text-align:center">定义是否可以拖拽</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">delay</td>
-<td style="text-align:center">定义鼠标选中列表单元可以开始拖动的延迟时间</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td style="text-align:center">disabled</td>
-<td style="text-align:center">定义是否此sortable对象是否可用</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">animation</td>
-<td style="text-align:center">动画时间 单位:ms</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td style="text-align:center">handle</td>
-<td style="text-align:center">使列表单元中符合选择器的元素成为拖动的手柄，只有按住拖动手柄才能使列表单元进行拖动</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">filter</td>
-<td style="text-align:center">定义哪些列表单元不能进行拖放，可设置为多个选择器，中间用“，”分隔</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">preventOnFilter</td>
-<td style="text-align:center">当拖动filter时是否触发event.preventDefault() 默认触发</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">draggable</td>
-<td style="text-align:center">定义哪些列表单元可以进行拖放</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">ghostClass</td>
-<td style="text-align:center">当拖动列表单元时会生成一个副本作为影子单元来模拟被拖动单元排序的情况，此配置项就是来给这个影子单元添加一个class</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">chosenClass</td>
-<td style="text-align:center">目标被选中时添加</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">dragClass</td>
-<td style="text-align:center">目标拖动过程中添加</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">forceFallback</td>
-<td style="text-align:center">如果设置为true时，将不使用原生的html5的拖放，可以修改一些拖放中元素的样式等</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">fallbackClass：</td>
-<td style="text-align:center">当forceFallback设置为true时，拖放过程中鼠标附着单元的样式</td>
-<td style="text-align:center">String</td>
-</tr>
-<tr>
-<td style="text-align:center">dataIdAttr</td>
-<td style="text-align:center">data-id</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">scroll</td>
-<td style="text-align:center">当排序的容器是个可滚动的区域，拖放可以引起区域滚动</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">scrollFn</td>
-<td style="text-align:center">用于自定义滚动条的适配</td>
-<td style="text-align:center">Function(offsetX, offsetY, originalEvent, touchEvt, hoverTargetEl)</td>
-</tr>
-<tr>
-<td style="text-align:center">ScrollSensitivity</td>
-<td style="text-align:center">就是鼠标靠近边缘多远开始滚动默认30</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td style="text-align:center">scrollSpeed</td>
-<td style="text-align:center">滚动速度</td>
-<td style="text-align:center">Number</td>
-</tr>
-</tbody>
-</table>
-<h3 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">回调参数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">start</td>
-<td style="text-align:center">开始拖动时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">add</td>
-<td style="text-align:center">添加单元时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">remove</td>
-<td style="text-align:center">单元被移动到另一个列表时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">update</td>
-<td style="text-align:center">排序发生变化时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">end</td>
-<td style="text-align:center">拖动结束时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">choose</td>
-<td style="text-align:center">选择单元时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">sort</td>
-<td style="text-align:center">排序发生变化时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">filter</td>
-<td style="text-align:center">尝试选择一个被filter过滤的单元的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">clone</td>
-<td style="text-align:center">clone时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-</tbody>
-</table>
-<h3 id="插槽"><a href="#插槽" class="headerlink" title="插槽"></a>插槽</h3><blockquote>
-<p>页眉或页脚插槽都不能与 tarnstion-group 一起使用。</p>
-</blockquote>
-<h4 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h4><p>使用标题插槽在vuedraggable组件中添加不可拖动的元素。它应该与draggable选项一起使用来标记draggable元素。请注意，无论标题槽在模板中的位置如何，它总是被添加到默认槽之前。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;myArray&quot; draggable=&quot;.item&quot;&gt;</span><br><span class="line">    &lt;div v-for=&quot;element in myArray&quot; :key=&quot;element.id&quot; class=&quot;item&quot;&gt;</span><br><span class="line">        &#123;&#123;element.name&#125;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;button slot=&quot;header&quot; @click=&quot;addPeople&quot;&gt;Add&lt;/button&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-<h4 id="Footer"><a href="#Footer" class="headerlink" title="Footer"></a>Footer</h4><p>使用页脚槽在vuedraggable组件中添加不可拖动的元素。它应该与draggable选项一起使用，以标记draggable元素。请注意，无论页脚槽在模板中的位置如何，它都将始终添加到默认槽之后。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;myArray&quot; draggable=&quot;.item&quot;&gt;</span><br><span class="line">    &lt;div v-for=&quot;element in myArray&quot; :key=&quot;element.id&quot; class=&quot;item&quot;&gt;</span><br><span class="line">        &#123;&#123;element.name&#125;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;button slot=&quot;footer&quot; @click=&quot;addPeople&quot;&gt;Add&lt;/button&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/07/Vue-Draggable/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-动手撸一个页面生成器——搭建后台" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/07/动手撸一个页面生成器——搭建后台/">动手撸一个页面生成器——搭建后台</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/07/动手撸一个页面生成器——搭建后台/" class="archive-article-date">
-  	<time datetime="2020-05-07T03:37:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="梳理dataJson数据流"><a href="#梳理dataJson数据流" class="headerlink" title="梳理dataJson数据流"></a>梳理dataJson数据流</h2><p>页面生成后台主要是视图驱动模型，所以在开发开发第一步需要先定义好数据格式。</p>
-<p>1、一个网站包含几个页面，一个页面包含几个组件。可以看出这是一个树形结构<br>2、数据监听以及响应，项目中站点、页面以及组件三个概念的数据需要相互牵制并保持同步，网站数据填充是从顶层向下浸润，网站数据变动是从底层像顶层发布更新。数据流变动如下图所示：</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/datajson.png" width="600" div="" align="center"></p>
-<p>3、编写datajson,分别理清site、page、以及components相关属性</p>
-<p>用 JSON 格式可以把它表示成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;id&quot;:10,</span><br><span class="line">    &quot;name&quot;:&quot;测试公司&quot;,</span><br><span class="line">    &quot;pages&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pgId&quot;:4,</span><br><span class="line">            &quot;name&quot;:&quot;新建页面&quot;,</span><br><span class="line">            &quot;isIndex&quot;:1,</span><br><span class="line">            &quot;content&quot;:&#123;</span><br><span class="line">                &quot;name&quot;:&quot;新建页面&quot;,</span><br><span class="line">                &quot;background&quot;:&quot;#F1E5E5&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;components&quot;:[</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;type&quot;:&quot;0&quot;,</span><br><span class="line">                    &quot;name&quot;:&quot;TextCom&quot;,</span><br><span class="line">                    &quot;desc&quot;:&quot;文本&quot;,</span><br><span class="line">                    &quot;content&quot;:&#123;</span><br><span class="line">                        &quot;text&quot;:&quot;请输入文本内容发发发&quot;,</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;style&quot;:&#123;&#125;,</span><br><span class="line">                    &quot;event&quot;:&#123;&#125;</span><br><span class="line">                &#125;,</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>综上，一个网站可以完整的表示为一个树形 JSON。该树中包含了站点下所有页面和页面下所有组件内容和配置。</p>
-<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="Vue-Draggable"><a href="#Vue-Draggable" class="headerlink" title="Vue.Draggable"></a>Vue.Draggable</h3><p>在动手实现编写页面和组件之前，需要了解vuedraggable作为前置知识</p>
-<p>Draggable为基于Sortable.js的vue组件，用以实现拖拽功能。<br>对vuedraggable插件api还不熟悉的童鞋可以参考我的另一篇文章<a href="https://juejin.im/post/5eb3f9ab5188256d8a2284c8" target="_blank" rel="noopener">Vue.Draggable使用文档总结</a></p>
-<h2 id="开撸"><a href="#开撸" class="headerlink" title="开撸"></a>开撸</h2><h3 id="项目准备"><a href="#项目准备" class="headerlink" title="项目准备"></a>项目准备</h3><p>1、vue-cli<br>2、vuedraggable<br>3、sortablejs<br>4、vuex<br>5、element-ui或者antd-vue,可以自已选择ui框架</p>
-<blockquote>
-<p>vue-cli是vue官方推荐的脚手架还很适合有vue基础的人使用。<br>在这个项目中由于用到了拖拽元素就为了方便就使用了vuedraggable，vuedraggable是基于sortablejs的封装所以也要引入。<br>由于组件中会存在大量的数据所以为了数据的统一管理，这里就使用了vuex。<br>element-ui/antd-vue这个我就不解释了，为了好看点就引入。</p>
-</blockquote>
-<h3 id="vuexjs-状态管理"><a href="#vuexjs-状态管理" class="headerlink" title="vuexjs 状态管理"></a>vuexjs 状态管理</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vuex.png" width="800"></p>
-<h3 id="组件分区"><a href="#组件分区" class="headerlink" title="组件分区"></a>组件分区</h3><p>可以分为三块区域：<br>1、左侧——widget<br>2、中间——页面组件<br>3、右侧——编辑区</p>
-<h4 id="左侧可拖动的组件"><a href="#左侧可拖动的组件" class="headerlink" title="左侧可拖动的组件"></a>左侧可拖动的组件</h4><p>左侧的可拖拽widgets被包裹在一组draggable拖拽组件中，要实现的效果是拖动左侧的widget到中间的页面生成区，所以两个draggable需要设置相同的group名称，需要注意的是左侧draggable只允许拖拽不允许拖放，pull时需要克隆一个元素在中间的draggable组件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable</span><br><span class="line">    class=&quot;list-group&quot;</span><br><span class="line">    :list=&quot;list1&quot;</span><br><span class="line">    :group=&quot;&#123; name: &apos;widgets&apos;, put: false, pull: &apos;clone&apos; &#125;&quot;</span><br><span class="line">    v-bind=&quot;dragOptionsLeft&quot;</span><br><span class="line">  &gt;</span><br><span class="line">    &lt;transition-group type=&quot;transition&quot; :name=&quot;&apos;flip-list&apos;&quot;&gt;</span><br><span class="line">      &lt;div</span><br><span class="line">        class=&quot;dragType&quot;</span><br><span class="line">        id=&quot;dragItem&quot;</span><br><span class="line">        v-for=&quot;(element, index) in list1&quot;</span><br><span class="line">        :key=&quot;element.name + index&quot;</span><br><span class="line">        :type=&quot;element.type&quot;</span><br><span class="line">        :name=&quot;element.name&quot;</span><br><span class="line">        :desc=&quot;element.desc&quot;</span><br><span class="line">        :version=&apos;element.version&apos;</span><br><span class="line">      &gt;</span><br><span class="line">        &lt;img</span><br><span class="line">          :src=&quot;</span><br><span class="line">            require(`../assets/img/decoration/$&#123;element.name.split(&apos;Com&apos;)[0]&#125;Test.png`)</span><br><span class="line">          &quot;</span><br><span class="line">          style=&quot;width:32px;height:32px;display:block;margin:auto;&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">        &lt;p&gt;&#123;&#123; element.desc &#125;&#125;&lt;/p&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/transition-group&gt;</span><br><span class="line">  &lt;/draggable&gt;</span><br><span class="line">...</span><br><span class="line">data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">        list1: [</span><br><span class="line">            &#123; name: &quot;TextCom&quot;, type: 0, desc: &quot;文本&quot;, version: &quot;v1.0.0&quot; &#125;,</span><br><span class="line">            &#123; name: &quot;PicCom&quot;, type: 1, desc: &quot;图片&quot;, version: &quot;v1.0.0&quot; &#125;,</span><br><span class="line">            &#123; name: &quot;BtnCom&quot;, type: 2, desc: &quot;按钮&quot;, version: &quot;v1.0.0&quot; &#125;,</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, </span><br><span class="line">computed:&#123;</span><br><span class="line">    dragOptionsLeft() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            animation: 300,           // 动画过渡时间</span><br><span class="line">            ghostClass: &quot;ghostLeft&quot;,  // 给影子单元添加一个class</span><br><span class="line">            chosenClass: &quot;chosen&quot;,    // 目标被选中时添加class</span><br><span class="line">            dragClass: &quot;drag&quot;         // 目标被拖动时添加class</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
-<h4 id="中间的页面生成区"><a href="#中间的页面生成区" class="headerlink" title="中间的页面生成区"></a>中间的页面生成区</h4><p>这个区域需要再包裹一个draggable拖放组件，用来接受从左侧拖放过来的widget，所以需要设置和左侧相同的group名称<br>注意这里用到了vue动态组件，相关概念不清楚可以区官方文档关于<a href="https://cn.vuejs.org/v2/guide/components-dynamic-async.html" target="_blank" rel="noopener">动态组件</a>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div :style=&quot;&#123;background:pages[pageIndex].content.background&#125;&quot; class=&quot;phoneShow&quot;&gt; // 设置页面背景色</span><br><span class="line">      &lt;draggable</span><br><span class="line">        class=&quot;list-group&quot;</span><br><span class="line">        :group=&quot;&#123; name: &apos;widgets&apos; &#125;&quot;</span><br><span class="line">        v-bind=&quot;dragOptionsMiddle&quot;</span><br><span class="line">        :emptyInsertThreshold=&quot;800&quot;</span><br><span class="line">        @add=&quot;onAdd&quot;</span><br><span class="line">        @sort=&quot;onSort&quot;</span><br><span class="line">      &gt;</span><br><span class="line">        &lt;transition-group type=&quot;transition&quot; :name=&quot;&apos;flip-list&apos;&quot;&gt;</span><br><span class="line">          &lt;div </span><br><span class="line">            v-for=&quot;(appUi,index) in components&quot;</span><br><span class="line">            :is=&quot;appUi.name&quot;</span><br><span class="line">            :content=&quot;appUi.content&quot;</span><br><span class="line">            :oStyle=&quot;appUi.style&quot;</span><br><span class="line">            :aIndex=&quot;index&quot;</span><br><span class="line">            @click.native=&quot;getIndex(index)&quot;</span><br><span class="line">            </span><br><span class="line">            :key=&quot;appUi.content.code&quot;&gt;&lt;/div&gt;</span><br><span class="line">        &lt;/transition-group&gt;</span><br><span class="line">      &lt;/draggable&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    ...</span><br><span class="line">&lt;/template&gt; </span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState, mapMutations &#125; from &apos;vuex&apos;;</span><br><span class="line">import draggable from &quot;vuedraggable&quot;;</span><br><span class="line">import BtnCom from &apos;@/components/Widgets/Btn.vue&apos;  // 这里导入widget对应的组件</span><br><span class="line">import TextCom from &apos;@/components/Widgets/Text.vue&apos;</span><br><span class="line">import PicCom from &apos;@/components/Widgets/Pic.vue&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  components: &#123;draggable, BtnCom, TextCom, PicCom&#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      pages: state=&gt;state.site.pages,  // 页面</span><br><span class="line">      pageIndex:state=&gt;state.site.pageIndex,  // 激活的pageIndex</span><br><span class="line">      components:state=&gt;state.site.components, // 组件</span><br><span class="line"></span><br><span class="line">    &#125;),</span><br><span class="line">    dragOptionsMiddle() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        animation: 300,</span><br><span class="line">        ghostClass: &quot;ghost&quot;,         // 给影子单元添加一个class</span><br><span class="line">        chosenClass: &quot;chosenMiddle&quot;, // 目标被选中时添加class</span><br><span class="line">        dragClass: &quot;dragMiddle&quot;      // 目标被拖动时添加class</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onAdd (res) &#123;</span><br><span class="line">      this.$store.dispatch(&apos;site/addCp&apos;,&#123;components: this.components,res: res&#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    getIndex(index)&#123;</span><br><span class="line">      this.$store.commit(&apos;site/setCommon&apos;,&#123;index: index, flag: true&#125;);</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    onSort(res)&#123;</span><br><span class="line">      if (res.from === res.to)&#123;</span><br><span class="line">        this.$store.dispatch(&apos;site/sortCp&apos;,res)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<h4 id="右侧组件编辑区"><a href="#右侧组件编辑区" class="headerlink" title="右侧组件编辑区"></a>右侧组件编辑区</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">  &lt;div </span><br><span class="line">    v-for=&quot;(appUi,index) in components&quot;</span><br><span class="line">    :is=&quot;appUi.name.split(&apos;Com&apos;)[0]+&apos;Edit&apos;&quot;    // 根据component的name属性加载对应的edit组件</span><br><span class="line">    :content=&quot;appUi.content&quot;</span><br><span class="line">    :oStyle=&quot;appUi.style&quot;</span><br><span class="line">    :editPartShow=&quot;appUi.editPartShow&quot;</span><br><span class="line">    :aIndex=&quot;index&quot;</span><br><span class="line">    :currentIndex=&quot;editIndex&quot;</span><br><span class="line">    :key=&quot;appUi.content.code&quot;</span><br><span class="line">    :activeTab=&quot;activeTab&quot;</span><br><span class="line">    @changeTab=&quot;toggleTab&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import &#123; mapState, mapMutations &#125; from &apos;vuex&apos;;</span><br><span class="line">  import BtnEdit from &quot;@/components/Editors/BtnEdit.vue&quot;;   // 导入有三种widget的edit组件</span><br><span class="line">  import TextEdit from &quot;@/components/Editors/TextEdit.vue&quot;;</span><br><span class="line">  import PicEdit from &apos;@/components/Editors/PicEdit.vue&apos;</span><br><span class="line">  </span><br><span class="line">  export default &#123;</span><br><span class="line">    name: &apos;BaseEdit&apos;,</span><br><span class="line">    components: &#123;</span><br><span class="line">      BtnEdit,</span><br><span class="line">      TextEdit,</span><br><span class="line">      PicEdit</span><br><span class="line">    &#125;,</span><br><span class="line">    </span><br><span class="line">    computed: &#123;</span><br><span class="line">      ...mapState(&#123;</span><br><span class="line">        pages: state=&gt;state.site.pages,</span><br><span class="line">        pageIndex: state=&gt;state.site.pageIndex,</span><br><span class="line">        editIndex:state=&gt;state.site.editIndex, </span><br><span class="line">        components:state=&gt;state.site.components, </span><br><span class="line">        isComponent:state=&gt;state.site.isComponent,</span><br><span class="line">        activeTab: state=&gt;state.site.activeTab</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      handleInput(item, value) &#123;</span><br><span class="line">        this.setStyle(value+item.suffix, item.style)</span><br><span class="line">      &#125;,</span><br><span class="line">      setStyle(value, style)&#123;</span><br><span class="line">        this.$set(this.components[this.editIndex].style, style, value);</span><br><span class="line">      &#125;,</span><br><span class="line">      toggleTab(name) &#123;</span><br><span class="line">        // this.activeName = name</span><br><span class="line">        this.$store.commit(&apos;site/setActiveTab&apos;,name)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>接下里我们需要实现动态导入的widget组件以及widget对应的编辑组件实现，这里是实现页面生成的核心，需要widgetEdit组件控制widget组件，实现widget属性的联动，这里以Text组件为例：</p>
-<h4 id="TextCom组件"><a href="#TextCom组件" class="headerlink" title="TextCom组件"></a>TextCom组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;widget&quot;&gt;</span><br><span class="line">    &lt;div </span><br><span class="line">      class=&quot;text-box ui-sortable relative textActive&quot;</span><br><span class="line">      :data-code=&quot;content.code&quot;</span><br><span class="line">      :class=&quot;[</span><br><span class="line">        aIndex == editIndex ? &apos;active&apos; : &apos;&apos;,</span><br><span class="line">      ]&quot;</span><br><span class="line">      :style=&quot;oStyle&quot;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;p </span><br><span class="line">        class=&quot;showtext&quot;</span><br><span class="line">        &gt;</span><br><span class="line">       &#123;&#123; content.text &#125;&#125;</span><br><span class="line">      &lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    </span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">name: &apos;TextCom&apos;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    content: Object,</span><br><span class="line">    oStyle: Object,</span><br><span class="line">    aIndex: Number</span><br><span class="line">  &#125;,</span><br><span class="line">  data()&#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      delFlag: -1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      editIndex: state=&gt;state.site.editIndex</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<h4 id="TexteEdit-vue"><a href="#TexteEdit-vue" class="headerlink" title="TexteEdit.vue"></a>TexteEdit.vue</h4><p>TexteEdit组件从父组件接受props参数oStyle作为填充的样式，属性的更改不能直接修改父组件，所以这里使用vue.$set方法直接设置vuex 中存储的当前widget组件字段。实现组件字段的动态响应。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;edit-wrapper&quot; v-if=&quot;aIndex === currentIndex&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;text-edit&quot; :data-code=&quot;content.code&quot; v-if=&quot;activeTab===&apos;first&apos;&quot; @click=&quot;handleTabChange(&apos;first&apos;)&quot;&gt;</span><br><span class="line">      &lt;div class=&quot;input-area&quot;&gt;</span><br><span class="line">        &lt;a-input</span><br><span class="line">          type=&quot;textarea&quot;</span><br><span class="line">          :autoSize=&quot;&#123; minRows: 4, maxRows: 8 &#125;&quot;</span><br><span class="line">          placeholder=&quot;请输入内容&quot;</span><br><span class="line">          v-model=&quot;content.text&quot;</span><br><span class="line">        &gt;&lt;/a-input&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      &lt;!-- 字体样式设置 --&gt;</span><br><span class="line">      &lt;div class=&quot;fontAttribute&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;firstLine&quot;&gt;</span><br><span class="line">          &lt;ul class=&quot;fontSetting1&quot;&gt;</span><br><span class="line">            &lt;li style=&quot;width:50px&quot;&gt;  // 修改字体大小</span><br><span class="line">              &lt;a-dropdown&gt;</span><br><span class="line">                &lt;span class=&quot;a-dropdown-link&quot;&gt;</span><br><span class="line">                  &#123;&#123; oStyle[&quot;font-size&quot;] &#125;&#125;</span><br><span class="line">                  &lt;a-icon type=&quot;down&quot; /&gt;</span><br><span class="line">                &lt;/span&gt;</span><br><span class="line">                &lt;a-menu slot=&quot;overlay&quot; @click=&quot;handleCommand&quot;&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;16px&quot;&gt;16px&lt;/a-menu-item&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;14px&quot;&gt;14px&lt;/a-menu-item&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;12px&quot;&gt;12px&lt;/a-menu-item&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;10px&quot;&gt;10px&lt;/a-menu-item&gt;</span><br><span class="line">                &lt;/a-menu&gt;</span><br><span class="line">              &lt;/a-dropdown&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;font-weight&apos;, &apos;bold&apos;, &apos;normal&apos;)&quot;&gt;  // 切换字体粗细</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A3.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;font-style&apos;, &apos;italic&apos;, &apos;normal&apos;)&quot;&gt;  // 切换字体斜体</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A4.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">          &lt;/ul&gt;</span><br><span class="line">          &lt;ul class=&quot;fontSetting2&quot;&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;text-decoration&apos;, &apos;line-through&apos;, &apos;none&apos;)&quot;&gt;  // 切换字体中划线</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A5.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;text-decoration&apos;, &apos;underline&apos;, &apos;none&apos;)&quot;&gt;  // 切换字体下划线</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A6.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">          &lt;/ul&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div v-if=&quot;activeTab===&apos;second&apos;&quot; @click=&quot;handleTabChange(&apos;second&apos;)&quot;&gt;</span><br><span class="line">      &lt;!-- 边距样式设置 --&gt;</span><br><span class="line">      &lt;div class=&quot;edgeSetting&quot;&gt;</span><br><span class="line">        &lt;div&gt;边距&lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;edge&quot;&gt;</span><br><span class="line">          &lt;span class=&quot;demonstration&quot;&gt;上下边距&lt;/span&gt;</span><br><span class="line">          &lt;a-slider</span><br><span class="line">            :max=&quot;30&quot;</span><br><span class="line">            class=&quot;slider&quot;</span><br><span class="line">            :default-value=&quot;parseInt((oStyle[&apos;padding-top&apos;] || &apos;0px&apos;).split(&apos;px&apos;)[0])&quot;</span><br><span class="line">            @change=&quot;sliderTop&quot;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;div class=&quot;edgeShow&quot;&gt;&#123;&#123; oStyle[&quot;padding-top&quot;] &#125;&#125;&lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;edge&quot;&gt;</span><br><span class="line">          &lt;span class=&quot;demonstration&quot;&gt;左右边距&lt;/span&gt;</span><br><span class="line">          &lt;a-slider</span><br><span class="line">            :max=&quot;30&quot;</span><br><span class="line">            class=&quot;slider&quot;</span><br><span class="line">            :default-value=&quot;parseInt((oStyle[&apos;padding-left&apos;] || &apos;0px&apos;).split(&apos;px&apos;)[0])&quot;</span><br><span class="line">            @change=&quot;sliderLeft&quot;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;div class=&quot;edgeShow&quot;&gt;&#123;&#123; oStyle[&quot;padding-left&quot;] &#125;&#125;&lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;TextEditor&apos;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    content: Object,</span><br><span class="line">    oStyle: Object,</span><br><span class="line">    aIndex: Number,</span><br><span class="line">    currentIndex: Number,</span><br><span class="line">    activeTab: String</span><br><span class="line">  &#125;,</span><br><span class="line">  data()&#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      centered: require(&quot;../../assets/img/decoration/A9.png&quot;),</span><br><span class="line">      centeredChecked: require(&quot;../../assets/img/decoration/B9.png&quot;),</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      editIndex: state=&gt;state.site.editIndex,</span><br><span class="line">      components: state=&gt;state.site.components,</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleTabChange(name)&#123;</span><br><span class="line">      this.$emit(&apos;changeTab&apos;, name)</span><br><span class="line">    &#125;,</span><br><span class="line">    handleCommand(&#123; key &#125;) &#123;    // 字体大小</span><br><span class="line">      this.setStyle(key, &apos;font-size&apos;)  </span><br><span class="line">    &#125;,</span><br><span class="line">    toggleAttrValue(attr, value, antValue) &#123;  // 切换字体属性</span><br><span class="line">      let newVal</span><br><span class="line">      if (this.oStyle[attr] == antValue)&#123;</span><br><span class="line">        newVal = value</span><br><span class="line">      &#125;else &#123;</span><br><span class="line">        newVal = antValue</span><br><span class="line">      &#125;</span><br><span class="line">      this.setStyle(newVal, attr)</span><br><span class="line">    &#125;,</span><br><span class="line">    sliderTop(value) &#123;     // 上下边距</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-top&apos;)</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-bottom&apos;)</span><br><span class="line">    &#125;,</span><br><span class="line">    sliderLeft(value)&#123;   // 左右边距</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-left&apos;)</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-right&apos;)</span><br><span class="line">    &#125;,</span><br><span class="line">    setStyle(value, style)&#123;  // vue.$set方法直接设置vuex 中存储的当前widget组件字段</span><br><span class="line">      this.$set(this.components[this.editIndex].style, style, value);    </span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p><img src="https://s31.aconvert.com/convert/p3r68-cdx67/mzt9i-7lofg.gif" alt=""></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>说一下编写组件的基本流程</p>
-<p>1、左侧编辑区添加需要拖拽生成的widgets</p>
-<p>2、vuex 添加组件创建时需要初始化的数据</p>
-<p>3、写xxx.vue组件（在mainView视图中显示）</p>
-<p>4、写xxxEdit.vue组件（组件的特有编辑器）</p>
-<p>最后把源码附上 <a href="https://gitee.com/taoyouyou/site-web" target="_blank" rel="noopener">源码地址</a></p>
-<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># install dependencies</span></span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line"><span class="comment"># serve with hot reload at localhost:8080</span></span><br><span class="line">npm run dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># build for production with minification</span></span><br><span class="line">npm run build</span><br><span class="line"></span><br><span class="line"><span class="comment"># build for production and view the bundle analyzer report</span></span><br><span class="line">npm run build --report</span><br></pre></td></tr></table></figure>
-<p>For a detailed explanation on how things work, check out the <a href="http://vuejs-templates.github.io/webpack/" target="_blank" rel="noopener">guide</a> and <a href="http://vuejs.github.io/vue-loader" target="_blank" rel="noopener">docs for vue-loader</a>.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/07/动手撸一个页面生成器——搭建后台/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -2262,11 +1999,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2278,27 +2035,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color1">https</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2330,15 +2075,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2354,15 +2091,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
               </li>
              
               <li class="article-tag-list-item">
