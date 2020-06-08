@@ -156,371 +156,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-node+puppeteer定时发送微博" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/20/node+puppeteer定时发送微博/">node+puppeteer定时发送微博</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/20/node+puppeteer定时发送微博/" class="archive-article-date">
-  	<time datetime="2019-12-20T07:04:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="实现功能：登录微博自动转发特定用户的下的第一条微博"><a href="#实现功能：登录微博自动转发特定用户的下的第一条微博" class="headerlink" title="实现功能：登录微博自动转发特定用户的下的第一条微博"></a>实现功能：登录微博自动转发特定用户的下的第一条微博</h2><h2 id="实现步骤："><a href="#实现步骤：" class="headerlink" title="实现步骤："></a>实现步骤：</h2><h3 id="1-初始化项目"><a href="#1-初始化项目" class="headerlink" title="1. 初始化项目"></a>1. 初始化项目</h3><p>你需要安装版本 8 以上的 Node，你可以在<a href="https://nodejs.org/en/" target="_blank" rel="noopener">这里</a>找到安装方法。确保选择Current版本，因为它是 8+。 安装完node后新建一个项目文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir Project</span><br><span class="line">cd Project</span><br></pre></td></tr></table></figure></p>
-<p>初始化一个node项目，在交互式命令中输入依次项目名、版本号、描述…等信息。直接enter键保持默认选项即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">MacdeMacBook-Pro:Project mac$ npm init</span><br><span class="line">...</span><br><span class="line">package name: (project) test</span><br><span class="line">version: (1.0.0) </span><br><span class="line">description: </span><br><span class="line">entry point: (index.js) </span><br><span class="line">test command: </span><br><span class="line">git repository: </span><br><span class="line">keywords: </span><br><span class="line">author: </span><br><span class="line">license: (ISC) </span><br><span class="line">About to write to /Users/mac/Project/package.json:</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;name&quot;: &quot;test&quot;,</span><br><span class="line">&quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">&quot;description&quot;: &quot;&quot;,</span><br><span class="line">&quot;main&quot;: &quot;index.js&quot;,</span><br><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;author&quot;: &quot;&quot;,</span><br><span class="line">&quot;license&quot;: &quot;ISC&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Is this OK? (yes)</span><br></pre></td></tr></table></figure></p>
-<p>这是会生成一个如下目录结构的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Project</span><br><span class="line">    - index.js  // 入口文件</span><br><span class="line">    - package.json</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-安装依赖"><a href="#2-安装依赖" class="headerlink" title="2. 安装依赖"></a>2. 安装依赖</h3><h4 id="puppeteer"><a href="#puppeteer" class="headerlink" title="puppeteer"></a>puppeteer</h4><p>Puppeteer(中文翻译”木偶”) Google Chrome 团队官方的无界面（Headless）Chrome 工具。也可以通过配置使用完整的（非无头）Chrome. 使用 Puppeteer，相当于同时具有 Linux 和 Chrome 双端的操作能力，在浏览器中手动完成的大部分事情都可以使用 Puppeteer 完成，应用场景可谓非常之多。如：</p>
-<ul>
-<li>从网站抓取你需要的内容。</li>
-<li>模拟人为操作自动表单提交，UI测试，键盘输入等。</li>
-<li>创建一个最新的自动化测试环境。使用最新的JavaScript和浏览器功能，直接在最新版本的Chrome中运行测试。</li>
-<li>捕获您的网站的时间线跟踪，以帮助诊断性能问题。   </li>
-</ul>
-<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p><code>npm i puppeteer -S -D</code></p>
-<h5 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h5><p>puppeteer的具体用法可以参考<a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/#/" target="_blank" rel="noopener">puppeteer中文文档</a></p>
-<h4 id="node-schedule"><a href="#node-schedule" class="headerlink" title="node-schedule"></a>node-schedule</h4><p>Node Schedule是用于Node.js下的灵活的cron式和非cron式任务调度程序。 它允许您使用可选的重复规则来安排任务（任意函数）在特定日期执行。    </p>
-<h5 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h5><p><code>npm i node-schedule -S -D</code></p>
-<h5 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h5><ol>
-<li>Cron风格定时器<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"></span><br><span class="line">const  scheduleCronstyle = ()=&gt;&#123;</span><br><span class="line">  //每分钟的第30秒定时执行一次:</span><br><span class="line">    schedule.scheduleJob(&apos;30 * * * * *&apos;,()=&gt;&#123;</span><br><span class="line">        console.log(&apos;scheduleCronstyle:&apos; + new Date());</span><br><span class="line">    &#125;); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">scheduleCronstyle();</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>schedule.scheduleJob的回调函数中写入要执行的任务代码，一个定时器就完成了！</p>
-<blockquote>
-<p>规则参数讲解 *代表通配符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">*  *  *  *  *  *</span><br><span class="line">┬ ┬ ┬ ┬ ┬ ┬</span><br><span class="line">│ │ │ │ │  |</span><br><span class="line">│ │ │ │ │ └ day of week (0 - 7) (0 or 7 is Sun)</span><br><span class="line">│ │ │ │ └───── month (1 - 12)</span><br><span class="line">│ │ │ └────────── day of month (1 - 31)</span><br><span class="line">│ │ └─────────────── hour (0 - 23)</span><br><span class="line">│ └──────────────────── minute (0 - 59)</span><br><span class="line">└───────────────────────── second (0 - 59, OPTIONAL)</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p>6个占位符从左到右分别代表：秒、分、时、日、月、周几</p>
-<p><em>表示通配符，匹配任意，当秒是</em>时，表示任意秒数都触发，其它类推</p>
-<p>关于cron表达式具体用法可以参考<a href="http://cron.qqe2.com/" target="_blank" rel="noopener">cron表达式工具</a></p>
-<ol>
-<li><p>对象文本语法定时器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"></span><br><span class="line">function scheduleObjectLiteralSyntax()&#123;</span><br><span class="line"></span><br><span class="line">    // 每周一的下午16：11分触发，其它组合可以根据我代码中的注释参数名自由组合</span><br><span class="line">    schedule.scheduleJob(&#123;hour: 16, minute: 11, dayOfWeek: 1&#125;, function()&#123;</span><br><span class="line">        console.log(&apos;scheduleObjectLiteralSyntax:&apos; + new Date());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">scheduleObjectLiteralSyntax();</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>递归规则调度定时器</p>
-</li>
-</ol>
-<p>您可以构建重复规则以指定何时应重复作业。 例如，考虑以下规则，该规则在每小时的42分钟之后每小时执行一次函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"> </span><br><span class="line">var rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.minute = 42;</span><br><span class="line"> </span><br><span class="line">var j = schedule.scheduleJob(rule, function()&#123;</span><br><span class="line">  console.log(&apos;The answer to life, the universe, and everything!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>您还可以使用数组来指定可接受值的列表，并使用Range对象来指定起始值和结束值的范围，以及可选的step参数。 例如，这将在周四，周五，周六和周日下午5点打印一条消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.dayOfWeek = [0, new schedule.Range(4, 6)];</span><br><span class="line">rule.hour = 17;</span><br><span class="line">rule.minute = 0;</span><br><span class="line"> </span><br><span class="line">var j = schedule.scheduleJob(rule, function()&#123;</span><br><span class="line">  console.log(&apos;Today is recognized by Rebecca Black!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>RecurrenceRule属性</p>
-<ul>
-<li>second (0-59)</li>
-<li>minute (0-59)</li>
-<li>hour (0-23)</li>
-<li>date (1-31)</li>
-<li>month (0-11)</li>
-<li>year</li>
-<li>dayOfWeek (0-6) Starting with Sunday</li>
-</ul>
-</blockquote>
-<h3 id="3-代码编写"><a href="#3-代码编写" class="headerlink" title="3. 代码编写"></a>3. 代码编写</h3><h4 id="登录功能："><a href="#登录功能：" class="headerlink" title="登录功能："></a>登录功能：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const browser = await puppeteer.launch(&#123;</span><br><span class="line">    headless: false,</span><br><span class="line">    slowMo: 250,</span><br><span class="line">    executablePath: &apos;&apos;</span><br><span class="line">&#125;);  // 创建一个 Browser 实例</span><br><span class="line">const page = (await browser.pages())[0];</span><br><span class="line">await page.setViewport(&#123;</span><br><span class="line">    width: 1280,</span><br><span class="line">    height: 800</span><br><span class="line">&#125;);  // 设置视口</span><br><span class="line"></span><br><span class="line">await page.goto(&quot;https://weibo.com/&quot;); // 跳转目标页面</span><br><span class="line">await page.waitForNavigation();   //等待页面加载完成</span><br><span class="line">await page.type(&quot;#loginname&quot;, username); // 输入用户名</span><br><span class="line">await page.type(&quot;#pl_login_form &gt; div &gt; div:nth-child(3) &gt; div.info_list.password &gt; div &gt; input&quot;, password);   // 输入密码</span><br><span class="line">await page.click(&quot;#pl_login_form &gt; div &gt; div:nth-child(3) &gt; div:nth-child(6)&quot;);  // 点击登录</span><br><span class="line">await page.waitForNavigation();   //等待跳转的页面加载完成</span><br></pre></td></tr></table></figure>
-<h4 id="登录以后转发操作："><a href="#登录以后转发操作：" class="headerlink" title="登录以后转发操作："></a>登录以后转发操作：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">await page.type(&quot;.gn_search_v2&gt;input&quot;, searchText);  // 等待新窗口加载后 搜索框输入需要搜索的用户</span><br><span class="line">await page.click(&quot;.gn_search_v2&gt;a&quot;);  // 点击搜索</span><br><span class="line">await page.waitFor(3000);</span><br><span class="line">await page.click(&apos;.m-con-l&gt; div &gt; div.card-wrap:nth-child(1) .avator&apos;);  // 点击搜索后出现的用户头像</span><br><span class="line">await page.waitFor(10000); // 等待5s 新窗口打开搜索后的用户主页页面</span><br><span class="line">const page2 = ( await browser.pages() )[1]; //得到所有窗口使用列表索引得到新的窗口</span><br><span class="line">await page2.setViewport(&#123;</span><br><span class="line">    width: 1280,</span><br><span class="line">    height: 800</span><br><span class="line">&#125;);</span><br><span class="line">await page2.waitFor(&apos;.WB_feed.WB_feed_v3.WB_feed_v4&apos;); // 等待加载元素</span><br><span class="line">const result = await page2.evaluate(() =&gt; &#123;</span><br><span class="line">    let text = document.querySelector(&quot;#Pl_Official_MyProfileFeed__23 &gt; div &gt; div:nth-child(2) &gt; div.WB_feed_detail.clearfix &gt; div.WB_detail &gt; div.WB_text.W_f14&quot;).innerText;</span><br><span class="line">    return &#123;</span><br><span class="line">        text,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br><span class="line">await page2.click(&apos;#Pl_Official_MyProfileFeed__23 &gt; div &gt; div:nth-child(2) &gt; div.WB_feed_handle &gt; div &gt; ul &gt; li:nth-child(2) &gt; a &gt; span &gt; span&apos;)</span><br><span class="line">await page2.waitFor(&apos;.p_input.p_textarea&apos;);</span><br><span class="line">await page2.type(&apos;.p_input.p_textarea&apos;, result.text)</span><br><span class="line">await page2.click(&apos;div.content &gt; div.layer_forward &gt; div &gt; div:nth-child(2) &gt; div &gt; div.WB_feed_repeat.forward_rpt1 &gt; div &gt; div.WB_feed_publish.clearfix &gt; div &gt; div.p_opt.clearfix &gt; div.btn.W_fr &gt; a&apos;);</span><br><span class="line">await page.waitFor(1000);</span><br><span class="line">await browser.close();//关闭打开的浏览器</span><br></pre></td></tr></table></figure>
-<h4 id="任务定时触发"><a href="#任务定时触发" class="headerlink" title="任务定时触发"></a>任务定时触发</h4><p>这里使用的的是基于递归规则调度定时器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let rule = null;</span><br><span class="line">rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.dayOfWeek = [new schedule.Range(1, 6)];</span><br><span class="line">rule.hour = 12;</span><br><span class="line">rule.minute = 0; // 定义一个每周1到周六中午12点的规则</span><br><span class="line">try &#123;</span><br><span class="line">    login(config.username, config.password);</span><br><span class="line">&#125; catch (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">j = schedule.scheduleJob(rule, async () =&gt; &#123; // 定时任务</span><br><span class="line">    try &#123;</span><br><span class="line">        login(config.username, config.password);</span><br><span class="line">    &#125; catch (error) &#123;</span><br><span class="line">        console.log(error);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<h3 id="触发任务"><a href="#触发任务" class="headerlink" title="触发任务"></a>触发任务</h3><p><code>node index.js</code></p>
-<p>源码地址：<a href="https://github.com/skique/weibopost.git" target="_blank" rel="noopener">github地址</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">爬虫</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">puppeteer</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/20/node+puppeteer定时发送微博/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/">低版本MacbookPro通过mas-cli下载更新各版本 macOS 全解析</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/" class="archive-article-date">
-  	<time datetime="2019-11-26T05:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>相信用过mac很久的同学都会遇到这个问题，就是系统版本太旧不更新了，在安装新软件的时候根本就不兼容。我的MacBookPro笔记本有点老，是2012年中的Retina13寸，当前操作系统的版本是OS X 10.11 El Capitan，现在最新版本是macOS 10.15，版本跨越了七年，7年前的老电脑，在安装各种新版软件时老是会报错，最终决定更新系统的原因是在安装docker时，居然提示当前macOS版本过低，docker最低只能兼容到macOS 10.12。于是再也不能忍受这台老的不能再老的系统了。</p>
-<p>更新新系统前自然而然的想到去appStore上下载新系统，但是看了一圈发现appStore上只有最新版就是macOS 10.15 Catania的系统，上网查了教程发现不是所有的MacBookPro都能用上新系统，于是去官网查了最新的Catania系统最低支持到了2012年的MacBookPro（视网膜屏），也就是官方支持我这台电脑升级到最新版，于是我就在AppStore上点击了下载，等待的过程中继续在查这个新系统表现怎么样，结果看了一大页的回答都是说用上新系统明显变卡了，而且不支持32位的软件，以及在运行过程中各种闪退崩溃的现象，吓的我一个激灵赶紧点了取消下载。</p>
-<p>接着在知乎上看到一篇回答是答主在各种各个版本系统的反馈,所以分享出来给同样想升级的macOS系统的小伙伴一个参考：</p>
-<blockquote>
-<p>先分享下我用过的几个版本macOS系统的感受OS X 10.9   </p>
-<ul>
-<li>Mavericks（2013年）：原机自带的系统，速度和反应最快，界面略显简陋。   </li>
-<li>OS X 10.10 Yosemite（2014年）：界面变化大，速度比前代慢了一点。   </li>
-<li>OS X 10.11 El Capitan（2015年）：速度和前代比没变化，10.11是个优化版，这个版本我用了两年，这个版本很经典。macOS 10.12   </li>
-<li>Sierra（2016年）：多了一些功能，速度比前代慢了一点，这个版本我只用了几个月。   </li>
-<li>MacOS 10.13 High Sierra（2017年）：速度和前代比没变化。这个版本也很经典   </li>
-<li>macOS 10.14 Mojave（2018年）：速度比前代貌似慢了一点。   </li>
-<li>macOS 10.15 Catalina（2019年）：速度比前代慢了一点点。</li>
-</ul>
-</blockquote>
-<p>所以当即决定安装安装MacOS 10.13 High Sierra（2017年）这个经典的版本。新的问题出现了：appStore上只能下载到最新版的10.15 Catalina系统，但是我的这个老电脑的硬件可能带不动怎么办，于是继续在茫茫的文章里继续寻找解决方案。于是终于皇天不负有心人，我终于找到了一个看似完美的解决方案：    </p>
-<ul>
-<li>先安装mac下的包管理工具Homebrew   </li>
-<li>安装mas-cli</li>
-</ul>
-<p>第一步，可能大家都不陌生，就是mac终端下的包管理工具，可以用来安装各种package,Homebrew 虽然好用，但 Homebrew 并不能管理 MAS 上的应用软件。   </p>
-<p>重点是第二步安装mas-cli，这是一个可以再在终端上轻松管理「Mac App Store」中应用的神器。   </p>
-<p>mas-cli 官方用「A simple command line interface for the Mac App Store. Designed for scripting and automation.」这样简洁的话说明了它的用途。mas-cli 功能非常的强大，   </p>
-<p>项目地址：<a href="https://github.com/mas-cli/mas" target="_blank" rel="noopener">https://github.com/mas-cli/mas</a></p>
-<h2 id="先安装mac下的包管理工具Homebrew"><a href="#先安装mac下的包管理工具Homebrew" class="headerlink" title="先安装mac下的包管理工具Homebrew"></a>先安装mac下的包管理工具Homebrew</h2><p>知道方法后我们开始duangduangduang的安装过程了，去homebrew的官网上找最新的命令,在终端里敲下如下命令：</p>
-<blockquote>
-<p>/usr/bin/ruby -e “$(curl -fsSL <a href="https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;" target="_blank" rel="noopener">https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</a></p>
-</blockquote>
-<p>得到报错信息：You are using macOS 10.11. ==&gt; We (and Apple) do not provide support for this version。也就是说我当前的系统版本过低。官方已经不提供支持了，那么这天路走不通了，于是问题变成了低版本macOS怎么安装brew和mas-cli的问题了。</p>
-<h3 id="解决Mac-OSX系统版本安装brew出错"><a href="#解决Mac-OSX系统版本安装brew出错" class="headerlink" title="解决Mac OSX系统版本安装brew出错"></a>解决Mac OSX系统版本安装brew出错</h3><p>于是又搜到一篇博客下给出了解决办法：   </p>
-<ol>
-<li>clone brew项目到本地   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Homebrew/brew</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol>
-<li>移动项目文件<br>1). 通过本地项目可知brew的目录结构,而我们所使用的命令都是/usr/local/bin文件中,因此将brew中的bin目录下的命令brew拷贝或者移动到/usr/local/bin下:(我所使用的是移动)   </li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//进入本地项目brew中  </span><br><span class="line">cd brew    </span><br><span class="line">//移动brew到系统文件中 </span><br><span class="line">sudo mv bin/brew /usr/local/bin</span><br></pre></td></tr></table></figure>
-<p>2). 移动Library<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//移动Library库到/usr/local   </span><br><span class="line">sudo mv Library /usr/local</span><br></pre></td></tr></table></figure></p>
-<p>3). 移动share文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv share /usr/local</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>查看是否安装成功<br>使用brew查看是否已经移动成功.如果有以下内容则代表成功。<br><img src="https://user-gold-cdn.xitu.io/2019/11/26/16ea5b6d5cf3f4e7?w=1124&h=676&f=webp&s=38604"></li>
-</ol>
-<p>就完成了第一步的安装</p>
-<h2 id="安装mas-cli"><a href="#安装mas-cli" class="headerlink" title="安装mas-cli"></a>安装mas-cli</h2><p>接下来就是安装mas，常规教程是使用命令行<br><code>brew install mas</code></p>
-<p>当然你实在不愿意用 Homebrew 进行安装，也可使用官方提供的二进制版本进行安装，下载地址如下：<a href="https://github.com/mas-cli/mas/releases" target="_blank" rel="noopener">https://github.com/mas-cli/mas/releases</a> 。</p>
-<p>安装完mas后就可以见识到mas-cli的强大之处了</p>
-<h3 id="查询应用"><a href="#查询应用" class="headerlink" title="查询应用"></a>查询应用</h3><p>MAS 中每一个应用都有自己的应用识别码 (Product Identifier)，MAS 就是根据 Product Identifier 安装与更新应用的。使用 mas list 命令将显示所有已安装的应用程序及其应用识别码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ mas list</span><br><span class="line">646295438 RAR Extractor Lite (5.6.1)</span><br><span class="line">1012296988 爱奇艺 (5.7.10)</span><br><span class="line">836500024 WeChat (2.3.23)</span><br><span class="line">595615424 QQMusic (6.1.1)</span><br><span class="line">658741592 KugouMusic (2.7.3)</span><br><span class="line">1121484812 YoudaoNote (3.4.2)</span><br><span class="line">1435447041 DingTalk (4.6.16)</span><br><span class="line">451108668 QQ (6.5.2)</span><br><span class="line">1327661892 XMind (9.2.2)</span><br></pre></td></tr></table></figure></p>
-<p>如果我们要新安装一个应用软件要如何才能得到其应用识别码呢？<br>mas-cli 自身便提供了 mas search 命令来查询应用程序对应的应用识别码。<br>在终端中执行以下命令，很快就会显示 1Password 的应用识别码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$  mas search 1Password</span><br><span class="line">1333542190  1Password 7 - Password Manager (7.4.1)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>搜索关键字不区分大小写且支持模糊查询。</p>
-</blockquote>
-<h3 id="安装应用"><a href="#安装应用" class="headerlink" title="安装应用"></a>安装应用</h3><p>使用 mas-cli 安装一个新的应用软件也是非常容易的，安装一个新的应用软件只需知道此应用软件的识别码就可以很方便的安装这个软件了。上面我们已经讲了如何取得软件的应用识别码，接下来我们只需使用 mas install 命令便可完成应用软件的安装。</p>
-<p>那么要如何下载各个版本的 macOS 呢？请输入 mas install 1246284741 ，后方的数字参考下表，替换成你要下载的版本代号，如下所列：</p>
-<ul>
-<li>macOS 10.7 Lion – 444303913</li>
-<li>macOS 10.8 Mountain Lion – 537386512</li>
-<li>macOS 10.9 Mavericks – 675248567</li>
-<li>macOS 10.10 Yosemite – 915041082</li>
-<li>macOS 10.11 El Capitan – 1147835434</li>
-<li>macOS 10.11 El Capitan – 1018109117</li>
-<li>macOS 10.12 Sierra – 1127487414</li>
-<li>macOS 10.13 High Sierra – 1246284741</li>
-</ul>
-<p>知道了这一点之后你就可以在个版本macOS之间随意穿梭了，简直太强大了有米有。<br>下载时必须保持终端机开启，同时也可以看到目前的下载进度，下载后安装程式会显示于应用程式资料夹。如果要为 macOS 制作可开机安装程式，可参考 Apple 支持说明。</p>
-<p>一切准备就绪之后，macOS High Sierra就开始安装了，等待一个小时左右安装完成后，点击重新启动就可以升级更新成新系统了。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/11/26/16ea5d0181e0c9e8?w=586&amp;h=354&amp;f=png&amp;s=96406" alt=""><br>在新系统上装上后马上就安装了docker。终于没有一大堆报错信息了，感觉整个人神清气爽,hahaha…</p>
-<p>参考连接：<br><a href="https://zhuanlan.zhihu.com/p/85568553" target="_blank" rel="noopener">macOS 10.15 Catalina 正式版 体验感受，软件兼容如何</a><br><a href="https://user-gold-cdn.xitu.io/2019/11/26/16ea5b1b5af20d22" target="_blank" rel="noopener">解决Mac OSX系统版本安装brew出错</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MacOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-如何使用ESLint-Prettier来统一我们的前端代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">如何使用ESLint + Prettier来统一我们的前端代码风格</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/" class="archive-article-date">
-  	<time datetime="2019-06-21T01:57:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少数服从多数来确定一种合适的书写规范，通过工具统一风格。    </p>
-<p>本文将介绍，如何使用ESLint + Prettier来统一我们的前端代码风格。   </p>
-<p>首先，对应ESLint大多都很熟悉，用来进行代码的校验，js作为一门灵活的弱类型语言，代码风格千奇百怪，一千个人写js就有一千种写法。虽然js没有官方推荐的代码规范，不过社区有些比较热门的代码规范，比如standardjs、airbnb。使用ESLint配合这些规范，能够检测出代码中的潜在问题，提高代码质量，但是并不能完全统一代码风格，因为这些代码规范的重点并不在代码风格上（虽然有一些限制）。</p>
-<p>Prettier 是一个漂亮代码格式工具。prettier 通过将JavaScript解析为AST来去除原来的代码样式，并且将其按照一致的格式的方式输出。只要代码的内容是一样的，那么输出的代码就将会是一致的。 prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突。而且prettier独断自行一套格式化风格，虽然提供配置，也只是配置少量的关键属性，能在一定程度上保证的代码的风格统一，而且使用门槛极低， 关键的他的风格并不丑，更容易让大家接受。<br>同时，prettier支持我们大前端目前大部分语言处理，包括JavaScript · Flow · TypeScript · CSS · SCSS · Less · JSX · Vue · GraphQL · JSON · Markdown，唯一的遗憾是，暂时还不能格式化vue模版文件中template部分。</p>
-<h2 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h2><p>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
-<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
-<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
-<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上文提到prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突,这里我们需要来讲一下如果存在冲突怎么办<br><code>npm i -D eslint-config-prettier</code><br>通过使用eslint-config-prettier配置，能够关闭一些不必要的或者是与prettier冲突的lint选项。这样我们就不会看到一些error同时出现两次。使用的时候需要确保，这个配置在extends的最后一项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;@vue/airbnb&apos;, //使用standard做代码规范</span><br><span class="line">    &quot;prettier&quot;,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果你同时使用了上述的两种配置，那么你可以通过如下方式，简化你的配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>最后贴一下我们项目中的完整配置，是在vue-cli生成的代码基础上修改的，并且使用airbnb做代码规范：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  root: true,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;plugin:vue/essential&apos;,</span><br><span class="line">    &apos;@vue/airbnb&apos;,</span><br><span class="line">    &quot;plugin:prettier/recommended&quot;,</span><br><span class="line">  ],</span><br><span class="line">  plugins: [&quot;prettier&quot;],</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;comma-dangle&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;linebreak-style&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;consistent-return&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;no-param-reassign&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;max-len&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/no-use-v-if-with-v-for&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/require-valid-default-prop&apos;: &apos;off&apos;,</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;,</span><br><span class="line">    &apos;no-console&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">    &apos;no-debugger&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: &apos;babel-eslint&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h2 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h2><p>一共有三种方式支持对Prettier进行配置：</p>
-<ol>
-<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
-<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
-<li>在package.json中新建prettier属性。   </li>
-</ol>
-<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
-<p>注意一点，parser的配置项官网列出了如下可选项：</p>
-<ul>
-<li>babylon</li>
-<li>flow</li>
-<li>typescript Since v1.4.0</li>
-<li>postcss Since v1.4.0</li>
-<li>json Since v1.5.0</li>
-<li>graphql Since v1.5.0</li>
-<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-极简白话金融学" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1438,6 +1073,353 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/08/22/独立ip划分虚拟子服务器/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-centos独立服务器划分虚拟服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/20/centos独立服务器划分虚拟服务/">Centos搭建node项目</a>
+    </h1>
+  
+
+        
+        <a href="/2018/08/20/centos独立服务器划分虚拟服务/" class="archive-article-date">
+  	<time datetime="2018-08-20T08:27:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
+<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v8.11.4/node-v8.11.4-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
+<li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
+<li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
+<li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
+<li>Ctrl + Shift + P调出命令模式，输入命令Ftp-sync:Init</li>
+<li><p>配置服务器远程连接文件（项目根目录下.vscode/ftp-sync.json）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    &#123;</span><br><span class="line">    &quot;remotePath&quot;: &quot;./&quot;,   // 远程服务器路径</span><br><span class="line">    &quot;host&quot;: &quot;host&quot;,       // 服务器地址</span><br><span class="line">    &quot;username&quot;: &quot;username&quot;,    // 用户名</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,    // 密码</span><br><span class="line">    &quot;port&quot;: 21,                // 端口号</span><br><span class="line">    &quot;secure&quot;: false,        </span><br><span class="line">    &quot;protocol&quot;: &quot;ftp&quot;,         // 采用的协议</span><br><span class="line">    &quot;uploadOnSave&quot;: false,</span><br><span class="line">    &quot;passive&quot;: false,</span><br><span class="line">    &quot;debug&quot;: false,</span><br><span class="line">    &quot;privateKeyPath&quot;: null,</span><br><span class="line">    &quot;passphrase&quot;: null,</span><br><span class="line">    &quot;ignore&quot;: [</span><br><span class="line">        &quot;\\.vscode&quot;,</span><br><span class="line">        &quot;\\.git&quot;,</span><br><span class="line">        &quot;\\.DS_Store&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;generatedFiles&quot;: &#123;</span><br><span class="line">        &quot;uploadOnSave&quot;: false,</span><br><span class="line">        &quot;extensionsToInclude&quot;: [],</span><br><span class="line">        &quot;path&quot;: &quot;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置完成后在命令模式下输入Ftp-sync: Local to Remote,同步本地到远程；Ftp-sync: Remote to Local同步远程到本地<br>因为在上一篇笔记中配置了nginx以及反向代理。在项目部署到服务器后在项目目录下启动服务后即可通过域名访问</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/08/20/centos独立服务器划分虚拟服务/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-基于CentOs搭建网站服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/基于CentOs搭建网站服务/">基于CentOS搭建网站服务</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/25/基于CentOs搭建网站服务/" class="archive-article-date">
+  	<time datetime="2018-07-25T07:59:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="搭建Http静态服务器环境"><a href="#搭建Http静态服务器环境" class="headerlink" title="搭建Http静态服务器环境"></a>搭建Http静态服务器环境</h1><p>  搭建静态网站，首先需要部署环境。下面的步骤，将告诉大家如何在服务器上通过 Nginx 部署 HTTP 静态服务。</p>
+<h2 id="1、-安装-Nginx"><a href="#1、-安装-Nginx" class="headerlink" title="1、 安装 Nginx"></a>1、 安装 Nginx</h2><p>在 CentOS 上，可直接使用 yum 来安装 Nginx</p>
+<blockquote>
+<p>yum install nginx -y    </p>
+</blockquote>
+<p>安装完成后，使用 nginx 命令启动 Nginx：</p>
+<blockquote>
+<p>nginx     </p>
+</blockquote>
+<p>此时，访问 <a href="http://116.62.197.141" target="_blank" rel="noopener">http://116.62.197.141</a> 可以看到 Nginx 的测试页面        </p>
+<h2 id="2、-配置静态服务器访问路径"><a href="#2、-配置静态服务器访问路径" class="headerlink" title="2、 配置静态服务器访问路径"></a>2、 配置静态服务器访问路径</h2><p>外网用户访问服务器的 Web 服务由 Nginx 提供，Nginx 需要配置静态资源的路径信息才能通过 url 正确访问到服务器上的静态资源。<br>打开 Nginx 的默认配置文件 /etc/nginx/nginx.conf ，修改 Nginx 配置，将默认的 root /usr/share/nginx/html; 修改为: root /data/www;   </p>
+<p>配置文件将 /data/www/static 作为所有静态资源请求的根路径，如访问:<a href="http://116.62.197.141/static/index.js，将会去" target="_blank" rel="noopener">http://116.62.197.141/static/index.js，将会去</a> /data/www/static/ 目录下去查找 index.js。现在我们需要重启 Nginx 让新的配置生效，如：</p>
+<blockquote>
+<p>nginx -s reload       </p>
+</blockquote>
+<p>重启后，现在我们应该已经可以使用我们的静态服务器了，现在让我们新建一个静态文件，查看服务是否运行正常。<br>首先让我们在 /data 目录 下创建 www 目录，如：</p>
+<blockquote>
+<p>mkdir -p /data/www     </p>
+</blockquote>
+<h2 id="3、创建第一个静态文件"><a href="#3、创建第一个静态文件" class="headerlink" title="3、创建第一个静态文件"></a>3、创建第一个静态文件</h2><p>在 /data/www 目录下创建我们的第一个静态文件 index.html       </p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;第一个静态文件&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+Hello world！
+&lt;/body&gt;
+&lt;/html&gt;   
+</code></pre><p>现在访问 <a href="http://116.62.197.141/index.html" target="_blank" rel="noopener">http://116.62.197.141/index.html</a> 应该可以看到页面输出 Hello world!<br>到此，一个基于 Nginx 的静态服务器就搭建完成了，现在所有放在 /data/www 目录下的的静态资源都可以直接通过域名访问。</p>
+<h1 id="准备域名和证书"><a href="#准备域名和证书" class="headerlink" title="准备域名和证书"></a>准备域名和证书</h1><h2 id="1、域名注册"><a href="#1、域名注册" class="headerlink" title="1、域名注册"></a>1、域名注册</h2><p>  购买域名</p>
+<h2 id="2、域名解析"><a href="#2、域名解析" class="headerlink" title="2、域名解析"></a>2、域名解析</h2><p>  域名购买完成后, 需要将域名解析到云主机上，我的主机的 IP 为：116.62.197.141,<br>  找到控制台，可以到控制台添加解析记录<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/域名解析.png" alt=""><br>  <a href="https://help.aliyun.com/document_detail/29725.html?spm=a2c4g.11186623.2.5.fe0SoL" target="_blank" rel="noopener">具体解析规则点击这里</a><br>  域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效 </p>
+<blockquote>
+<p>ping <a href="http://www.yourmpdomain.com" target="_blank" rel="noopener">www.yourmpdomain.com</a>    </p>
+</blockquote>
+<p>  如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。</p>
+<h2 id="3、申请-SSL-证书"><a href="#3、申请-SSL-证书" class="headerlink" title="3、申请 SSL 证书"></a>3、申请 SSL 证书</h2><p>  首先登陆自己的阿里云账户，找到左侧菜单的安全–SSL证书服务<br>  点击证书购买，进入页面，这个时候可以没有出现免费证书的选项，大家不用着急，看下一步<br>  我们选择Symantec，是不是很神奇的出现了免费型DV SSL呢，没错，我们找的就是它了，选择它购买就可以。<br>  付款成功后返回控制台，进入我的证书–我的订单页面，是不是已经有了一个证书了。别及，现在还用不了<br>  点击补全信息进入下一步，填写自己要绑定的域名进入下一步,继续补全信息等待审核吧，只要资料没有填错，基本都会通过的，<br>  <a href="https://jingyan.baidu.com/article/6c67b1d6431a872787bb1ece.html" target="_blank" rel="noopener">具体申请流程点击这里</a></p>
+<h2 id="4、安装以及nginx配置"><a href="#4、安装以及nginx配置" class="headerlink" title="4、安装以及nginx配置"></a>4、安装以及nginx配置</h2><p>  SSL证书签发完以后，需要下载证书并安装证书</p>
+<ul>
+<li>打开下载的文件夹有.pem证书文件以及.key私钥文件</li>
+<li>在服务器的nginx的安装目录下新建cert文件夹，将下载的证书以及私钥文件放到此文件夹下</li>
+<li>修改nginx.conf配置文件，将证书以及私钥文件分别指向cert目录下的证书以及私钥路径</li>
+<li><p>配置好nginx后重启nginx服务</p>
+<blockquote>
+<p>nginx -s reload    </p>
+</blockquote>
+<p>即可以通过加密的服务访问网址</p>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/25/基于CentOs搭建网站服务/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-git简明手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/06/git简明手册/">git简明手册</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/06/git简明手册/" class="archive-article-date">
+  	<time datetime="2018-03-06T09:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="为什么要使用git"><a href="#为什么要使用git" class="headerlink" title="为什么要使用git"></a>为什么要使用git</h2><p>因为git目前世界上最先进的分布式版本控制管理工具<br>从上面那句话可以看出git有两个特点，一是版本控制，二是分布式   </p>
+<p>你是否有个这个烦恼的，想删去一个段落，又怕将来找不回来想回复怎么办，也许你会先把这一版另存为，再发展新版本，这样来回几次，也许你的文件夹早已经是一团乱麻，现在有了git就可以很好的解决这问题了，因为git有版本控制的功能。    </p>
+<p>说起版本控制一定有不少人都用过svn,在git没有出来之前，svn作为集中式版本控制工具确实占的了一席之地，为什么发展到后来渐渐势微呢，他们之中主要的区别是一个集中式版本控制，一个是分布式版本控制。    </p>
+<p>先说集中式版本控制系统，版本库是集中存放在中央服务器的，而干活的时候，用的都是自己的电脑，所以要先从中央服务器取得最新的版本，然后开始干活，干完活了，再把自己的活推送给中央服务器。中央服务器就好比是一个图书馆，你要改一本书，必须先从图书馆借出来，然后回到家自己改，改完了，再放回图书馆。   </p>
+<p>而分布式版本控制系统根本没有“中央服务器”，每个人的电脑上都是一个完整的版本库，这样，你工作的时候，就不需要联网了，因为版本库就在你自己的电脑上。既然每个人电脑上都有一个完整的版本库，那多个人如何协作呢？比方说你在自己电脑上改了文件A，你的同事也在他的电脑上改了文件A，这时，你们俩之间只需把各自的修改推送给对方，就可以互相看到对方的修改了。    </p>
+<p>git允许你在一条生产流上开发，不但能自动记录每次文件的改动，还可以让同事协作编辑，这样就不用自己管理一堆类似的文件了，也不需要把文件传来传去。如果想查看某次改动，只需要在提交记录里瞄一眼就可以。如果像要恢复到某一版本只要在命令行上敲下一段代码，你的项目就会想坐上了时光穿梭机一样，自动就回到了以前，一切入故，再也没有了想删不敢删，想改不敢改的烦恼了。</p>
+<h2 id="git第一步"><a href="#git第一步" class="headerlink" title="git第一步"></a>git第一步</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>不同的系统有不同的安装的方法，以Mac为例，你可以通过brew安装，如果没有brew的话也可以直接在terminal上直接敲下git命令行，terminal会先检查有没有git环境，没有的还就会自动安装git,至于windows系统可以先去git上下载安装包，然后直接点安装即可，都非常简单</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在git中，我们使用git config 命令用来配置git的配置文件，git配置级别主要有以下3类：</p>
+<ul>
+<li>1、仓库级别 local 【优先级最高】</li>
+<li>2、用户级别 global【优先级次之】</li>
+<li>3、系统级别 system【优先级最低】</li>
+</ul>
+<p>再没有特殊要求下，我们只需要配置用户级别的git config即可,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email “you@example.com”</span><br><span class="line">git config --global user.name “Your Name”</span><br></pre></td></tr></table></figure></p>
+<p>如果想要检查你的配置，可以使用 <code>git config --list</code>命令来列出所有 Git 当时能找到的配置。</p>
+<h3 id="生成-SSH-公钥"><a href="#生成-SSH-公钥" class="headerlink" title="生成 SSH 公钥"></a>生成 SSH 公钥</h3><p> 首先，你需要确认自己是否已经拥有密钥。 默认情况下，用户的 SSH 密钥存储在其 ~/.ssh 目录下。 进入该目录并列出其中内容，你便可以快速确认自己是否已拥有密钥<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br></pre></td></tr></table></figure></p>
+<p>如果该目录下没有存在密钥对，则可以运行 ssh-keygen 程序来创建它们<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -o</span><br></pre></td></tr></table></figure></p>
+<p>首先 ssh-keygen 会确认密钥的存储位置（默认是 .ssh/id_rsa），然后它会要求你输入两次密钥口令。 如果你不想在使用密钥时输入口令，将其留空即可。 然而，如果你使用了密码，那么请确保添加了 -o 选项，它会以比默认格式更能抗暴力破解的格式保存私钥。<br>复制各自的 .pub 文件内容,发送给任意一个 Git 服务器管理员 （假设服务器正在使用基于公钥的 SSH 验证设置）</p>
+<h2 id="Git-基础"><a href="#Git-基础" class="headerlink" title="Git 基础"></a>Git 基础</h2><h3 id="初始化一个git仓库"><a href="#初始化一个git仓库" class="headerlink" title="初始化一个git仓库"></a>初始化一个git仓库</h3><p>通常有两种获取 Git 项目仓库的方式：</p>
+<ul>
+<li>将尚未进行版本控制的本地目录转换为 Git 仓库；</li>
+<li>从其它服务器 克隆 一个已存在的 Git 仓库。<br>两种方式都会在你的本地机器上得到一个工作就绪的 Git 仓库。</li>
+</ul>
+<h4 id="在已存在目录中初始化仓库"><a href="#在已存在目录中初始化仓库" class="headerlink" title="在已存在目录中初始化仓库"></a>在已存在目录中初始化仓库</h4><p>那么首先需要进入该项目目录中，执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure></p>
+<p>该命令将创建一个名为 .git 的子目录，这个子目录含有你初始化的 Git 仓库中所有的必须文件，这些文件是 Git 仓库的骨干。 但是，在这个时候，我们仅仅是做了一个初始化的操作，你的项目里的文件还没有被跟踪。</p>
+<h4 id="克隆现有的仓库"><a href="#克隆现有的仓库" class="headerlink" title="克隆现有的仓库"></a>克隆现有的仓库</h4><p>如果你想获得一份已经存在了的 Git 仓库的拷贝，比如说，你想为某个开源项目贡献自己的一份力，这时就要用到 git clone 命令。<br>克隆仓库的命令是 git clone <url> 。 比如，要克隆 Git 的链接库 libgit2，可以用下面的命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/libgit2/libgit2</span><br></pre></td></tr></table></figure></url></p>
+<p>如果你想在克隆远程仓库的时候，自定义本地仓库的名字，你可以通过额外的参数指定新的目录名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/libgit2/libgit2 mylibgit</span><br></pre></td></tr></table></figure>
+<p>这会执行与上一条命令相同的操作，但目标目录名变为了 mylibgit。</p>
+<h4 id="忽略文件"><a href="#忽略文件" class="headerlink" title="忽略文件"></a>忽略文件</h4><p>一般我们总会有些文件无需纳入 Git 的管理，也不希望它们总出现在未跟踪文件列表。 通常都是些自动生成的文件，比如日志文件，或者编译过程中创建的临时文件等。 在这种情况下，我们可以创建一个名为 .gitignore 的文件，列出要忽略的文件的模式。</p>
+<h3 id="工作区和暂存区与远程库"><a href="#工作区和暂存区与远程库" class="headerlink" title="工作区和暂存区与远程库"></a>工作区和暂存区与远程库</h3><h4 id="工作区"><a href="#工作区" class="headerlink" title="工作区"></a>工作区</h4><p>工作区就是当前的工作目录</p>
+<h4 id="版本库"><a href="#版本库" class="headerlink" title="版本库"></a>版本库</h4><p>工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。<br>Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/git-01.png" alt=""></p>
+<p>万事开头难，入手git开头的流程已经讲清楚，接下里就是运行git命令暂存修改，提交到暂存区以及push到远程仓库的操作了。基于本文篇幅有限，接下来着重讲一下啊在通过git开发流中经常用到的一些命令。在需要用到时候可以来这里查漏补缺。</p>
+<h3 id="常规流程"><a href="#常规流程" class="headerlink" title="常规流程"></a>常规流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">git init  // git仓库初始化</span><br><span class="line">git add .  // 文件修改添加到暂存区</span><br><span class="line">git reset HEAD CONTRIBUTING.md  // 取消暂存的文件</span><br><span class="line">git commit -m &quot;desc&quot;   // 实际上就是把暂存区的所有内容提交到当前分支</span><br><span class="line">git commit --amend   // 撤销上一次的提交</span><br><span class="line">git status  // 查看本地git仓库的提交状态</span><br><span class="line"></span><br><span class="line">git remote add origin git@gitee.com:taoyouyou/mongodb-install.git  // 添加远程库 </span><br><span class="line">git remote set-url --add origin git@git.oschina.net:shuaibai123/laravel-bjyblog.git   // 再次添加远程库，即一个本地的git仓库可以添加多个远程库</span><br><span class="line">git remote rm origin1      // 删除指定远程库</span><br><span class="line">git pull origin branch  // 拉取制定远程库的指定分支</span><br><span class="line">git pull origin branch --allow-unrelated-histories  // 强制拉取某远程库</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git push -u origin master   // 首次部署到远程仓库</span><br><span class="line">git push origin branch-name --force  //  强制上传本地文件到远程库</span><br></pre></td></tr></table></figure>
+<h3 id="git-add详解"><a href="#git-add详解" class="headerlink" title="git add详解:"></a>git add详解:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git add -A   // 添加所有改动</span><br><span class="line"></span><br><span class="line">git add *     // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add .    // 添加新建文件和修改，但是不包括删除</span><br><span class="line"></span><br><span class="line">git add -u   // 添加修改和删除，但是不包括新建文件</span><br></pre></td></tr></table></figure>
+<h3 id="版本恢复"><a href="#版本恢复" class="headerlink" title="版本恢复:"></a>版本恢复:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard HEAD^       //回退到前一个版本</span><br><span class="line">                 HEAD^^      //回退到前两个版本</span><br><span class="line">                 HEAD~100    //回退到前100版本</span><br><span class="line">                 commituid   //利用git reflog命令可以查看到所提交的每个版本的commitid</span><br><span class="line">git log  //查看用户目前进行了哪些commit操作</span><br><span class="line">git reflog  //查看用户进行哪些git操作</span><br></pre></td></tr></table></figure>
+<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git branch              //  查看本地仓库的所有分支</span><br><span class="line">git branch dev          //  创建dev分支</span><br><span class="line">git checkout -b dev     //  创建并转到dev分支</span><br><span class="line">git checkout master     //  切回master分支</span><br><span class="line">git merge dev           //  合并dev分支</span><br><span class="line">git branch -d dev       //  删除本地dev分支</span><br><span class="line">git push origin :dev    //  删除远程dev分支</span><br></pre></td></tr></table></figure>
+<h3 id="git-子模块"><a href="#git-子模块" class="headerlink" title="git 子模块"></a>git 子模块</h3><p>在使用git工具进行开发的时候经常会遇到各种各样的需求，git子模块概念的提出也是为了解决开发中的特定需求。当你在一个项目上工作时，你需要在其中使用另外一个项目。也许它是一个第三方开发的库或者是你独立开发和并在多个父项目中使用的。这个场景下一个常见的问题产生了：你想将两个项目单独处理但是又需要在其中一个中使用另外一个。Git 通过子模块处理这个问题。子模块允许你将一个 Git 仓库当作另外一个Git仓库的子目录。这允许你克隆另外一个仓库到你的项目中并且保持你的提交相对独立。</p>
+<ul>
+<li>首先你要把外部的仓库克隆到你的子目录中。你通过git submodule add将外部项目加为子模块：<br><code>git submodule add git://github.com/chneukirchen/rack.git rack</code></li>
+<li><p>现在你就在项目里的rack子目录下有了一个 Rack 项目。你可以进入那个子目录，进行变更，加入你自己的远程可写仓库来推送你的变更，从原始仓库拉取和归并等等。如果你在加入子模块后立刻运行git status，你会看到下面两项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line"># On branch master</span><br><span class="line"># Changes to be committed:</span><br><span class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</span><br><span class="line">#</span><br><span class="line">#      new file:   .gitmodules</span><br><span class="line">#      new file:   rack</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成了rack文件夹和.gitmodules文件，.gitmodules是一个配置文件，保存了项目 URL 和你拉取到的本地子目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat .gitmodules</span><br><span class="line">[submodule &quot;rack&quot;]</span><br><span class="line">      path = rack</span><br><span class="line">      url = git://github.com/chneukirchen/rack.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>尽管rack是你工作目录里的子目录，但 Git 把它视作一个子模块，当你不在那个目录里时并不记录它的内容。取而代之的是，Git 将它记录成来自那个仓库的一个特殊的提交。当你在那个子目录里修改并提交时，子项目会通知那里的 HEAD 已经发生变更并记录你当前正在工作的那个提交；通过那样的方法，当其他人克隆此项目，他们可以重新创建一致的环境。</p>
+</li>
+<li>也就是说当你在子目录里进行文件改动之后必须先提交到子进程的git仓库，主项目才能检测到子进程的修改并提交到远程库</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/06/git简明手册/">展开全文 >></a>
         </p>
       
 
