@@ -156,6 +156,149 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-浅谈-JS-模块化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/21/浅谈-JS-模块化/">浅谈 JS 模块化</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/21/浅谈-JS-模块化/" class="archive-article-date">
+  	<time datetime="2020-04-21T01:56:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你是否对前端模块化的概念还傻傻分不清，特别是js模块化，闭包，CMD，AMD, commonJS，seat.js, requirejs和ES6 Modules，这些概念你都清晰了吗？如果没有的话，那啃一啃这篇文章对你或许有帮助。</p>
+<p>众所周知。js由于历史原因并没有模块的概念，Javascript不是一种模块化编程语言，它不支持”类”（class），更遑论”模块”（module）了。（正在制定中的ECMAScript标准第六版，将正式支持”类”和”模块”，但还需要很长时间才能投入实用）。 自从ajax带来了web2.0概念后，js代码已经和以前大不相同了，2009年HTML5兴起后，前端代码的行数已经呈现井喷式发展，随着代码量的增加，模块的缺失的缺点日益凸显，Javascript模块化编程，已经成为一个迫切的需求。理想情况下，开发者只需要实现核心的业务逻辑，其他都可以加载别人已经写好的模块。这方面Javascript社区做了很多努力和探索，在现有的运行环境中，实现”模块”的效果。</p>
+<h2 id="模块化的概念"><a href="#模块化的概念" class="headerlink" title="模块化的概念"></a>模块化的概念</h2><p>这一概念并不是js独有，而是借鉴了其他语言的设计思想，下面是百度百科对模块的定义：</p>
+<blockquote>
+<p>模块,又称构件,是能够单独命名并独立地完成一定功能的程序语句的集合（即程序代码和数据结构的集合体）</p>
+</blockquote>
+<p>提炼关键字：独立、集合、完成一定功能。<br>上面的提炼，再从其他语言的实现中借鉴下，总结起来，我们期待的模块有如下特性：</p>
+<ul>
+<li>独立性——能够独立完成一个功能，不受外部环境的影响</li>
+<li>完整性——完成一个特定功能</li>
+<li>集合性——一组语句的集合</li>
+<li>依赖性——可以依赖已经存在的模块</li>
+<li>被依赖——可以被其他模块依赖</li>
+<li>其实我们想要的就是一个独立的模块，并能引用依赖，及被依赖。</li>
+</ul>
+<p>C语言的库和头文件（include），java的包（import）。这在其他语言中都是原生支持的特性，在js中却是没有的。为了弥补这种缺陷，Javascript开发者们做了很多尝试，以期达到一目的。</p>
+<h2 id="js模块化发展"><a href="#js模块化发展" class="headerlink" title="js模块化发展"></a>js模块化发展</h2><p>模块化是一个语言膨胀的必经之路，它能够帮助开发者拆分和组织代码。</p>
+<h3 id="Module模式"><a href="#Module模式" class="headerlink" title="Module模式"></a>Module模式</h3><h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><p>仅从定义来看，那么一个函数即可成为一个模块（独立，集合，完成一个功能），那我们就先从最原始的探索开始，也许不经意间，我们早已在使用模块了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//最简单的函数，可以称作一个模块</span><br><span class="line">function add(x, y) &#123;</span><br><span class="line">	return x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种做法的缺点很明显：”污染”了全局变量，无法保证不与其他模块发生变量名冲突，而且模块成员之间看不出直接关系。</p>
+<h4 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h4><p>在模块化规范形成之前，JS开发者使用Module设计模式来解决JS全局作用域的污染问题。Module模式最初被定义为一种在传统软件工程中为类提供私有和公有封装的方法。在JavaScript中，Module模式使用匿名函数自调用 (闭包)来封装，通过自定义暴露行为来区分私有成员和公有成员。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">let myModule = (function (window) &#123;</span><br><span class="line">    let moduleName = &apos;module&apos;  // private</span><br><span class="line">    // public</span><br><span class="line">    function setModuleName(name) &#123;</span><br><span class="line">      moduleName = name</span><br><span class="line">    &#125;</span><br><span class="line">    // public</span><br><span class="line">    function getModuleName() &#123;</span><br><span class="line">      return moduleName</span><br><span class="line">    &#125;</span><br><span class="line">    return &#123; setModuleName, getModuleName &#125;  // 暴露行为</span><br><span class="line">&#125;)(window)</span><br></pre></td></tr></table></figure></p>
+<p>上面例子是Module模式的一种写法，它通过闭包的特性打开了一个新的作用域，缓解了全局作用域命名冲突和安全性的问题。<br>但这种实现其实并不完美，仍然需要手动维护依赖的顺序。典型的场景就是上面的jquery必须先于我们的代码引入，不然会报引用错误，这显然不是我们想要的。<br>开发者并不能够用它来组织和拆分代码，于是乎便出现了以此为基石的模块化规范。</p>
+<h3 id="模块化规范"><a href="#模块化规范" class="headerlink" title="模块化规范"></a>模块化规范</h3><p>有了模块，我们就可以更方便地使用别人的代码，想要什么功能，就加载什么模块。但是，这样做有一个前提，那就是大家必须以同样的方式编写模块，否则你有你的写法，我有我的写法，岂不是乱了套！考虑到Javascript模块现在还没有官方规范，这一点就更重要了。目前，通行的Javascript模块规范共有两种：CommonJS和AMD。</p>
+<h4 id="1、-CommonJS"><a href="#1、-CommonJS" class="headerlink" title="1、 CommonJS"></a>1、 CommonJS</h4><p>2009年，美国程序员Ryan Dahl创造了node.js项目，将javascript语言用于服务器端编程。这标志”Javascript模块化编程”正式诞生。在这之前js 只被用于浏览器编程的环境中，因为网页编程的复杂度有限，没有模块化也不是什么大不了的事，但是在服务端，一定要有模块，与操作系统和其他应用程序互动，否则根本没法编程。</p>
+<p>CommonJS主要用在Node开发上，每个文件就是一个模块，每个文件都有自己的一个作用域。通过module.exports暴露public成员。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let x = 1;</span><br><span class="line">function add() &#123;</span><br><span class="line">  x += 1;</span><br><span class="line">  return x;</span><br><span class="line">&#125;</span><br><span class="line">module.exports.x = x;</span><br><span class="line">module.exports.add = add;</span><br></pre></td></tr></table></figure></p>
+<p>此外，CommonJS通过require()引入模块依赖，require函数可以引入Node的内置模块、自定义模块和npm等第三方模块。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 文件名：main.js</span><br><span class="line">let xm = require(&apos;./x.js&apos;);</span><br><span class="line">console.log(xm.x);  // 1</span><br><span class="line">console.log(xm.add());  // 2</span><br><span class="line">console.log(xm.x);   // 1</span><br></pre></td></tr></table></figure></p>
+<p>我们说，Module模式是模块化规范的基石，CommonJS也是对Module模式的一种封装。我们完全可以用Module模式来实现上面的代码效果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">let xModule = (function ()&#123;</span><br><span class="line">  let x = 1;</span><br><span class="line">  function add() &#123;</span><br><span class="line">    x += 1;</span><br><span class="line">    return x;</span><br><span class="line">  &#125;</span><br><span class="line">  return &#123; x, add &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line">let xm = xModule;</span><br><span class="line">console.log(xm.x);  // 1</span><br><span class="line">console.log(xm.add());  // 2</span><br><span class="line">console.log(xm.x);   // 1</span><br></pre></td></tr></table></figure></p>
+<p>通过Module模式模拟的CommonJS原理，我们就可以很好的解释CommonJS的特性了。因为CommonJS需要通过赋值的方式来获取匿名函数自调用的返回值，所以require函数在加载模块是同步的。这对服务器端不是一个问题，因为所有的模块都存放在本地硬盘，可以同步加载完成，等待时间就是硬盘的读取时间。但是，对于浏览器，这却是一个大问题，因为模块都放在服务器端，等待时间取决于网速的快慢，可能要等很长时间，浏览器处于”假死”状态。CommonJS模块的加载机制局限了CommonJS在客户端上的使用，因为通过HTTP同步加载CommonJS模块是非常耗时的。</p>
+<p>因此，浏览器端的模块，不能采用”同步加载”（synchronous），只能采用”异步加载”（asynchronous）。这就是AMD规范诞生的背景。</p>
+<h4 id="2、-CMD"><a href="#2、-CMD" class="headerlink" title="2、 CMD"></a>2、 CMD</h4><p>CMD是（Common Module Definition）公共模块定义 的缩写。CMD可能是在commonjs之后抽象出来的一套模块化语法定义和使用的标准。</p>
+<p>CMD规范参照commonjs中的方式，定义模块的方式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">define(function(require, exports, module) &#123;</span><br><span class="line">  //  同步加载模块</span><br><span class="line">  var a = require(&apos;./a&apos;);</span><br><span class="line">  a.doSomething();</span><br><span class="line">  // 异步加载一个模块，在加载完成时，执行回调</span><br><span class="line">  require.async([&apos;./b&apos;], function(b) &#123;</span><br><span class="line">    b.doSomething();</span><br><span class="line">  &#125;);</span><br><span class="line">  // 对外暴露成员</span><br><span class="line">  exports.doSomething = function() &#123;&#125;;</span><br><span class="line">&#125;);</span><br><span class="line">// 使用模块</span><br><span class="line">seajs.use(&apos;path&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>一个文件就是一个模块，文件名就是模块的名字，使用模块的方法也和commonjs中一致，只需require就好了，模块名字可省略后缀。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//使用event.js模块</span><br><span class="line">var ec = require(&apos;event&apos;);</span><br></pre></td></tr></table></figure>
+<p>CMD的典型实现就是seajs，应用的很广泛。</p>
+<h4 id="3、-AMD"><a href="#3、-AMD" class="headerlink" title="3、 AMD"></a>3、 AMD</h4><p>AMD是（Asynchronous Module Definition）异步模块定义 的缩写。它采用异步方式加载模块，模块的加载不影响它后面语句的运行。所有依赖这个模块的语句，都定义在一个回调函数中，等到加载完成之后，这个回调函数才会运行。</p>
+<p>AMD的核心是define函数。调用define函数最常见的方式是传入三个参数——模块名、该模块依赖的模块标识符数组、以及将会返回该模块定义的工厂函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 定义calculator（计算器）模块。此模块依赖其他模块</span><br><span class="line">define(&apos;calculator&apos;, [&apos;adder&apos;], function(adder) &#123;</span><br><span class="line">    // 返回具有add方法的匿名对象。——译注</span><br><span class="line">    return &#123;</span><br><span class="line">        add: function(n1, n2) &#123;</span><br><span class="line">            /*</span><br><span class="line">             * 实际调用的是adder（加法器）模块的add方法。</span><br><span class="line">             * 而且adder模块已在前一参数[&apos;adder&apos;]中指明了。——译注</span><br><span class="line">             */</span><br><span class="line">            return adder.add(n1, n2);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>AMD也采用require()语句加载模块，但是不同于CommonJS，它要求两个参数：<br><code>require([module], callback)</code><br> 第一个参数[module]，是一个数组，里面的成员就是要加载的模块；第二个参数callback，则是加载成功之后的回调函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">require([&apos;calculator&apos;], function (math) &#123;</span><br><span class="line">　　math.add(2, 3);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>math.add()与math模块加载不是同步的，浏览器不会发生假死。所以很显然，AMD比较适合浏览器环境。</p>
+<h4 id="4、-require-js"><a href="#4、-require-js" class="headerlink" title="4、 require.js"></a>4、 require.js</h4><p>require.js是AMD异步模块编程思想的实现，或者说 AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。</p>
+<p>require.js的诞生，就是为了解决这两个问题：</p>
+<ul>
+<li>（1）实现js文件的异步加载，避免网页失去响应；</li>
+<li>（2）管理模块之间的依赖性，便于代码的编写和维护。</li>
+</ul>
+<p>4.1、 require.js 加载</p>
+<p>使用require.js的第一步，是先去官方网站下载最新版本。下载后，假定把它放在js子目录下面，就可以加载了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;js/require.js&quot; defer async=&quot;true&quot; &gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>async属性表明这个文件需要异步加载，避免网页失去响应。IE不支持这个属性，只支持defer，所以把defer也写上。<br>加载require.js以后，下一步就要加载我们自己的代码了。假定我们自己的代码文件是main.js，也放在js目录下面。那么，只需要写成下面这样就行了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;js/require.js&quot; data-main=&quot;js/main&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>data-main属性的作用是，指定网页程序的主模块。在上例中，就是js目录下面的main.js，这个文件会第一个被require.js加载。由于require.js默认的文件后缀名是js，所以可以把main.js简写成main。</p>
+<p>4.2、 主模块编写</p>
+<p>假定主模块依赖jquery、underscore和backbone这三个模块，main.js就可以这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">require([&apos;jquery&apos;, &apos;underscore&apos;, &apos;backbone&apos;], function ($, _, Backbone)&#123;</span><br><span class="line">　　// some code here</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>require.js会先加载jQuery、underscore和backbone，然后再运行回调函数。主模块的代码就写在回调函数中。</p>
+<p>4.3、模块的加载</p>
+<p>使用require.config()方法，我们可以对模块的加载行为进行自定义。require.config()就写在主模块（main.js）的头部。参数就是一个对象，这个对象的paths属性指定各个模块的加载路径。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">　require.config(&#123;</span><br><span class="line">　　　　paths: &#123;</span><br><span class="line">　　　　　　&quot;jquery&quot;: &quot;lib/jquery.min&quot;,</span><br><span class="line">　　　　　　&quot;underscore&quot;: &quot;lib/underscore.min&quot;,</span><br><span class="line">　　　　　　&quot;backbone&quot;: &quot;lib/backbone.min&quot;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>或者直接改变基目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;</span><br><span class="line">　　　　baseUrl: &quot;js/lib&quot;,</span><br><span class="line">　　　　paths: &#123;</span><br><span class="line">　　　　　　&quot;jquery&quot;: &quot;jquery.min&quot;,</span><br><span class="line">　　　　　　&quot;underscore&quot;: &quot;underscore.min&quot;,</span><br><span class="line">　　　　　　&quot;backbone&quot;: &quot;backbone.min&quot;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>如果某个模块在另一台主机上，也可以直接指定它的网址，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;</span><br><span class="line">　　　　paths: &#123;</span><br><span class="line">　　　　　　&quot;jquery&quot;: &quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min&quot;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>4.4 加载非规范性模块</p>
+<p>理论上，require.js加载的模块，必须是按照AMD规范、用define()函数定义的模块。但是实际上，虽然已经有一部分流行的函数库（比如jQuery）符合AMD规范，更多的库并不符合。那么，require.js是否能够加载非规范的模块呢？</p>
+<p>这样的模块在用require()加载之前，要先用require.config()方法，定义它们的一些特征。</p>
+<p>require.config()接受一个配置对象，这个对象除了有前面说过的paths属性之外，还有一个shim属性，专门用来配置不兼容的模块。具体来说，每个模块要定义（1）exports值（输出的变量名），表明这个模块外部调用时的名称；（2）deps数组，表明该模块的依赖性。</p>
+<p>举例来说，underscore和backbone这两个库，都没有采用AMD规范编写。如果要加载它们的话，必须先定义它们的特征：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">require.config(&#123;</span><br><span class="line">　　　　shim: &#123;</span><br><span class="line">　　　　　　&apos;underscore&apos;:&#123;</span><br><span class="line">　　　　　　　　exports: &apos;_&apos;</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　&apos;backbone&apos;: &#123;</span><br><span class="line">　　　　　　　　deps: [&apos;underscore&apos;, &apos;jquery&apos;],</span><br><span class="line">　　　　　　　　exports: &apos;Backbone&apos;</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="ES6-module"><a href="#ES6-module" class="headerlink" title="ES6 module"></a>ES6 module</h3><p>ES6的模块化已经不是规范了，而是JS语言的特性。随着ES6的推出，AMD和CMD也随之成为了历史。ES6模块与模块化规范相比，有两大特点：</p>
+<p>模块化规范输出的是一个值的拷贝，ES6 模块输出的是值的引用。<br>模块化规范是运行时加载，ES6 模块是编译时输出接口。<br>模块化规范输出的是一个对象，该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，ES6 module 是一个多对象输出，多对象加载的模型。从原理上来说，模块化规范是匿名函数自调用的封装，而ES6 module则是用匿名函数自调用去调用输出的成员。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2012/10/javascript_module.html" target="_blank" rel="noopener">Javascript模块化编程（一）：模块的写法</a></li>
+<li><a href="https://www.jianshu.com/p/8573cdcde863" target="_blank" rel="noopener">理解javascript模块化</a></li>
+<li><a href="https://yanhaijing.com/javascript/2015/03/28/js-module/" target="_blank" rel="noopener">JavaScript模块的前世今生</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">js</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">模块化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/21/浅谈-JS-模块化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-手把手教你用vue撸一个管理后台" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1512,98 +1655,6 @@
 
 
   
-    <article id="post-如何使用ESLint-Prettier来统一我们的前端代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">如何使用ESLint + Prettier来统一我们的前端代码风格</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/" class="archive-article-date">
-  	<time datetime="2019-06-21T01:57:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>你曾经是否也会因为eslint在终端提示的报错而抓狂，作为一个强迫症患者不能看见终端有一行红色字体的代码报错。虽然eslint语法报错并不能影响程序的正常运行，但是作为一个有轻微代码洁癖的人来说，养成良好的代码编写风格也是一件非常重要的技能。关于代码风格实际上并没有一个确切的可以依靠的准绳，不同的人有不同的规范。在自己个人的项目中可以确定出自己最适应的一种代码风格。在团队协作的项目中，就必须通过少数服从多数来确定一种合适的书写规范，通过工具统一风格。    </p>
-<p>本文将介绍，如何使用ESLint + Prettier来统一我们的前端代码风格。   </p>
-<p>首先，对应ESLint大多都很熟悉，用来进行代码的校验，js作为一门灵活的弱类型语言，代码风格千奇百怪，一千个人写js就有一千种写法。虽然js没有官方推荐的代码规范，不过社区有些比较热门的代码规范，比如standardjs、airbnb。使用ESLint配合这些规范，能够检测出代码中的潜在问题，提高代码质量，但是并不能完全统一代码风格，因为这些代码规范的重点并不在代码风格上（虽然有一些限制）。</p>
-<p>Prettier 是一个漂亮代码格式工具。prettier 通过将JavaScript解析为AST来去除原来的代码样式，并且将其按照一致的格式的方式输出。只要代码的内容是一样的，那么输出的代码就将会是一致的。 prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突。而且prettier独断自行一套格式化风格，虽然提供配置，也只是配置少量的关键属性，能在一定程度上保证的代码的风格统一，而且使用门槛极低， 关键的他的风格并不丑，更容易让大家接受。<br>同时，prettier支持我们大前端目前大部分语言处理，包括JavaScript · Flow · TypeScript · CSS · SCSS · Less · JSX · Vue · GraphQL · JSON · Markdown，唯一的遗憾是，暂时还不能格式化vue模版文件中template部分。</p>
-<h2 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h2><p>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
-<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
-<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
-<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上文提到prettier只关注格式化，并不具有lint检查语法等能力，所以开始大家可能会经常碰到lint搭配prettier会出现冲突,这里我们需要来讲一下如果存在冲突怎么办<br><code>npm i -D eslint-config-prettier</code><br>通过使用eslint-config-prettier配置，能够关闭一些不必要的或者是与prettier冲突的lint选项。这样我们就不会看到一些error同时出现两次。使用的时候需要确保，这个配置在extends的最后一项。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;@vue/airbnb&apos;, //使用standard做代码规范</span><br><span class="line">    &quot;prettier&quot;,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果你同时使用了上述的两种配置，那么你可以通过如下方式，简化你的配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;extends&quot;: [&quot;plugin:prettier/recommended&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>最后贴一下我们项目中的完整配置，是在vue-cli生成的代码基础上修改的，并且使用airbnb做代码规范：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  root: true,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  extends: [</span><br><span class="line">    &apos;plugin:vue/essential&apos;,</span><br><span class="line">    &apos;@vue/airbnb&apos;,</span><br><span class="line">    &quot;plugin:prettier/recommended&quot;,</span><br><span class="line">  ],</span><br><span class="line">  plugins: [&quot;prettier&quot;],</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;comma-dangle&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;linebreak-style&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;consistent-return&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;no-param-reassign&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;max-len&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/no-use-v-if-with-v-for&apos;: &apos;off&apos;,</span><br><span class="line">    &apos;vue/require-valid-default-prop&apos;: &apos;off&apos;,</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;,</span><br><span class="line">    &apos;no-console&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">    &apos;no-debugger&apos;: process.env.NODE_ENV === &apos;production&apos; ? &apos;error&apos; : &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: &apos;babel-eslint&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h2 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h2><p>一共有三种方式支持对Prettier进行配置：</p>
-<ol>
-<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
-<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
-<li>在package.json中新建prettier属性。   </li>
-</ol>
-<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
-<p>注意一点，parser的配置项官网列出了如下可选项：</p>
-<ul>
-<li>babylon</li>
-<li>flow</li>
-<li>typescript Since v1.4.0</li>
-<li>postcss Since v1.4.0</li>
-<li>json Since v1.5.0</li>
-<li>graphql Since v1.5.0</li>
-<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/21/如何使用ESLint-Prettier来统一我们的前端代码风格/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1701,6 +1752,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
@@ -1714,10 +1769,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1737,15 +1788,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1761,6 +1804,22 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">朴素算法</a>
               </li>
              
@@ -1773,18 +1832,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
@@ -1793,11 +1840,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1810,6 +1853,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
               </li>
              
               <li class="article-tag-list-item">
