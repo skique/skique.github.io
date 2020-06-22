@@ -318,6 +318,47 @@
 </tr>
 </tbody>
 </table>
+<h2 id="原型链维护"><a href="#原型链维护" class="headerlink" title="原型链维护"></a>原型链维护</h2><h3 id="两个原型链"><a href="#两个原型链" class="headerlink" title="两个原型链"></a>两个原型链</h3><p>外部原型链：有构造器（函数对象）有一个名为 prototype 的成员<br>内部原型链：实例拥有指向原型的 proto 属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 构造器声明</span><br><span class="line">*/</span><br><span class="line">function MyObject() &#123; &#125;</span><br><span class="line">function MyObjectEx() &#123; &#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* 原型链</span><br><span class="line">*/</span><br><span class="line">MyObjectEx.prototype = new MyObject();</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* 创建对象实例</span><br><span class="line">*/</span><br><span class="line">obj1 = new MyObjectEx();</span><br><span class="line">obj2 = new MyObjectEx();</span><br></pre></td></tr></table></figure>
+<p>这段代码所构成的内部原型链与构造器原型链：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/两个原型链.png" alt=""></p>
+<p>由于内部原型链的 proto 是一个不可访问的内部属性，所以 没有办法从obj（指代所有 构造器 的实例）开始访问整个原型链。解决这个问题的法子是通过 obj.const ructor。</p>
+<h3 id="constructor-属性的维护"><a href="#constructor-属性的维护" class="headerlink" title="constructor 属性的维护"></a>constructor 属性的维护</h3><blockquote>
+<p>一个构造器产生的实例，实例的 constructor 属性缺省总是指向该构造器。   </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function MyObject() &#123;</span><br><span class="line">&#125;</span><br><span class="line">var obj = new MyObject();</span><br><span class="line">alert(obj.constructor == MyObject);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>构造器(函数)的原型的 constructor 属性指向了构造器本身。   </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyObject.prototype.constructor == MyObject</span><br></pre></td></tr></table></figure>
+<p>这样一来，我们在图１中，找到了一个连接点，使得我们在实例不能访问obj.proto 的情况下，通过构造器来访问原型链。<br>补充对图１中的构造器原型：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/constructor属性的维护.png" alt=""></p>
+<p>再来看图一的代码，由于我们重置了 MyObjectEx 的原型属性，使之指向 MyObject 的实例，因此在构造原型链之后，整个的 MyObjectEx 就出了问题：<br><code>MyObjectEx.prototype.constructor === MyObject.prototype.constructor === MyObject;</code><br>基于此这两个构造器所生成的实例的 constructor 属性却指向了相同的构造器，然而事实上他们是由不同的构造器所产生，显然这是不正确的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var obj1 = new MyObject();</span><br><span class="line">var obj2 = new MyObjectEx();</span><br><span class="line">alert(obj1.constructor == obj2.constructor);</span><br></pre></td></tr></table></figure></p>
+<p>问题在于在我们给 MyObjectEx 的原型时，应该 “修正”该原型的构造器值。为此，一般的建议（例如《JavaScript 权威指南》）是这样处理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 方法一：直接构建原型链</span><br><span class="line">MyObjectEx.protot ype = new MyObject();</span><br><span class="line">MyObjectEx.protot ype.constructor = MyObjectEx;</span><br></pre></td></tr></table></figure></p>
+<p>也就是重置原型后，再修改原型的 const ructor 属性，使之指向正确的构造器函数。但大家很快会看到一个问题：由于丢掉了原型的 constructor 属性，因<br>此事实上我们也就切断了与原型父类的关系。</p>
+<p>另一个方法是保持原型的构造器属性，而在子类构造器函数内初始化实例的构造器属性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line">* 方法二：正确维护 constructor，以便回溯原型链</span><br><span class="line">*/</span><br><span class="line">function MyObjectEx() &#123;</span><br><span class="line">this.constructor = arguments.callee;</span><br><span class="line">// or, this.constructor = MyObject Ex;</span><br><span class="line">// ...</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line">* 原型链</span><br><span class="line">*/</span><br><span class="line">MyObjectEx.prototype = new MyObject();</span><br></pre></td></tr></table></figure></p>
+<p>这样一来，MyObjectEx( ) 构造的实例的 constructor 属性都正确的指向MyObjectEx( )，而原型的 constructor 则指向 MyObject( )。<br>于是图２的 回溯方法便可以成立了。虽然你会发现它的效率较低——因为每次构造实例时都要重写constructor 属性——但是它是唯一有效的方法。<br>如果你不需要回溯原型链，那么你可以用第一种方法，否则你得按第二种方法来。</p>
+<h2 id="原型继承的实质"><a href="#原型继承的实质" class="headerlink" title="原型继承的实质"></a>原型继承的实质</h2><p>我们前面讲过“原型继承系统”的特性，包括：</p>
+<ul>
+<li>原型是一个对象；</li>
+<li>在属性访问时，如果子类对象没有，则访问其原型的成员列表。 </li>
+</ul>
+<p>我们如果修改一个构造器（或称为类）的原型，则所有由该类创建的实例都将受到影响——如果有其它子类继承自该类，则所有子类也将受到影响——因为在存取成员列表时必将回溯到该类。<br>正是 JavaScript 为每个构造器初始化了一个“空的对象”，才使我们可以用“原型修改”的方法重写构造器（类）的成员列表，而子类才可以继承这些属性。</p>
+<p>修改原型是 JavaScript 中最常用的构建类系统的方法，它的好处在于可以在实例构造之后“动态地”影响到这些实例。也就是说，实例（对象）的特性不但可以在 new 运算中通过“构造”来产生，也可以在此后通过原型 “修改”来产生。</p>
+<p>动态修改原型的特性，是我们原型继承的基础。</p>
+<h3 id="原型继承与原型修改——原型继承的实质：从无到有"><a href="#原型继承与原型修改——原型继承的实质：从无到有" class="headerlink" title="原型继承与原型修改——原型继承的实质：从无到有"></a>原型继承与原型修改——原型继承的实质：从无到有</h3><ul>
+<li>原型继承：关注于继承对象（在类属关系上）的层次，</li>
+<li>原型修改：关注具体对象实例的行为特性。</li>
+</ul>
+<p>在 JavaScript 中，原型的这两方面的特性是相互独立的，这也构成了“基于原型继承的对象系统”最独特的设计观念：</p>
+<blockquote>
+<p>将对象（类）的继承关系，与对象（类）的行为描述分离。</p>
+</blockquote>
+<p>这与“基于类继承的对象系统”存在本质的不同。因为基于类继承设计 时 ，我们必须预先考虑好某个类“是或者否”具有某种属性、方法与特质(Attribute)，如果某个类的成员设计得不正确，则它的子类、接口以及实例等等在使用中都将遇到问题。因而“重构”是必然、经常和更易出错的。</p>
+<p>基于原型的类继承有一下两个特性</p>
+<ul>
+<li>“类属关系的继承性”总是一开始就能被设计正确的；</li>
+<li>成员的修改是正常的、标准的构造对象系统的方法。</li>
+</ul>
+<p>在这里，所谓“从无到有 ”是指：在理论上我们可以先构建一个“没有任何成员”的类属关系的继承系统，然后通过“不断地修改原型”，从而获得一个完整的对象系统。</p>
 
       
 
