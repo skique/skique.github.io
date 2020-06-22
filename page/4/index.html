@@ -156,6 +156,230 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-centos独立服务器划分虚拟服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/20/centos独立服务器划分虚拟服务/">Centos搭建node项目</a>
+    </h1>
+  
+
+        
+        <a href="/2018/08/20/centos独立服务器划分虚拟服务/" class="archive-article-date">
+  	<time datetime="2018-08-20T08:27:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
+<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v8.11.4/node-v8.11.4-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
+<li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
+<li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
+<li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
+<li>Ctrl + Shift + P调出命令模式，输入命令Ftp-sync:Init</li>
+<li><p>配置服务器远程连接文件（项目根目录下.vscode/ftp-sync.json）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    &#123;</span><br><span class="line">    &quot;remotePath&quot;: &quot;./&quot;,   // 远程服务器路径</span><br><span class="line">    &quot;host&quot;: &quot;host&quot;,       // 服务器地址</span><br><span class="line">    &quot;username&quot;: &quot;username&quot;,    // 用户名</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,    // 密码</span><br><span class="line">    &quot;port&quot;: 21,                // 端口号</span><br><span class="line">    &quot;secure&quot;: false,        </span><br><span class="line">    &quot;protocol&quot;: &quot;ftp&quot;,         // 采用的协议</span><br><span class="line">    &quot;uploadOnSave&quot;: false,</span><br><span class="line">    &quot;passive&quot;: false,</span><br><span class="line">    &quot;debug&quot;: false,</span><br><span class="line">    &quot;privateKeyPath&quot;: null,</span><br><span class="line">    &quot;passphrase&quot;: null,</span><br><span class="line">    &quot;ignore&quot;: [</span><br><span class="line">        &quot;\\.vscode&quot;,</span><br><span class="line">        &quot;\\.git&quot;,</span><br><span class="line">        &quot;\\.DS_Store&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;generatedFiles&quot;: &#123;</span><br><span class="line">        &quot;uploadOnSave&quot;: false,</span><br><span class="line">        &quot;extensionsToInclude&quot;: [],</span><br><span class="line">        &quot;path&quot;: &quot;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置完成后在命令模式下输入Ftp-sync: Local to Remote,同步本地到远程；Ftp-sync: Remote to Local同步远程到本地<br>因为在上一篇笔记中配置了nginx以及反向代理。在项目部署到服务器后在项目目录下启动服务后即可通过域名访问</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/08/20/centos独立服务器划分虚拟服务/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-基于CentOs搭建网站服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/基于CentOs搭建网站服务/">基于CentOS搭建网站服务</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/25/基于CentOs搭建网站服务/" class="archive-article-date">
+  	<time datetime="2018-07-25T07:59:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="搭建Http静态服务器环境"><a href="#搭建Http静态服务器环境" class="headerlink" title="搭建Http静态服务器环境"></a>搭建Http静态服务器环境</h1><p>  搭建静态网站，首先需要部署环境。下面的步骤，将告诉大家如何在服务器上通过 Nginx 部署 HTTP 静态服务。</p>
+<h2 id="1、-安装-Nginx"><a href="#1、-安装-Nginx" class="headerlink" title="1、 安装 Nginx"></a>1、 安装 Nginx</h2><p>在 CentOS 上，可直接使用 yum 来安装 Nginx</p>
+<blockquote>
+<p>yum install nginx -y    </p>
+</blockquote>
+<p>安装完成后，使用 nginx 命令启动 Nginx：</p>
+<blockquote>
+<p>nginx     </p>
+</blockquote>
+<p>此时，访问 <a href="http://116.62.197.141" target="_blank" rel="noopener">http://116.62.197.141</a> 可以看到 Nginx 的测试页面        </p>
+<h2 id="2、-配置静态服务器访问路径"><a href="#2、-配置静态服务器访问路径" class="headerlink" title="2、 配置静态服务器访问路径"></a>2、 配置静态服务器访问路径</h2><p>外网用户访问服务器的 Web 服务由 Nginx 提供，Nginx 需要配置静态资源的路径信息才能通过 url 正确访问到服务器上的静态资源。<br>打开 Nginx 的默认配置文件 /etc/nginx/nginx.conf ，修改 Nginx 配置，将默认的 root /usr/share/nginx/html; 修改为: root /data/www;   </p>
+<p>配置文件将 /data/www/static 作为所有静态资源请求的根路径，如访问:<a href="http://116.62.197.141/static/index.js，将会去" target="_blank" rel="noopener">http://116.62.197.141/static/index.js，将会去</a> /data/www/static/ 目录下去查找 index.js。现在我们需要重启 Nginx 让新的配置生效，如：</p>
+<blockquote>
+<p>nginx -s reload       </p>
+</blockquote>
+<p>重启后，现在我们应该已经可以使用我们的静态服务器了，现在让我们新建一个静态文件，查看服务是否运行正常。<br>首先让我们在 /data 目录 下创建 www 目录，如：</p>
+<blockquote>
+<p>mkdir -p /data/www     </p>
+</blockquote>
+<h2 id="3、创建第一个静态文件"><a href="#3、创建第一个静态文件" class="headerlink" title="3、创建第一个静态文件"></a>3、创建第一个静态文件</h2><p>在 /data/www 目录下创建我们的第一个静态文件 index.html       </p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;第一个静态文件&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+Hello world！
+&lt;/body&gt;
+&lt;/html&gt;   
+</code></pre><p>现在访问 <a href="http://116.62.197.141/index.html" target="_blank" rel="noopener">http://116.62.197.141/index.html</a> 应该可以看到页面输出 Hello world!<br>到此，一个基于 Nginx 的静态服务器就搭建完成了，现在所有放在 /data/www 目录下的的静态资源都可以直接通过域名访问。</p>
+<h1 id="准备域名和证书"><a href="#准备域名和证书" class="headerlink" title="准备域名和证书"></a>准备域名和证书</h1><h2 id="1、域名注册"><a href="#1、域名注册" class="headerlink" title="1、域名注册"></a>1、域名注册</h2><p>  购买域名</p>
+<h2 id="2、域名解析"><a href="#2、域名解析" class="headerlink" title="2、域名解析"></a>2、域名解析</h2><p>  域名购买完成后, 需要将域名解析到云主机上，我的主机的 IP 为：116.62.197.141,<br>  找到控制台，可以到控制台添加解析记录<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/域名解析.png" alt=""><br>  <a href="https://help.aliyun.com/document_detail/29725.html?spm=a2c4g.11186623.2.5.fe0SoL" target="_blank" rel="noopener">具体解析规则点击这里</a><br>  域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效 </p>
+<blockquote>
+<p>ping <a href="http://www.yourmpdomain.com" target="_blank" rel="noopener">www.yourmpdomain.com</a>    </p>
+</blockquote>
+<p>  如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。</p>
+<h2 id="3、申请-SSL-证书"><a href="#3、申请-SSL-证书" class="headerlink" title="3、申请 SSL 证书"></a>3、申请 SSL 证书</h2><p>  首先登陆自己的阿里云账户，找到左侧菜单的安全–SSL证书服务<br>  点击证书购买，进入页面，这个时候可以没有出现免费证书的选项，大家不用着急，看下一步<br>  我们选择Symantec，是不是很神奇的出现了免费型DV SSL呢，没错，我们找的就是它了，选择它购买就可以。<br>  付款成功后返回控制台，进入我的证书–我的订单页面，是不是已经有了一个证书了。别及，现在还用不了<br>  点击补全信息进入下一步，填写自己要绑定的域名进入下一步,继续补全信息等待审核吧，只要资料没有填错，基本都会通过的，<br>  <a href="https://jingyan.baidu.com/article/6c67b1d6431a872787bb1ece.html" target="_blank" rel="noopener">具体申请流程点击这里</a></p>
+<h2 id="4、安装以及nginx配置"><a href="#4、安装以及nginx配置" class="headerlink" title="4、安装以及nginx配置"></a>4、安装以及nginx配置</h2><p>  SSL证书签发完以后，需要下载证书并安装证书</p>
+<ul>
+<li>打开下载的文件夹有.pem证书文件以及.key私钥文件</li>
+<li>在服务器的nginx的安装目录下新建cert文件夹，将下载的证书以及私钥文件放到此文件夹下</li>
+<li>修改nginx.conf配置文件，将证书以及私钥文件分别指向cert目录下的证书以及私钥路径</li>
+<li><p>配置好nginx后重启nginx服务</p>
+<blockquote>
+<p>nginx -s reload    </p>
+</blockquote>
+<p>即可以通过加密的服务访问网址</p>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/25/基于CentOs搭建网站服务/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-git简明手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -669,27 +893,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -705,15 +909,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -721,15 +917,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -745,27 +933,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -777,7 +969,43 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
               </li>
             
             <div class="clearfix"></div>

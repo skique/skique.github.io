@@ -156,6 +156,343 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JavaScript原型链与继承" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/22/JavaScript原型链与继承/">JavaScript原型链与继承</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/22/JavaScript原型链与继承/" class="archive-article-date">
+  	<time datetime="2020-06-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>“面向对象”有三个基本特性，即”封装，继承，多态“。一般来说，三个特性都完全满足的话，我们称为“面向对象语言”，而称满足其中部分特性的语言为“基于对象语言”。<br>“对象系统 ”的继承特性，有三种实现方案，包括基于类（class-based）、基于原型（prototype-based）和基于元类（metaclass-based ）。</p>
+<p>JavaScript 没有采用我们常见的类继承体系，而是使用原型继承来实现对象系统。因此 JavaScript 没有“类（Class）”，而采用一种名为“构造器 (Const ructor)”的机制来实现类的某些功用。所以我们会用</p>
+<blockquote>
+<p>1、“对象（类）”来表明类的特性，<br>2、而用“对象”（或 “实例”、“对象实例 ”）来表明单一一个对象的特性。相当于讲述由构造器或由构造机制带来的特性。</p>
+</blockquote>
+<h2 id="空对象和空的对象"><a href="#空对象和空的对象" class="headerlink" title="空对象和空的对象"></a>空对象和空的对象</h2><h3 id="null"><a href="#null" class="headerlink" title="null"></a>null</h3><p>null 不是“空的对象”，而是代表这样一个对象：</p>
+<ul>
+<li>属于对象类型；</li>
+<li>对象是空值的。</li>
+</ul>
+<p>因为它是对象类型，所以你甚至可以去列举(for..in)它；又因为它是空值，所以没有任何方法和属性，因而列举不到内容。<br>由于它并不是自 Object( )构造器 (或其子类)实例而来，因此instanceof 运算会返回 false。</p>
+<h3 id="“空的对象”"><a href="#“空的对象”" class="headerlink" title="“空的对象”"></a>“空的对象”</h3><p>“空的对象”是整个原型继承体系的根基。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let obj0 = new Obejct()       // 一个标准的、通过 Object( )构造的对象实例。</span><br><span class="line">let obj1 = Object.prototype;  // 来自Object( )构造器的原型实例。</span><br><span class="line">let obj2 = &#123;&#125;                 // 对象直接量也会隐式地调用 Object( )来构造实例。</span><br></pre></td></tr></table></figure></p>
+<p>空的对象具有 “对象 ”的一切特性。<br>因此可以存取预定义属性和方法（toStirng、valueOf 等），而 instanceof 运算也会返回 true。</p>
+<p>在缺省情况下，空的对象只有预定义属性和方法，而 for .. in 语句并不列举这些属性和方法。因此，所谓空的对象在 for..in 中并不产生任何效果。</p>
+<h2 id="原型继承的基本性质"><a href="#原型继承的基本性质" class="headerlink" title="原型继承的基本性质"></a>原型继承的基本性质</h2><p>在 JavaScript 的语言和对象系统的实现来讲，对象并没有原型，而是构造器有原型。即：</p>
+<ul>
+<li>对象：构造自某个原型</li>
+<li>原型也是一个对象实例</li>
+</ul>
+<p>原型的含义是指，如果构造器有一个原型对象Ａ，则由该构造器创建的实例（Instance）都必然复制自Ａ。这句话的意思是：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/原型.png" alt=""></p>
+<h2 id="空的对象是所有对象的基础"><a href="#空的对象是所有对象的基础" class="headerlink" title="空的对象是所有对象的基础"></a>空的对象是所有对象的基础</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 取原型对象</span><br><span class="line">obj = Object.prototype;</span><br><span class="line"></span><br><span class="line">// 列举对象成员并计数</span><br><span class="line">var num = 0;</span><br><span class="line">for (var n in obj) &#123;</span><br><span class="line">num++;</span><br><span class="line">&#125;</span><br><span class="line">// 显示计数: 0</span><br><span class="line">alert(num);</span><br></pre></td></tr></table></figure>
+<p>Object构造器的原型就是一个对象，那么由于原型继承的基本特性，以下两行代码创建对象的过程,都是自 Object.prototype 上复制出一个了“对象”的映像来——它们也是“空的对象”。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">obj1 = new Object();</span><br><span class="line">obj2 = &#123; &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>因此对象的“构建过程”可以被简单地映射为“复制”。如下图所示：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/对象构建过程.png" alt=""></p>
+<h3 id="构造复制？"><a href="#构造复制？" class="headerlink" title="构造复制？"></a>构造复制？</h3><p>上面的这个图例假设每构造一个实例，都从原型中复制出一个实例来，新的实例与原型占用了相同的内存空间。这虽然使得 obj1、obj2 与它们的原型“完全一致”，但也非常地不经济——内存空间的消耗会急速增加。</p>
+<h3 id="写时复制？"><a href="#写时复制？" class="headerlink" title="写时复制？"></a>写时复制？</h3><p>另一个策略来自于一种欺骗系统的技术：“写时复制”。这种机制的情况大致如下：</p>
+<ol>
+<li>在系统中指明 obj1 和 obj2 等同于它们的原型</li>
+<li>在读取的时候，只需要顺着指示去读原型</li>
+<li>需要写对象（例如 obj2）的属性时，我们就复制一个原型的映象出来，并使以后的操作指向该映象</li>
+</ol>
+<p>优缺点：<br>只在第一次写的时候会用一些代码来分配内存，并带来一些代码和内存上的开销。但此后这种开销就不再有了，因为访问映象与访问原型的效率是一致的。不过对于经常写操作的系统来说，这种法子并不比上一种法子经济。</p>
+<h3 id="读遍历"><a href="#读遍历" class="headerlink" title="读遍历"></a>读遍历</h3><p>JavaScript 采用了第三种法子：<strong>把写复制的粒度从原型变成了成员</strong>。</p>
+<blockquote>
+<p>仅当写某个实例的成员时，将成员的信息复制到实例的映象中。      </p>
+</blockquote>
+<p>这样一来，在初始构该对象时的局面仍与“图二”一致。但需要写对象属性（例如 obj2.value=10 ）时，会产生一个名为 value 的属性值，放在 obj2 对象的成员列表中</p>
+<p>我们发现：</p>
+<ul>
+<li>obj2是一个 <em>指向原型的引用</em>    </li>
+</ul>
+<p>在操作过程中并没有一个与原型相同大小的对象实例创建出来。这样一来，写操作并不导致大量的内存分配，因此内存的使用上就显得经济了。</p>
+<ul>
+<li>obj2（以及所有的对象实例）需要维护一张 <em>成员列表</em> ，这个成员列表指向在 obj2 中发生了修改的成员名、值与类型。   </li>
+</ul>
+<blockquote>
+<p>对象的成员的存取规则：</p>
+<ul>
+<li>规则１：保证在读取时被首先访问到即可。</li>
+<li>规则２：如果在对象中没有指定属性，则尝试遍历对象的整个原型链，直到原型为空(null) 或找到该属性。</li>
+</ul>
+</blockquote>
+<h2 id="构造过程：从函数到构造器"><a href="#构造过程：从函数到构造器" class="headerlink" title="构造过程：从函数到构造器"></a>构造过程：从函数到构造器</h2><p>函数只有在需要引用到原型时，才具有构造器的特性。实现上可能是如下的逻辑：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var __proto__ = null;</span><br><span class="line">function get_prototype() &#123;</span><br><span class="line">if (!_proto_) &#123;</span><br><span class="line">__proto__ = new Object();</span><br><span class="line">__proto__.constructor = this;</span><br><span class="line">&#125;</span><br><span class="line">return _proto_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>函数的原型总是一个标准的、系统内置的 Object( )构造器的一个实例。</li>
+<li>该实例创建后constructor 属性总先被赋值为当前函数。</li>
+</ul>
+<h3 id="预定义属性与方法"><a href="#预定义属性与方法" class="headerlink" title="预定义属性与方法"></a>预定义属性与方法</h3><p>上面讨论过：JavaScript 中的<em>对象实例</em>本质上只是“一个指向其原型的，并持有一个成员列表的结构”。这个结构最简单的表示法如下：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/对象实例本质.png" alt=""><br>它所有的对象性质，来源于系统对原型的，以及对成员列表的理解。</p>
+<p>“空的对象是所有对象的基础”。也就是 Object.prototype是所有对象的最顶层的原型。<br>我们所谓的“空的对象 ”，以及“干净的对象”，只不过是满足以下条件的一个结构：</p>
+<ul>
+<li>^proto 指向 Object.prototype;</li>
+<li>^props 指向一个空表。</li>
+</ul>
+<p>更进一步的推论是：我们所有的“实例”，之所以具有对象的某些性质，是因为它们的共同原型 Object.prototype 具有某些性质。</p>
+<p>对这些对象实例的这些性质做一个分类。<br>需要强调的是，某些性质并不是“原型继承 ”所必须的，而是 JavaScript 作为“动态语言 ”所必须的。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">成员名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">分类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">toString</td>
+<td style="text-align:left">function  </td><td rowspan="3">动态语言</td>
+</tr>
+<tr>
+<td style="text-align:left">toLocaleString</td>
+<td style="text-align:left">function</td>
+</tr>
+<tr>
+<td style="text-align:left">valueOf</td>
+<td style="text-align:left">function</td>
+</tr>
+<tr>
+<td style="text-align:left">constructor</td>
+<td style="text-align:left">function</td>
+<td style="text-align:left">对象系统：构造</td>
+</tr>
+<tr>
+<td style="text-align:left">propertyIsEnumerable</td>
+<td style="text-align:left">function  </td><td rowspan="2">对象系统：属性</td>
+</tr>
+<tr>
+<td style="text-align:left">hasOwnProperty</td>
+<td style="text-align:left">function</td>
+</tr>
+<tr>
+<td style="text-align:left">isPrototypeOf</td>
+<td style="text-align:left">function</td>
+<td style="text-align:left">对象系统：原型</td>
+</tr>
+</tbody>
+</table>
+<p>对于一个具体的构造器来说，它除了具有上述普通对象的成员之外，还具有几个特别的、属于函数类型对象的成员</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">成员名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">分类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">call</td>
+<td style="text-align:left">function  </td><td rowspan="3">函数式语言</td>
+</tr>
+<tr>
+<td style="text-align:left">apply</td>
+<td style="text-align:left">function</td>
+</tr>
+<tr>
+<td style="text-align:left">caller</td>
+<td style="text-align:left">function</td>
+</tr>
+<tr>
+<td style="text-align:left">arguments</td>
+<td style="text-align:left">object  </td><td rowspan="2">动态语言</td>
+</tr>
+<tr>
+<td style="text-align:left">length</td>
+<td style="text-align:left">number</td>
+</tr>
+<tr>
+<td style="text-align:left">prototype</td>
+<td style="text-align:left">object</td>
+<td style="text-align:left">对象系统：原型</td>
+</tr>
+</tbody>
+</table>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JavaScript基础</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/22/JavaScript原型链与继承/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-玩转npm" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/16/玩转npm/">玩转npm</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/16/玩转npm/" class="archive-article-date">
+  	<time datetime="2020-06-16T03:43:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="利用npm安装-删除-发布-更新-撤销发布包"><a href="#利用npm安装-删除-发布-更新-撤销发布包" class="headerlink" title="利用npm安装/删除/发布/更新/撤销发布包"></a>利用npm安装/删除/发布/更新/撤销发布包</h2><h3 id="什么是npm"><a href="#什么是npm" class="headerlink" title="什么是npm?"></a>什么是npm?</h3><p>npm是javascript的包管理工具，是前端模块化下的一个标志性产物。简单地地说，就是通过npm下载模块，复用已有的代码，提高工作效率。</p>
+<p>1.从社区的角度：把针对某一特定问题的模块发布到npm的服务器上，供社区里的其他人下载和使用，同时自己也可以在社区里寻找特定的模块的资源，解决问题<br>2.从团队的角度：有了npm这个包管理工具，复用团队既有的代码也变的更加地方便</p>
+<h3 id="利用npm安装包"><a href="#利用npm安装包" class="headerlink" title="利用npm安装包"></a>利用npm安装包</h3><p>npm安装的方式——本地安装和全局安装</p>
+<p>什么时候用本地／全局安装？<br>1.当你试图安装命令行工具的时候，例如 grunt CLI的时候，使用全局安装<br>全局安装的方式：npm install -g 模块名称<br>2.当你试图通过npm install 某个模块，并通过require(‘XXX’)的方式引入的时候，使用本地安装<br>本地安装的方式：npm install 模块名称</p>
+<p>你很可能遇到的问题<br>在你试图本地安装的时候一般都会遇到permission deny的问题<br>例如我这里第一次尝试全局安装express，输入npm install -g express</p>
+<p>【吐槽】而且让人无语的是在安装了许多依赖后才提醒你权限不够…</p>
+<p>解决方式：<br>1.sudo npm install -g XXX ，以管理员的身份安装<br>评价：每次都要输入账号和密码，非常繁琐，且官方并不推荐（ You could also try using sudo, but this should be avoided）<br>2.sudo chown -R 你的账号名 npm所在目录的路径 /{lib/node_modules,bin,share}<br>评价：官方推荐的做法，chown全称为change owner，即将npm目录的所有者指定为你的名字（授予权限），-R表示对指定目录下所有的子目录和文件也都采取同种操作。</p>
+<p><1> 首先，通过 npm config get prefix获取npm所在目录的路径，例如像这样：</1></p>
+<p><2> 在命令行输入 sudo chown -R 你的账号名 npm所在目录的路径 /{lib/node_modules,bin,share}，例如：</2></p>
+<p>【注意】{lib/node_modules,bin,share}中的大括号是要写上去的<br>再次全局安装express：输入npm install -g express</p>
+<p>安装成功</p>
+<p>3.sudo chmod 777 npm所在目录（不推荐）<br>评价：这是网上经常能够看到的解决方式，但，官方教程里没有对此有任何提及。chmod代表change mode更改读写模式，对该目录授予最高权限，任何人可读可写，这是很危险的</p>
+<p>本地安装的时候，将依赖包信息写入package.json中</p>
+<p>注意一个问题，在团队协作中，一个常见的情景是他人从github上clone你的项目，然后通过npm install安装必要的依赖，（刚从github上clone下来是没有node_modules的，需要安装）那么根据什么信息安装依赖呢？就是你的package.json中的dependencies和devDepencies。所以，在本地安装的同时，将依赖包的信息（要求的名称和版本）写入package.json中是很重要的！</p>
+<p>npm install 模块：安装好后不写入package.json中<br>npm install 模块 –save 安装好后写入package.json的dependencies中（生产环境依赖）<br>npm install 模块 –save-dev 安装好后写入package.json的devDepencies中（开发环境依赖）<br>示例：<br>我在项目下安装webpack：进入项目终端输入npm install<br>安装完毕后我的package.json</p>
+<p>卸掉webpack再重装:输入npm install webpack –save后：</p>
+<p>卸掉webpack再重装:npm install webpack –save-dev后：</p>
+<h3 id="利用npm删除包"><a href="#利用npm删除包" class="headerlink" title="利用npm删除包"></a>利用npm删除包</h3><p>删除模块其实很简单：<br>删除全局模块<br>npm uninstall -g <package>利用npm<br>删除本地模块<br>npm uninstall 模块</package></p>
+<p>删除本地模块时你应该思考的问题：是否将在package.json上的相应依赖信息也消除？<br>npm uninstall 模块：删除模块，但不删除模块留在package.json中的对应信息<br>npm uninstall 模块 –save 删除模块，同时删除模块留在package.json中dependencies下的对应信息<br>npm uninstall 模块 –save-dev 删除模块，同时删除模块留在package.json中devDependencies下的对应信息</p>
+<h3 id="利用npm-发布包"><a href="#利用npm-发布包" class="headerlink" title="利用npm 发布包"></a>利用npm 发布包</h3><p>发布包之前你首先要有一个npm的账号<br>第一次发布包：<br>在终端输入npm adduser，提示输入账号，密码和邮箱，然后将提示创建成功<br>非第一次发布包：<br>在终端输入npm login，然后输入你创建的账号和密码，和邮箱，登陆<br>【注意】npm adduser成功的时候默认你已经登陆了，所以不需要再接着npm login.</p>
+<p>例子：</p>
+<p>（因为我已经创建过账号了，所以直接登录）<br>1.进入项目目录下，然后再登陆：</p>
+<p>2.通过npm publish发包包的名称和版本就是你项目里package.json里的name和version哦！</p>
+<p>3.然后你到npm的搜索里就可以找到被发布的APP啦！</p>
+<blockquote>
+<p>不能和已有的包的名字重名！</p>
+</blockquote>
+<blockquote>
+<p>npm对包名的限制：不能有大写字母/空格/下滑线!</p>
+</blockquote>
+<blockquote>
+<p>你的项目里有部分私密的代码不想发布到npm上？将它写入.gitignore 或.npmignore中，上传就会被忽略了</p>
+</blockquote>
+<h3 id="利用npm撤销发布包"><a href="#利用npm撤销发布包" class="headerlink" title="利用npm撤销发布包"></a>利用npm撤销发布包</h3><p>这里要说一点，取消发布包可能并不像你想象得那么容易，这种操作是受到诸多限制的，撤销发布的包被认为是一种不好的行为<br>（试想一下你撤销了发布的包[假设它已经在社区内有了一定程度的影响]，这对那些已经深度使用并依赖你发布的包的团队是件多么崩溃的事情！）</p>
+<p>示例：<br>我现在将之前发布的包penghuwanapp撤销掉：输入npm unpublish 包名</p>
+<p> 【吐槽】注意看红框框住的字，你就知道npm官方撤销已发布的包对这种行为的态度了….</p>
+<p> 【注意】如果报权限方面的错，加上–force</p>
+<p>再去npm搜索已经搜不到了</p>
+<p>1.根据规范，只有在发包的24小时内才允许撤销发布的包（ unpublish is only allowed with versions published in the last 24 hours）<br>2.即使你撤销了发布的包，发包的时候也不能再和被撤销的包的名称和版本重复了（即不能名称相同，版本相同，因为这两者构成的唯一标识已经被“占用”了）</p>
+<p>例如我在撤销包后尝试再发布同一名称+同一版本的包：</p>
+<p>报错，并建议我修改包的版本</p>
+<p>npm unpublish的推荐替代命令：npm deprecate <pkg>[@<version>] <message><br>使用这个命令，并不会在社区里撤销你已有的包，但会在任何人尝试安装这个包的时候得到警告<br>例如：npm deprecate penghuwanapp ‘这个包我已经不再维护了哟～’<br>npm更新发布后的包：<br>事实上npm更新包和发布包的命令是一样的，都是npm publish,不同之处在于，你需要修改包的版本</message></version></pkg></p>
+<p>所以步骤是：<br>1.修改包的版本（package.json里的version字段）<br>2.npm publish<br>关于修改版本的细节请看下面：</p>
+<h3 id="npm的版本控制——Semantic-versioning"><a href="#npm的版本控制——Semantic-versioning" class="headerlink" title="npm的版本控制——Semantic versioning"></a>npm的版本控制——Semantic versioning</h3><p>在我们的package.json里面有一个version字段。那么，怎么在项目不断构建的过程中调整版本呢？<br>npm有一套自己的版本控制标准——Semantic versioning（语义化版本）</p>
+<p>具体体现为：<br>对于”version”:”x.y.z”<br>1.修复bug,小改动，增加z<br>2.增加了新特性，但仍能向后兼容，增加y<br>3.有很大的改动，无法向后兼容,增加x</p>
+<p>例如：我原本的项目是1.0.0版本的话<br>若是1中情况，变为1.0.1<br>若是2中情况，变为1.1.0<br>若是3中情况，变为2.0.0</p>
+<p>通过npm version &lt;update_type&gt;自动改变版本<br>update_type为patch, minor, or major其中之一，分别表示补丁，小改，大改</p>
+<p>例如我在shell去改动项目版本</p>
+<p>再来看看我的package.json，已经变成了v1.0.0</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">npm</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/16/玩转npm/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Javascript查漏补缺——Object" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1927,492 +2264,6 @@ Array.prototype[@@iterator]()
 
 
   
-    <article id="post-Vue-Draggable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/07/Vue-Draggable/">Vue.Draggable使用文档总结</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/07/Vue-Draggable/" class="archive-article-date">
-  	<time datetime="2020-05-07T09:59:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Draggable为基于Sortable.js的vue组件，用以实现拖拽功能。<br>关于Vue.Draggable详细信息可以查看<a href="https://github.com/SortableJS/Vue.Draggable" target="_blank" rel="noopener">github地址</a></p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
-<li>支持触摸设备</li>
-<li>支持拖拽和选择文本</li>
-<li>支持智能滚动</li>
-<li>支持不同列表之间的拖拽</li>
-<li>不以jQuery为基础</li>
-<li>和视图模型同步刷新</li>
-<li>和vue2的国度动画兼容</li>
-<li>支持撤销操作</li>
-<li>当需要完全控制时，可以抛出所有变化</li>
-<li>可以和现有的UI组件兼容</li>
-</ul>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>npm install vuedraggable</code></p>
-<h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p><code>import draggable from &#39;vuedraggable&#39;</code></p>
-<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><p>定义一个json串 list，实现它的拖拽排序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;list&quot;&gt;</span><br><span class="line">    &lt;transition-group&gt;</span><br><span class="line">        &lt;div v-for=&quot;element in list&quot; :key=&quot;element.id&quot;&gt;</span><br><span class="line">            &#123;&#123;element.name&#125;&#125;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/transition-group&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">value</td>
-<td style="text-align:center">用于实现拖拽的list，通常和内部v-for循环的数组为同一数组</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">list</td>
-<td style="text-align:center">效果同value的。和v-model不能共用</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">tag</td>
-<td style="text-align:center">draggable 标签在渲染后展现出来的标签类型</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">div</td>
-</tr>
-<tr>
-<td style="text-align:center">options</td>
-<td style="text-align:center">draggable 列表配置项</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">emptyInsertThreshold</td>
-<td style="text-align:center">拖动时，鼠标必须与空的可排序对象之间的距离</td>
-<td style="text-align:center">Number</td>
-<td style="text-align:center">5</td>
-</tr>
-<tr>
-<td style="text-align:center">clone</td>
-<td style="text-align:center">返回值为true时克隆，可以理解为正常的拖拽变成了复制。当pull:’clone时的拖拽的回调函数’</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">无处理</td>
-</tr>
-<tr>
-<td style="text-align:center">move</td>
-<td style="text-align:center">如果不为空，这个函数将以类似于Sortable onMove回调的方式调用。返回false将取消拖动操作。</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">componentData</td>
-<td style="text-align:center">用来结合UI组件的，可以理解为代理了UI组件的定制信息</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-</tbody>
-</table>
-<h3 id="options配置项"><a href="#options配置项" class="headerlink" title="options配置项"></a>options配置项</h3><p>| 参数    | 说明    | 类型 |Draggable为基于Sortable.js的vue组件，用以实现拖拽功能。<br>关于Vue.Draggable详细信息可以查看<a href="https://github.com/SortableJS/Vue.Draggable" target="_blank" rel="noopener">github地址</a></p>
-<h3 id="特性-1"><a href="#特性-1" class="headerlink" title="特性"></a>特性</h3><ul>
-<li>支持触摸设备</li>
-<li>支持拖拽和选择文本</li>
-<li>支持智能滚动</li>
-<li>支持不同列表之间的拖拽</li>
-<li>不以jQuery为基础</li>
-<li>和视图模型同步刷新</li>
-<li>和vue2的国度动画兼容</li>
-<li>支持撤销操作</li>
-<li>当需要完全控制时，可以抛出所有变化</li>
-<li>可以和现有的UI组件兼容</li>
-</ul>
-<h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><p><code>npm install vuedraggable</code></p>
-<h3 id="引入-1"><a href="#引入-1" class="headerlink" title="引入"></a>引入</h3><p><code>import draggable from &#39;vuedraggable&#39;</code></p>
-<h3 id="基础用法-1"><a href="#基础用法-1" class="headerlink" title="基础用法"></a>基础用法</h3><p>定义一个json串 list，实现它的拖拽排序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;list&quot;&gt;</span><br><span class="line">    &lt;transition-group&gt;</span><br><span class="line">        &lt;div v-for=&quot;element in list&quot; :key=&quot;element.id&quot;&gt;</span><br><span class="line">            &#123;&#123;element.name&#125;&#125;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/transition-group&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">value</td>
-<td style="text-align:center">用于实现拖拽的list，通常和内部v-for循环的数组为同一数组</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">list</td>
-<td style="text-align:center">效果同value的。和v-model不能共用</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">tag</td>
-<td style="text-align:center">draggable 标签在渲染后展现出来的标签类型</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">div</td>
-</tr>
-<tr>
-<td style="text-align:center">options</td>
-<td style="text-align:center">draggable 列表配置项</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">emptyInsertThreshold</td>
-<td style="text-align:center">拖动时，鼠标必须与空的可排序对象之间的距离</td>
-<td style="text-align:center">Number</td>
-<td style="text-align:center">5</td>
-</tr>
-<tr>
-<td style="text-align:center">clone</td>
-<td style="text-align:center">返回值为true时克隆，可以理解为正常的拖拽变成了复制。当pull:’clone时的拖拽的回调函数’</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">无处理</td>
-</tr>
-<tr>
-<td style="text-align:center">move</td>
-<td style="text-align:center">如果不为空，这个函数将以类似于Sortable onMove回调的方式调用。返回false将取消拖动操作。</td>
-<td style="text-align:center">Function</td>
-<td style="text-align:center">null</td>
-</tr>
-<tr>
-<td style="text-align:center">componentData</td>
-<td style="text-align:center">用来结合UI组件的，可以理解为代理了UI组件的定制信息</td>
-<td style="text-align:center">Object</td>
-<td style="text-align:center">null</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>注意：vuedraggable新版本废弃了options属性，建议使用v-bind属性作为配置项</p>
-</blockquote>
-<h3 id="options配置项-1"><a href="#options配置项-1" class="headerlink" title="options配置项"></a>options配置项</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">group</td>
-<td style="text-align:center">用于分组，同一组的不同list可以相互拖动</td>
-<td style="text-align:center">String/Array</td>
-</tr>
-<tr>
-<td style="text-align:center">sort</td>
-<td style="text-align:center">定义是否可以拖拽</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">delay</td>
-<td style="text-align:center">定义鼠标选中列表单元可以开始拖动的延迟时间</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td style="text-align:center">disabled</td>
-<td style="text-align:center">定义是否此sortable对象是否可用</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">animation</td>
-<td style="text-align:center">动画时间 单位:ms</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td style="text-align:center">handle</td>
-<td style="text-align:center">使列表单元中符合选择器的元素成为拖动的手柄，只有按住拖动手柄才能使列表单元进行拖动</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">filter</td>
-<td style="text-align:center">定义哪些列表单元不能进行拖放，可设置为多个选择器，中间用“，”分隔</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">preventOnFilter</td>
-<td style="text-align:center">当拖动filter时是否触发event.preventDefault() 默认触发</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">draggable</td>
-<td style="text-align:center">定义哪些列表单元可以进行拖放</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">ghostClass</td>
-<td style="text-align:center">当拖动列表单元时会生成一个副本作为影子单元来模拟被拖动单元排序的情况，此配置项就是来给这个影子单元添加一个class</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">chosenClass</td>
-<td style="text-align:center">目标被选中时添加</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">dragClass</td>
-<td style="text-align:center">目标拖动过程中添加</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">forceFallback</td>
-<td style="text-align:center">如果设置为true时，将不使用原生的html5的拖放，可以修改一些拖放中元素的样式等</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">fallbackClass：</td>
-<td style="text-align:center">当forceFallback设置为true时，拖放过程中鼠标附着单元的样式</td>
-<td style="text-align:center">String</td>
-</tr>
-<tr>
-<td style="text-align:center">dataIdAttr</td>
-<td style="text-align:center">data-id</td>
-<td style="text-align:center">Selector</td>
-</tr>
-<tr>
-<td style="text-align:center">scroll</td>
-<td style="text-align:center">当排序的容器是个可滚动的区域，拖放可以引起区域滚动</td>
-<td style="text-align:center">Boolean</td>
-</tr>
-<tr>
-<td style="text-align:center">scrollFn</td>
-<td style="text-align:center">用于自定义滚动条的适配</td>
-<td style="text-align:center">Function(offsetX, offsetY, originalEvent, touchEvt, hoverTargetEl)</td>
-</tr>
-<tr>
-<td style="text-align:center">ScrollSensitivity</td>
-<td style="text-align:center">就是鼠标靠近边缘多远开始滚动默认30</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td style="text-align:center">scrollSpeed</td>
-<td style="text-align:center">滚动速度</td>
-<td style="text-align:center">Number</td>
-</tr>
-</tbody>
-</table>
-<h3 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">回调参数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">start</td>
-<td style="text-align:center">开始拖动时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">add</td>
-<td style="text-align:center">添加单元时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">remove</td>
-<td style="text-align:center">单元被移动到另一个列表时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">update</td>
-<td style="text-align:center">排序发生变化时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">end</td>
-<td style="text-align:center">拖动结束时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">choose</td>
-<td style="text-align:center">选择单元时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">sort</td>
-<td style="text-align:center">排序发生变化时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">filter</td>
-<td style="text-align:center">尝试选择一个被filter过滤的单元的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-<tr>
-<td style="text-align:center">clone</td>
-<td style="text-align:center">clone时的回调函数</td>
-<td style="text-align:center">function（{to,from,item,clone,oldIndex,newIndex})</td>
-</tr>
-</tbody>
-</table>
-<h3 id="插槽"><a href="#插槽" class="headerlink" title="插槽"></a>插槽</h3><blockquote>
-<p>页眉或页脚插槽都不能与 tarnstion-group 一起使用。</p>
-</blockquote>
-<h4 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h4><p>使用标题插槽在vuedraggable组件中添加不可拖动的元素。它应该与draggable选项一起使用来标记draggable元素。请注意，无论标题槽在模板中的位置如何，它总是被添加到默认槽之前。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;myArray&quot; draggable=&quot;.item&quot;&gt;</span><br><span class="line">    &lt;div v-for=&quot;element in myArray&quot; :key=&quot;element.id&quot; class=&quot;item&quot;&gt;</span><br><span class="line">        &#123;&#123;element.name&#125;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;button slot=&quot;header&quot; @click=&quot;addPeople&quot;&gt;Add&lt;/button&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-<h4 id="Footer"><a href="#Footer" class="headerlink" title="Footer"></a>Footer</h4><p>使用页脚槽在vuedraggable组件中添加不可拖动的元素。它应该与draggable选项一起使用，以标记draggable元素。请注意，无论页脚槽在模板中的位置如何，它都将始终添加到默认槽之后。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable v-model=&quot;myArray&quot; draggable=&quot;.item&quot;&gt;</span><br><span class="line">    &lt;div v-for=&quot;element in myArray&quot; :key=&quot;element.id&quot; class=&quot;item&quot;&gt;</span><br><span class="line">        &#123;&#123;element.name&#125;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;button slot=&quot;footer&quot; @click=&quot;addPeople&quot;&gt;Add&lt;/button&gt;</span><br><span class="line">&lt;/draggable&gt;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/07/Vue-Draggable/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-动手撸一个页面生成器——搭建后台" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/07/动手撸一个页面生成器——搭建后台/">动手撸一个页面生成器——搭建后台</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/07/动手撸一个页面生成器——搭建后台/" class="archive-article-date">
-  	<time datetime="2020-05-07T03:37:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="梳理dataJson数据流"><a href="#梳理dataJson数据流" class="headerlink" title="梳理dataJson数据流"></a>梳理dataJson数据流</h2><p>页面生成后台主要是视图驱动模型，所以在开发开发第一步需要先定义好数据格式。</p>
-<p>1、一个网站包含几个页面，一个页面包含几个组件。可以看出这是一个树形结构<br>2、数据监听以及响应，项目中站点、页面以及组件三个概念的数据需要相互牵制并保持同步，网站数据填充是从顶层向下浸润，网站数据变动是从底层像顶层发布更新。数据流变动如下图所示：</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/datajson.png" width="600" div="" align="center"></p>
-<p>3、编写datajson,分别理清site、page、以及components相关属性</p>
-<p>用 JSON 格式可以把它表示成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;id&quot;:10,</span><br><span class="line">    &quot;name&quot;:&quot;测试公司&quot;,</span><br><span class="line">    &quot;pages&quot;:[</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;pgId&quot;:4,</span><br><span class="line">            &quot;name&quot;:&quot;新建页面&quot;,</span><br><span class="line">            &quot;isIndex&quot;:1,</span><br><span class="line">            &quot;content&quot;:&#123;</span><br><span class="line">                &quot;name&quot;:&quot;新建页面&quot;,</span><br><span class="line">                &quot;background&quot;:&quot;#F1E5E5&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;components&quot;:[</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;type&quot;:&quot;0&quot;,</span><br><span class="line">                    &quot;name&quot;:&quot;TextCom&quot;,</span><br><span class="line">                    &quot;desc&quot;:&quot;文本&quot;,</span><br><span class="line">                    &quot;content&quot;:&#123;</span><br><span class="line">                        &quot;text&quot;:&quot;请输入文本内容发发发&quot;,</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;style&quot;:&#123;&#125;,</span><br><span class="line">                    &quot;event&quot;:&#123;&#125;</span><br><span class="line">                &#125;,</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>综上，一个网站可以完整的表示为一个树形 JSON。该树中包含了站点下所有页面和页面下所有组件内容和配置。</p>
-<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="Vue-Draggable"><a href="#Vue-Draggable" class="headerlink" title="Vue.Draggable"></a>Vue.Draggable</h3><p>在动手实现编写页面和组件之前，需要了解vuedraggable作为前置知识</p>
-<p>Draggable为基于Sortable.js的vue组件，用以实现拖拽功能。<br>对vuedraggable插件api还不熟悉的童鞋可以参考我的另一篇文章<a href="https://juejin.im/post/5eb3f9ab5188256d8a2284c8" target="_blank" rel="noopener">Vue.Draggable使用文档总结</a></p>
-<h2 id="开撸"><a href="#开撸" class="headerlink" title="开撸"></a>开撸</h2><h3 id="项目准备"><a href="#项目准备" class="headerlink" title="项目准备"></a>项目准备</h3><p>1、vue-cli<br>2、vuedraggable<br>3、sortablejs<br>4、vuex<br>5、element-ui或者antd-vue,可以自已选择ui框架</p>
-<blockquote>
-<p>vue-cli是vue官方推荐的脚手架还很适合有vue基础的人使用。<br>在这个项目中由于用到了拖拽元素就为了方便就使用了vuedraggable，vuedraggable是基于sortablejs的封装所以也要引入。<br>由于组件中会存在大量的数据所以为了数据的统一管理，这里就使用了vuex。<br>element-ui/antd-vue这个我就不解释了，为了好看点就引入。</p>
-</blockquote>
-<h3 id="vuexjs-状态管理"><a href="#vuexjs-状态管理" class="headerlink" title="vuexjs 状态管理"></a>vuexjs 状态管理</h3><p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/vuex.png" width="800"></p>
-<h3 id="组件分区"><a href="#组件分区" class="headerlink" title="组件分区"></a>组件分区</h3><p>可以分为三块区域：<br>1、左侧——widget<br>2、中间——页面组件<br>3、右侧——编辑区</p>
-<h4 id="左侧可拖动的组件"><a href="#左侧可拖动的组件" class="headerlink" title="左侧可拖动的组件"></a>左侧可拖动的组件</h4><p>左侧的可拖拽widgets被包裹在一组draggable拖拽组件中，要实现的效果是拖动左侧的widget到中间的页面生成区，所以两个draggable需要设置相同的group名称，需要注意的是左侧draggable只允许拖拽不允许拖放，pull时需要克隆一个元素在中间的draggable组件中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;draggable</span><br><span class="line">    class=&quot;list-group&quot;</span><br><span class="line">    :list=&quot;list1&quot;</span><br><span class="line">    :group=&quot;&#123; name: &apos;widgets&apos;, put: false, pull: &apos;clone&apos; &#125;&quot;</span><br><span class="line">    v-bind=&quot;dragOptionsLeft&quot;</span><br><span class="line">  &gt;</span><br><span class="line">    &lt;transition-group type=&quot;transition&quot; :name=&quot;&apos;flip-list&apos;&quot;&gt;</span><br><span class="line">      &lt;div</span><br><span class="line">        class=&quot;dragType&quot;</span><br><span class="line">        id=&quot;dragItem&quot;</span><br><span class="line">        v-for=&quot;(element, index) in list1&quot;</span><br><span class="line">        :key=&quot;element.name + index&quot;</span><br><span class="line">        :type=&quot;element.type&quot;</span><br><span class="line">        :name=&quot;element.name&quot;</span><br><span class="line">        :desc=&quot;element.desc&quot;</span><br><span class="line">        :version=&apos;element.version&apos;</span><br><span class="line">      &gt;</span><br><span class="line">        &lt;img</span><br><span class="line">          :src=&quot;</span><br><span class="line">            require(`../assets/img/decoration/$&#123;element.name.split(&apos;Com&apos;)[0]&#125;Test.png`)</span><br><span class="line">          &quot;</span><br><span class="line">          style=&quot;width:32px;height:32px;display:block;margin:auto;&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">        &lt;p&gt;&#123;&#123; element.desc &#125;&#125;&lt;/p&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/transition-group&gt;</span><br><span class="line">  &lt;/draggable&gt;</span><br><span class="line">...</span><br><span class="line">data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">        list1: [</span><br><span class="line">            &#123; name: &quot;TextCom&quot;, type: 0, desc: &quot;文本&quot;, version: &quot;v1.0.0&quot; &#125;,</span><br><span class="line">            &#123; name: &quot;PicCom&quot;, type: 1, desc: &quot;图片&quot;, version: &quot;v1.0.0&quot; &#125;,</span><br><span class="line">            &#123; name: &quot;BtnCom&quot;, type: 2, desc: &quot;按钮&quot;, version: &quot;v1.0.0&quot; &#125;,</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, </span><br><span class="line">computed:&#123;</span><br><span class="line">    dragOptionsLeft() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            animation: 300,           // 动画过渡时间</span><br><span class="line">            ghostClass: &quot;ghostLeft&quot;,  // 给影子单元添加一个class</span><br><span class="line">            chosenClass: &quot;chosen&quot;,    // 目标被选中时添加class</span><br><span class="line">            dragClass: &quot;drag&quot;         // 目标被拖动时添加class</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
-<h4 id="中间的页面生成区"><a href="#中间的页面生成区" class="headerlink" title="中间的页面生成区"></a>中间的页面生成区</h4><p>这个区域需要再包裹一个draggable拖放组件，用来接受从左侧拖放过来的widget，所以需要设置和左侧相同的group名称<br>注意这里用到了vue动态组件，相关概念不清楚可以区官方文档关于<a href="https://cn.vuejs.org/v2/guide/components-dynamic-async.html" target="_blank" rel="noopener">动态组件</a>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div :style=&quot;&#123;background:pages[pageIndex].content.background&#125;&quot; class=&quot;phoneShow&quot;&gt; // 设置页面背景色</span><br><span class="line">      &lt;draggable</span><br><span class="line">        class=&quot;list-group&quot;</span><br><span class="line">        :group=&quot;&#123; name: &apos;widgets&apos; &#125;&quot;</span><br><span class="line">        v-bind=&quot;dragOptionsMiddle&quot;</span><br><span class="line">        :emptyInsertThreshold=&quot;800&quot;</span><br><span class="line">        @add=&quot;onAdd&quot;</span><br><span class="line">        @sort=&quot;onSort&quot;</span><br><span class="line">      &gt;</span><br><span class="line">        &lt;transition-group type=&quot;transition&quot; :name=&quot;&apos;flip-list&apos;&quot;&gt;</span><br><span class="line">          &lt;div </span><br><span class="line">            v-for=&quot;(appUi,index) in components&quot;</span><br><span class="line">            :is=&quot;appUi.name&quot;</span><br><span class="line">            :content=&quot;appUi.content&quot;</span><br><span class="line">            :oStyle=&quot;appUi.style&quot;</span><br><span class="line">            :aIndex=&quot;index&quot;</span><br><span class="line">            @click.native=&quot;getIndex(index)&quot;</span><br><span class="line">            </span><br><span class="line">            :key=&quot;appUi.content.code&quot;&gt;&lt;/div&gt;</span><br><span class="line">        &lt;/transition-group&gt;</span><br><span class="line">      &lt;/draggable&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    ...</span><br><span class="line">&lt;/template&gt; </span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState, mapMutations &#125; from &apos;vuex&apos;;</span><br><span class="line">import draggable from &quot;vuedraggable&quot;;</span><br><span class="line">import BtnCom from &apos;@/components/Widgets/Btn.vue&apos;  // 这里导入widget对应的组件</span><br><span class="line">import TextCom from &apos;@/components/Widgets/Text.vue&apos;</span><br><span class="line">import PicCom from &apos;@/components/Widgets/Pic.vue&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  components: &#123;draggable, BtnCom, TextCom, PicCom&#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      pages: state=&gt;state.site.pages,  // 页面</span><br><span class="line">      pageIndex:state=&gt;state.site.pageIndex,  // 激活的pageIndex</span><br><span class="line">      components:state=&gt;state.site.components, // 组件</span><br><span class="line"></span><br><span class="line">    &#125;),</span><br><span class="line">    dragOptionsMiddle() &#123;</span><br><span class="line">      return &#123;</span><br><span class="line">        animation: 300,</span><br><span class="line">        ghostClass: &quot;ghost&quot;,         // 给影子单元添加一个class</span><br><span class="line">        chosenClass: &quot;chosenMiddle&quot;, // 目标被选中时添加class</span><br><span class="line">        dragClass: &quot;dragMiddle&quot;      // 目标被拖动时添加class</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onAdd (res) &#123;</span><br><span class="line">      this.$store.dispatch(&apos;site/addCp&apos;,&#123;components: this.components,res: res&#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    getIndex(index)&#123;</span><br><span class="line">      this.$store.commit(&apos;site/setCommon&apos;,&#123;index: index, flag: true&#125;);</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    onSort(res)&#123;</span><br><span class="line">      if (res.from === res.to)&#123;</span><br><span class="line">        this.$store.dispatch(&apos;site/sortCp&apos;,res)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<h4 id="右侧组件编辑区"><a href="#右侧组件编辑区" class="headerlink" title="右侧组件编辑区"></a>右侧组件编辑区</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">  &lt;div </span><br><span class="line">    v-for=&quot;(appUi,index) in components&quot;</span><br><span class="line">    :is=&quot;appUi.name.split(&apos;Com&apos;)[0]+&apos;Edit&apos;&quot;    // 根据component的name属性加载对应的edit组件</span><br><span class="line">    :content=&quot;appUi.content&quot;</span><br><span class="line">    :oStyle=&quot;appUi.style&quot;</span><br><span class="line">    :editPartShow=&quot;appUi.editPartShow&quot;</span><br><span class="line">    :aIndex=&quot;index&quot;</span><br><span class="line">    :currentIndex=&quot;editIndex&quot;</span><br><span class="line">    :key=&quot;appUi.content.code&quot;</span><br><span class="line">    :activeTab=&quot;activeTab&quot;</span><br><span class="line">    @changeTab=&quot;toggleTab&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import &#123; mapState, mapMutations &#125; from &apos;vuex&apos;;</span><br><span class="line">  import BtnEdit from &quot;@/components/Editors/BtnEdit.vue&quot;;   // 导入有三种widget的edit组件</span><br><span class="line">  import TextEdit from &quot;@/components/Editors/TextEdit.vue&quot;;</span><br><span class="line">  import PicEdit from &apos;@/components/Editors/PicEdit.vue&apos;</span><br><span class="line">  </span><br><span class="line">  export default &#123;</span><br><span class="line">    name: &apos;BaseEdit&apos;,</span><br><span class="line">    components: &#123;</span><br><span class="line">      BtnEdit,</span><br><span class="line">      TextEdit,</span><br><span class="line">      PicEdit</span><br><span class="line">    &#125;,</span><br><span class="line">    </span><br><span class="line">    computed: &#123;</span><br><span class="line">      ...mapState(&#123;</span><br><span class="line">        pages: state=&gt;state.site.pages,</span><br><span class="line">        pageIndex: state=&gt;state.site.pageIndex,</span><br><span class="line">        editIndex:state=&gt;state.site.editIndex, </span><br><span class="line">        components:state=&gt;state.site.components, </span><br><span class="line">        isComponent:state=&gt;state.site.isComponent,</span><br><span class="line">        activeTab: state=&gt;state.site.activeTab</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">      handleInput(item, value) &#123;</span><br><span class="line">        this.setStyle(value+item.suffix, item.style)</span><br><span class="line">      &#125;,</span><br><span class="line">      setStyle(value, style)&#123;</span><br><span class="line">        this.$set(this.components[this.editIndex].style, style, value);</span><br><span class="line">      &#125;,</span><br><span class="line">      toggleTab(name) &#123;</span><br><span class="line">        // this.activeName = name</span><br><span class="line">        this.$store.commit(&apos;site/setActiveTab&apos;,name)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>接下里我们需要实现动态导入的widget组件以及widget对应的编辑组件实现，这里是实现页面生成的核心，需要widgetEdit组件控制widget组件，实现widget属性的联动，这里以Text组件为例：</p>
-<h4 id="TextCom组件"><a href="#TextCom组件" class="headerlink" title="TextCom组件"></a>TextCom组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;widget&quot;&gt;</span><br><span class="line">    &lt;div </span><br><span class="line">      class=&quot;text-box ui-sortable relative textActive&quot;</span><br><span class="line">      :data-code=&quot;content.code&quot;</span><br><span class="line">      :class=&quot;[</span><br><span class="line">        aIndex == editIndex ? &apos;active&apos; : &apos;&apos;,</span><br><span class="line">      ]&quot;</span><br><span class="line">      :style=&quot;oStyle&quot;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;p </span><br><span class="line">        class=&quot;showtext&quot;</span><br><span class="line">        &gt;</span><br><span class="line">       &#123;&#123; content.text &#125;&#125;</span><br><span class="line">      &lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    </span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">name: &apos;TextCom&apos;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    content: Object,</span><br><span class="line">    oStyle: Object,</span><br><span class="line">    aIndex: Number</span><br><span class="line">  &#125;,</span><br><span class="line">  data()&#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      delFlag: -1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      editIndex: state=&gt;state.site.editIndex</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<h4 id="TexteEdit-vue"><a href="#TexteEdit-vue" class="headerlink" title="TexteEdit.vue"></a>TexteEdit.vue</h4><p>TexteEdit组件从父组件接受props参数oStyle作为填充的样式，属性的更改不能直接修改父组件，所以这里使用vue.$set方法直接设置vuex 中存储的当前widget组件字段。实现组件字段的动态响应。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;edit-wrapper&quot; v-if=&quot;aIndex === currentIndex&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;text-edit&quot; :data-code=&quot;content.code&quot; v-if=&quot;activeTab===&apos;first&apos;&quot; @click=&quot;handleTabChange(&apos;first&apos;)&quot;&gt;</span><br><span class="line">      &lt;div class=&quot;input-area&quot;&gt;</span><br><span class="line">        &lt;a-input</span><br><span class="line">          type=&quot;textarea&quot;</span><br><span class="line">          :autoSize=&quot;&#123; minRows: 4, maxRows: 8 &#125;&quot;</span><br><span class="line">          placeholder=&quot;请输入内容&quot;</span><br><span class="line">          v-model=&quot;content.text&quot;</span><br><span class="line">        &gt;&lt;/a-input&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      &lt;!-- 字体样式设置 --&gt;</span><br><span class="line">      &lt;div class=&quot;fontAttribute&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;firstLine&quot;&gt;</span><br><span class="line">          &lt;ul class=&quot;fontSetting1&quot;&gt;</span><br><span class="line">            &lt;li style=&quot;width:50px&quot;&gt;  // 修改字体大小</span><br><span class="line">              &lt;a-dropdown&gt;</span><br><span class="line">                &lt;span class=&quot;a-dropdown-link&quot;&gt;</span><br><span class="line">                  &#123;&#123; oStyle[&quot;font-size&quot;] &#125;&#125;</span><br><span class="line">                  &lt;a-icon type=&quot;down&quot; /&gt;</span><br><span class="line">                &lt;/span&gt;</span><br><span class="line">                &lt;a-menu slot=&quot;overlay&quot; @click=&quot;handleCommand&quot;&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;16px&quot;&gt;16px&lt;/a-menu-item&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;14px&quot;&gt;14px&lt;/a-menu-item&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;12px&quot;&gt;12px&lt;/a-menu-item&gt;</span><br><span class="line">                  &lt;a-menu-item key=&quot;10px&quot;&gt;10px&lt;/a-menu-item&gt;</span><br><span class="line">                &lt;/a-menu&gt;</span><br><span class="line">              &lt;/a-dropdown&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;font-weight&apos;, &apos;bold&apos;, &apos;normal&apos;)&quot;&gt;  // 切换字体粗细</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A3.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;font-style&apos;, &apos;italic&apos;, &apos;normal&apos;)&quot;&gt;  // 切换字体斜体</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A4.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">          &lt;/ul&gt;</span><br><span class="line">          &lt;ul class=&quot;fontSetting2&quot;&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;text-decoration&apos;, &apos;line-through&apos;, &apos;none&apos;)&quot;&gt;  // 切换字体中划线</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A5.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">            &lt;li @click=&quot;toggleAttrValue(&apos;text-decoration&apos;, &apos;underline&apos;, &apos;none&apos;)&quot;&gt;  // 切换字体下划线</span><br><span class="line">              &lt;img src=&quot;../../assets/img/decoration/A6.png&quot; alt /&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">          &lt;/ul&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div v-if=&quot;activeTab===&apos;second&apos;&quot; @click=&quot;handleTabChange(&apos;second&apos;)&quot;&gt;</span><br><span class="line">      &lt;!-- 边距样式设置 --&gt;</span><br><span class="line">      &lt;div class=&quot;edgeSetting&quot;&gt;</span><br><span class="line">        &lt;div&gt;边距&lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;edge&quot;&gt;</span><br><span class="line">          &lt;span class=&quot;demonstration&quot;&gt;上下边距&lt;/span&gt;</span><br><span class="line">          &lt;a-slider</span><br><span class="line">            :max=&quot;30&quot;</span><br><span class="line">            class=&quot;slider&quot;</span><br><span class="line">            :default-value=&quot;parseInt((oStyle[&apos;padding-top&apos;] || &apos;0px&apos;).split(&apos;px&apos;)[0])&quot;</span><br><span class="line">            @change=&quot;sliderTop&quot;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;div class=&quot;edgeShow&quot;&gt;&#123;&#123; oStyle[&quot;padding-top&quot;] &#125;&#125;&lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;edge&quot;&gt;</span><br><span class="line">          &lt;span class=&quot;demonstration&quot;&gt;左右边距&lt;/span&gt;</span><br><span class="line">          &lt;a-slider</span><br><span class="line">            :max=&quot;30&quot;</span><br><span class="line">            class=&quot;slider&quot;</span><br><span class="line">            :default-value=&quot;parseInt((oStyle[&apos;padding-left&apos;] || &apos;0px&apos;).split(&apos;px&apos;)[0])&quot;</span><br><span class="line">            @change=&quot;sliderLeft&quot;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;div class=&quot;edgeShow&quot;&gt;&#123;&#123; oStyle[&quot;padding-left&quot;] &#125;&#125;&lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;TextEditor&apos;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    content: Object,</span><br><span class="line">    oStyle: Object,</span><br><span class="line">    aIndex: Number,</span><br><span class="line">    currentIndex: Number,</span><br><span class="line">    activeTab: String</span><br><span class="line">  &#125;,</span><br><span class="line">  data()&#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      centered: require(&quot;../../assets/img/decoration/A9.png&quot;),</span><br><span class="line">      centeredChecked: require(&quot;../../assets/img/decoration/B9.png&quot;),</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      editIndex: state=&gt;state.site.editIndex,</span><br><span class="line">      components: state=&gt;state.site.components,</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleTabChange(name)&#123;</span><br><span class="line">      this.$emit(&apos;changeTab&apos;, name)</span><br><span class="line">    &#125;,</span><br><span class="line">    handleCommand(&#123; key &#125;) &#123;    // 字体大小</span><br><span class="line">      this.setStyle(key, &apos;font-size&apos;)  </span><br><span class="line">    &#125;,</span><br><span class="line">    toggleAttrValue(attr, value, antValue) &#123;  // 切换字体属性</span><br><span class="line">      let newVal</span><br><span class="line">      if (this.oStyle[attr] == antValue)&#123;</span><br><span class="line">        newVal = value</span><br><span class="line">      &#125;else &#123;</span><br><span class="line">        newVal = antValue</span><br><span class="line">      &#125;</span><br><span class="line">      this.setStyle(newVal, attr)</span><br><span class="line">    &#125;,</span><br><span class="line">    sliderTop(value) &#123;     // 上下边距</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-top&apos;)</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-bottom&apos;)</span><br><span class="line">    &#125;,</span><br><span class="line">    sliderLeft(value)&#123;   // 左右边距</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-left&apos;)</span><br><span class="line">      this.setStyle(value+&apos;px&apos;, &apos;padding-right&apos;)</span><br><span class="line">    &#125;,</span><br><span class="line">    setStyle(value, style)&#123;  // vue.$set方法直接设置vuex 中存储的当前widget组件字段</span><br><span class="line">      this.$set(this.components[this.editIndex].style, style, value);    </span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p><img src="https://s31.aconvert.com/convert/p3r68-cdx67/mzt9i-7lofg.gif" alt=""></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>说一下编写组件的基本流程</p>
-<p>1、左侧编辑区添加需要拖拽生成的widgets</p>
-<p>2、vuex 添加组件创建时需要初始化的数据</p>
-<p>3、写xxx.vue组件（在mainView视图中显示）</p>
-<p>4、写xxxEdit.vue组件（组件的特有编辑器）</p>
-<p>最后把源码附上 <a href="https://gitee.com/taoyouyou/site-web" target="_blank" rel="noopener">源码地址</a></p>
-<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># install dependencies</span></span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line"><span class="comment"># serve with hot reload at localhost:8080</span></span><br><span class="line">npm run dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># build for production with minification</span></span><br><span class="line">npm run build</span><br><span class="line"></span><br><span class="line"><span class="comment"># build for production and view the bundle analyzer report</span></span><br><span class="line">npm run build --report</span><br></pre></td></tr></table></figure>
-<p>For a detailed explanation on how things work, check out the <a href="http://vuejs-templates.github.io/webpack/" target="_blank" rel="noopener">guide</a> and <a href="http://vuejs.github.io/vue-loader" target="_blank" rel="noopener">docs for vue-loader</a>.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/07/动手撸一个页面生成器——搭建后台/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -2514,27 +2365,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2550,15 +2381,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2566,15 +2389,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2590,27 +2405,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2622,7 +2441,43 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
               </li>
             
             <div class="clearfix"></div>

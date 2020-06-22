@@ -156,6 +156,279 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-node+puppeteer定时发送微博" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/20/node+puppeteer定时发送微博/">node+puppeteer定时发送微博</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/20/node+puppeteer定时发送微博/" class="archive-article-date">
+  	<time datetime="2019-12-20T07:04:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="实现功能：登录微博自动转发特定用户的下的第一条微博"><a href="#实现功能：登录微博自动转发特定用户的下的第一条微博" class="headerlink" title="实现功能：登录微博自动转发特定用户的下的第一条微博"></a>实现功能：登录微博自动转发特定用户的下的第一条微博</h2><h2 id="实现步骤："><a href="#实现步骤：" class="headerlink" title="实现步骤："></a>实现步骤：</h2><h3 id="1-初始化项目"><a href="#1-初始化项目" class="headerlink" title="1. 初始化项目"></a>1. 初始化项目</h3><p>你需要安装版本 8 以上的 Node，你可以在<a href="https://nodejs.org/en/" target="_blank" rel="noopener">这里</a>找到安装方法。确保选择Current版本，因为它是 8+。 安装完node后新建一个项目文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir Project</span><br><span class="line">cd Project</span><br></pre></td></tr></table></figure></p>
+<p>初始化一个node项目，在交互式命令中输入依次项目名、版本号、描述…等信息。直接enter键保持默认选项即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">MacdeMacBook-Pro:Project mac$ npm init</span><br><span class="line">...</span><br><span class="line">package name: (project) test</span><br><span class="line">version: (1.0.0) </span><br><span class="line">description: </span><br><span class="line">entry point: (index.js) </span><br><span class="line">test command: </span><br><span class="line">git repository: </span><br><span class="line">keywords: </span><br><span class="line">author: </span><br><span class="line">license: (ISC) </span><br><span class="line">About to write to /Users/mac/Project/package.json:</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;name&quot;: &quot;test&quot;,</span><br><span class="line">&quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">&quot;description&quot;: &quot;&quot;,</span><br><span class="line">&quot;main&quot;: &quot;index.js&quot;,</span><br><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;author&quot;: &quot;&quot;,</span><br><span class="line">&quot;license&quot;: &quot;ISC&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Is this OK? (yes)</span><br></pre></td></tr></table></figure></p>
+<p>这是会生成一个如下目录结构的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Project</span><br><span class="line">    - index.js  // 入口文件</span><br><span class="line">    - package.json</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-安装依赖"><a href="#2-安装依赖" class="headerlink" title="2. 安装依赖"></a>2. 安装依赖</h3><h4 id="puppeteer"><a href="#puppeteer" class="headerlink" title="puppeteer"></a>puppeteer</h4><p>Puppeteer(中文翻译”木偶”) Google Chrome 团队官方的无界面（Headless）Chrome 工具。也可以通过配置使用完整的（非无头）Chrome. 使用 Puppeteer，相当于同时具有 Linux 和 Chrome 双端的操作能力，在浏览器中手动完成的大部分事情都可以使用 Puppeteer 完成，应用场景可谓非常之多。如：</p>
+<ul>
+<li>从网站抓取你需要的内容。</li>
+<li>模拟人为操作自动表单提交，UI测试，键盘输入等。</li>
+<li>创建一个最新的自动化测试环境。使用最新的JavaScript和浏览器功能，直接在最新版本的Chrome中运行测试。</li>
+<li>捕获您的网站的时间线跟踪，以帮助诊断性能问题。   </li>
+</ul>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p><code>npm i puppeteer -S -D</code></p>
+<h5 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h5><p>puppeteer的具体用法可以参考<a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/#/" target="_blank" rel="noopener">puppeteer中文文档</a></p>
+<h4 id="node-schedule"><a href="#node-schedule" class="headerlink" title="node-schedule"></a>node-schedule</h4><p>Node Schedule是用于Node.js下的灵活的cron式和非cron式任务调度程序。 它允许您使用可选的重复规则来安排任务（任意函数）在特定日期执行。    </p>
+<h5 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h5><p><code>npm i node-schedule -S -D</code></p>
+<h5 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h5><ol>
+<li>Cron风格定时器<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"></span><br><span class="line">const  scheduleCronstyle = ()=&gt;&#123;</span><br><span class="line">  //每分钟的第30秒定时执行一次:</span><br><span class="line">    schedule.scheduleJob(&apos;30 * * * * *&apos;,()=&gt;&#123;</span><br><span class="line">        console.log(&apos;scheduleCronstyle:&apos; + new Date());</span><br><span class="line">    &#125;); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">scheduleCronstyle();</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>schedule.scheduleJob的回调函数中写入要执行的任务代码，一个定时器就完成了！</p>
+<blockquote>
+<p>规则参数讲解 *代表通配符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">*  *  *  *  *  *</span><br><span class="line">┬ ┬ ┬ ┬ ┬ ┬</span><br><span class="line">│ │ │ │ │  |</span><br><span class="line">│ │ │ │ │ └ day of week (0 - 7) (0 or 7 is Sun)</span><br><span class="line">│ │ │ │ └───── month (1 - 12)</span><br><span class="line">│ │ │ └────────── day of month (1 - 31)</span><br><span class="line">│ │ └─────────────── hour (0 - 23)</span><br><span class="line">│ └──────────────────── minute (0 - 59)</span><br><span class="line">└───────────────────────── second (0 - 59, OPTIONAL)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>6个占位符从左到右分别代表：秒、分、时、日、月、周几</p>
+<p><em>表示通配符，匹配任意，当秒是</em>时，表示任意秒数都触发，其它类推</p>
+<p>关于cron表达式具体用法可以参考<a href="http://cron.qqe2.com/" target="_blank" rel="noopener">cron表达式工具</a></p>
+<ol>
+<li><p>对象文本语法定时器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"></span><br><span class="line">function scheduleObjectLiteralSyntax()&#123;</span><br><span class="line"></span><br><span class="line">    // 每周一的下午16：11分触发，其它组合可以根据我代码中的注释参数名自由组合</span><br><span class="line">    schedule.scheduleJob(&#123;hour: 16, minute: 11, dayOfWeek: 1&#125;, function()&#123;</span><br><span class="line">        console.log(&apos;scheduleObjectLiteralSyntax:&apos; + new Date());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">scheduleObjectLiteralSyntax();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>递归规则调度定时器</p>
+</li>
+</ol>
+<p>您可以构建重复规则以指定何时应重复作业。 例如，考虑以下规则，该规则在每小时的42分钟之后每小时执行一次函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var schedule = require(&apos;node-schedule&apos;);</span><br><span class="line"> </span><br><span class="line">var rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.minute = 42;</span><br><span class="line"> </span><br><span class="line">var j = schedule.scheduleJob(rule, function()&#123;</span><br><span class="line">  console.log(&apos;The answer to life, the universe, and everything!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>您还可以使用数组来指定可接受值的列表，并使用Range对象来指定起始值和结束值的范围，以及可选的step参数。 例如，这将在周四，周五，周六和周日下午5点打印一条消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.dayOfWeek = [0, new schedule.Range(4, 6)];</span><br><span class="line">rule.hour = 17;</span><br><span class="line">rule.minute = 0;</span><br><span class="line"> </span><br><span class="line">var j = schedule.scheduleJob(rule, function()&#123;</span><br><span class="line">  console.log(&apos;Today is recognized by Rebecca Black!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>RecurrenceRule属性</p>
+<ul>
+<li>second (0-59)</li>
+<li>minute (0-59)</li>
+<li>hour (0-23)</li>
+<li>date (1-31)</li>
+<li>month (0-11)</li>
+<li>year</li>
+<li>dayOfWeek (0-6) Starting with Sunday</li>
+</ul>
+</blockquote>
+<h3 id="3-代码编写"><a href="#3-代码编写" class="headerlink" title="3. 代码编写"></a>3. 代码编写</h3><h4 id="登录功能："><a href="#登录功能：" class="headerlink" title="登录功能："></a>登录功能：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const browser = await puppeteer.launch(&#123;</span><br><span class="line">    headless: false,</span><br><span class="line">    slowMo: 250,</span><br><span class="line">    executablePath: &apos;&apos;</span><br><span class="line">&#125;);  // 创建一个 Browser 实例</span><br><span class="line">const page = (await browser.pages())[0];</span><br><span class="line">await page.setViewport(&#123;</span><br><span class="line">    width: 1280,</span><br><span class="line">    height: 800</span><br><span class="line">&#125;);  // 设置视口</span><br><span class="line"></span><br><span class="line">await page.goto(&quot;https://weibo.com/&quot;); // 跳转目标页面</span><br><span class="line">await page.waitForNavigation();   //等待页面加载完成</span><br><span class="line">await page.type(&quot;#loginname&quot;, username); // 输入用户名</span><br><span class="line">await page.type(&quot;#pl_login_form &gt; div &gt; div:nth-child(3) &gt; div.info_list.password &gt; div &gt; input&quot;, password);   // 输入密码</span><br><span class="line">await page.click(&quot;#pl_login_form &gt; div &gt; div:nth-child(3) &gt; div:nth-child(6)&quot;);  // 点击登录</span><br><span class="line">await page.waitForNavigation();   //等待跳转的页面加载完成</span><br></pre></td></tr></table></figure>
+<h4 id="登录以后转发操作："><a href="#登录以后转发操作：" class="headerlink" title="登录以后转发操作："></a>登录以后转发操作：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">await page.type(&quot;.gn_search_v2&gt;input&quot;, searchText);  // 等待新窗口加载后 搜索框输入需要搜索的用户</span><br><span class="line">await page.click(&quot;.gn_search_v2&gt;a&quot;);  // 点击搜索</span><br><span class="line">await page.waitFor(3000);</span><br><span class="line">await page.click(&apos;.m-con-l&gt; div &gt; div.card-wrap:nth-child(1) .avator&apos;);  // 点击搜索后出现的用户头像</span><br><span class="line">await page.waitFor(10000); // 等待5s 新窗口打开搜索后的用户主页页面</span><br><span class="line">const page2 = ( await browser.pages() )[1]; //得到所有窗口使用列表索引得到新的窗口</span><br><span class="line">await page2.setViewport(&#123;</span><br><span class="line">    width: 1280,</span><br><span class="line">    height: 800</span><br><span class="line">&#125;);</span><br><span class="line">await page2.waitFor(&apos;.WB_feed.WB_feed_v3.WB_feed_v4&apos;); // 等待加载元素</span><br><span class="line">const result = await page2.evaluate(() =&gt; &#123;</span><br><span class="line">    let text = document.querySelector(&quot;#Pl_Official_MyProfileFeed__23 &gt; div &gt; div:nth-child(2) &gt; div.WB_feed_detail.clearfix &gt; div.WB_detail &gt; div.WB_text.W_f14&quot;).innerText;</span><br><span class="line">    return &#123;</span><br><span class="line">        text,</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br><span class="line">await page2.click(&apos;#Pl_Official_MyProfileFeed__23 &gt; div &gt; div:nth-child(2) &gt; div.WB_feed_handle &gt; div &gt; ul &gt; li:nth-child(2) &gt; a &gt; span &gt; span&apos;)</span><br><span class="line">await page2.waitFor(&apos;.p_input.p_textarea&apos;);</span><br><span class="line">await page2.type(&apos;.p_input.p_textarea&apos;, result.text)</span><br><span class="line">await page2.click(&apos;div.content &gt; div.layer_forward &gt; div &gt; div:nth-child(2) &gt; div &gt; div.WB_feed_repeat.forward_rpt1 &gt; div &gt; div.WB_feed_publish.clearfix &gt; div &gt; div.p_opt.clearfix &gt; div.btn.W_fr &gt; a&apos;);</span><br><span class="line">await page.waitFor(1000);</span><br><span class="line">await browser.close();//关闭打开的浏览器</span><br></pre></td></tr></table></figure>
+<h4 id="任务定时触发"><a href="#任务定时触发" class="headerlink" title="任务定时触发"></a>任务定时触发</h4><p>这里使用的的是基于递归规则调度定时器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">let rule = null;</span><br><span class="line">rule = new schedule.RecurrenceRule();</span><br><span class="line">rule.dayOfWeek = [new schedule.Range(1, 6)];</span><br><span class="line">rule.hour = 12;</span><br><span class="line">rule.minute = 0; // 定义一个每周1到周六中午12点的规则</span><br><span class="line">try &#123;</span><br><span class="line">    login(config.username, config.password);</span><br><span class="line">&#125; catch (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">j = schedule.scheduleJob(rule, async () =&gt; &#123; // 定时任务</span><br><span class="line">    try &#123;</span><br><span class="line">        login(config.username, config.password);</span><br><span class="line">    &#125; catch (error) &#123;</span><br><span class="line">        console.log(error);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="触发任务"><a href="#触发任务" class="headerlink" title="触发任务"></a>触发任务</h3><p><code>node index.js</code></p>
+<p>源码地址：<a href="https://github.com/skique/weibopost.git" target="_blank" rel="noopener">github地址</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">爬虫</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">puppeteer</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/20/node+puppeteer定时发送微博/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/">低版本MacbookPro通过mas-cli下载更新各版本 macOS 全解析</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/" class="archive-article-date">
+  	<time datetime="2019-11-26T05:50:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>相信用过mac很久的同学都会遇到这个问题，就是系统版本太旧不更新了，在安装新软件的时候根本就不兼容。我的MacBookPro笔记本有点老，是2012年中的Retina13寸，当前操作系统的版本是OS X 10.11 El Capitan，现在最新版本是macOS 10.15，版本跨越了七年，7年前的老电脑，在安装各种新版软件时老是会报错，最终决定更新系统的原因是在安装docker时，居然提示当前macOS版本过低，docker最低只能兼容到macOS 10.12。于是再也不能忍受这台老的不能再老的系统了。</p>
+<p>更新新系统前自然而然的想到去appStore上下载新系统，但是看了一圈发现appStore上只有最新版就是macOS 10.15 Catania的系统，上网查了教程发现不是所有的MacBookPro都能用上新系统，于是去官网查了最新的Catania系统最低支持到了2012年的MacBookPro（视网膜屏），也就是官方支持我这台电脑升级到最新版，于是我就在AppStore上点击了下载，等待的过程中继续在查这个新系统表现怎么样，结果看了一大页的回答都是说用上新系统明显变卡了，而且不支持32位的软件，以及在运行过程中各种闪退崩溃的现象，吓的我一个激灵赶紧点了取消下载。</p>
+<p>接着在知乎上看到一篇回答是答主在各种各个版本系统的反馈,所以分享出来给同样想升级的macOS系统的小伙伴一个参考：</p>
+<blockquote>
+<p>先分享下我用过的几个版本macOS系统的感受OS X 10.9   </p>
+<ul>
+<li>Mavericks（2013年）：原机自带的系统，速度和反应最快，界面略显简陋。   </li>
+<li>OS X 10.10 Yosemite（2014年）：界面变化大，速度比前代慢了一点。   </li>
+<li>OS X 10.11 El Capitan（2015年）：速度和前代比没变化，10.11是个优化版，这个版本我用了两年，这个版本很经典。macOS 10.12   </li>
+<li>Sierra（2016年）：多了一些功能，速度比前代慢了一点，这个版本我只用了几个月。   </li>
+<li>MacOS 10.13 High Sierra（2017年）：速度和前代比没变化。这个版本也很经典   </li>
+<li>macOS 10.14 Mojave（2018年）：速度比前代貌似慢了一点。   </li>
+<li>macOS 10.15 Catalina（2019年）：速度比前代慢了一点点。</li>
+</ul>
+</blockquote>
+<p>所以当即决定安装安装MacOS 10.13 High Sierra（2017年）这个经典的版本。新的问题出现了：appStore上只能下载到最新版的10.15 Catalina系统，但是我的这个老电脑的硬件可能带不动怎么办，于是继续在茫茫的文章里继续寻找解决方案。于是终于皇天不负有心人，我终于找到了一个看似完美的解决方案：    </p>
+<ul>
+<li>先安装mac下的包管理工具Homebrew   </li>
+<li>安装mas-cli</li>
+</ul>
+<p>第一步，可能大家都不陌生，就是mac终端下的包管理工具，可以用来安装各种package,Homebrew 虽然好用，但 Homebrew 并不能管理 MAS 上的应用软件。   </p>
+<p>重点是第二步安装mas-cli，这是一个可以再在终端上轻松管理「Mac App Store」中应用的神器。   </p>
+<p>mas-cli 官方用「A simple command line interface for the Mac App Store. Designed for scripting and automation.」这样简洁的话说明了它的用途。mas-cli 功能非常的强大，   </p>
+<p>项目地址：<a href="https://github.com/mas-cli/mas" target="_blank" rel="noopener">https://github.com/mas-cli/mas</a></p>
+<h2 id="先安装mac下的包管理工具Homebrew"><a href="#先安装mac下的包管理工具Homebrew" class="headerlink" title="先安装mac下的包管理工具Homebrew"></a>先安装mac下的包管理工具Homebrew</h2><p>知道方法后我们开始duangduangduang的安装过程了，去homebrew的官网上找最新的命令,在终端里敲下如下命令：</p>
+<blockquote>
+<p>/usr/bin/ruby -e “$(curl -fsSL <a href="https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;" target="_blank" rel="noopener">https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</a></p>
+</blockquote>
+<p>得到报错信息：You are using macOS 10.11. ==&gt; We (and Apple) do not provide support for this version。也就是说我当前的系统版本过低。官方已经不提供支持了，那么这天路走不通了，于是问题变成了低版本macOS怎么安装brew和mas-cli的问题了。</p>
+<h3 id="解决Mac-OSX系统版本安装brew出错"><a href="#解决Mac-OSX系统版本安装brew出错" class="headerlink" title="解决Mac OSX系统版本安装brew出错"></a>解决Mac OSX系统版本安装brew出错</h3><p>于是又搜到一篇博客下给出了解决办法：   </p>
+<ol>
+<li>clone brew项目到本地   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Homebrew/brew</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>移动项目文件<br>1). 通过本地项目可知brew的目录结构,而我们所使用的命令都是/usr/local/bin文件中,因此将brew中的bin目录下的命令brew拷贝或者移动到/usr/local/bin下:(我所使用的是移动)   </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//进入本地项目brew中  </span><br><span class="line">cd brew    </span><br><span class="line">//移动brew到系统文件中 </span><br><span class="line">sudo mv bin/brew /usr/local/bin</span><br></pre></td></tr></table></figure>
+<p>2). 移动Library<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//移动Library库到/usr/local   </span><br><span class="line">sudo mv Library /usr/local</span><br></pre></td></tr></table></figure></p>
+<p>3). 移动share文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv share /usr/local</span><br></pre></td></tr></table></figure></p>
+<ol>
+<li>查看是否安装成功<br>使用brew查看是否已经移动成功.如果有以下内容则代表成功。<br><img src="https://user-gold-cdn.xitu.io/2019/11/26/16ea5b6d5cf3f4e7?w=1124&h=676&f=webp&s=38604"></li>
+</ol>
+<p>就完成了第一步的安装</p>
+<h2 id="安装mas-cli"><a href="#安装mas-cli" class="headerlink" title="安装mas-cli"></a>安装mas-cli</h2><p>接下来就是安装mas，常规教程是使用命令行<br><code>brew install mas</code></p>
+<p>当然你实在不愿意用 Homebrew 进行安装，也可使用官方提供的二进制版本进行安装，下载地址如下：<a href="https://github.com/mas-cli/mas/releases" target="_blank" rel="noopener">https://github.com/mas-cli/mas/releases</a> 。</p>
+<p>安装完mas后就可以见识到mas-cli的强大之处了</p>
+<h3 id="查询应用"><a href="#查询应用" class="headerlink" title="查询应用"></a>查询应用</h3><p>MAS 中每一个应用都有自己的应用识别码 (Product Identifier)，MAS 就是根据 Product Identifier 安装与更新应用的。使用 mas list 命令将显示所有已安装的应用程序及其应用识别码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ mas list</span><br><span class="line">646295438 RAR Extractor Lite (5.6.1)</span><br><span class="line">1012296988 爱奇艺 (5.7.10)</span><br><span class="line">836500024 WeChat (2.3.23)</span><br><span class="line">595615424 QQMusic (6.1.1)</span><br><span class="line">658741592 KugouMusic (2.7.3)</span><br><span class="line">1121484812 YoudaoNote (3.4.2)</span><br><span class="line">1435447041 DingTalk (4.6.16)</span><br><span class="line">451108668 QQ (6.5.2)</span><br><span class="line">1327661892 XMind (9.2.2)</span><br></pre></td></tr></table></figure></p>
+<p>如果我们要新安装一个应用软件要如何才能得到其应用识别码呢？<br>mas-cli 自身便提供了 mas search 命令来查询应用程序对应的应用识别码。<br>在终端中执行以下命令，很快就会显示 1Password 的应用识别码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$  mas search 1Password</span><br><span class="line">1333542190  1Password 7 - Password Manager (7.4.1)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>搜索关键字不区分大小写且支持模糊查询。</p>
+</blockquote>
+<h3 id="安装应用"><a href="#安装应用" class="headerlink" title="安装应用"></a>安装应用</h3><p>使用 mas-cli 安装一个新的应用软件也是非常容易的，安装一个新的应用软件只需知道此应用软件的识别码就可以很方便的安装这个软件了。上面我们已经讲了如何取得软件的应用识别码，接下来我们只需使用 mas install 命令便可完成应用软件的安装。</p>
+<p>那么要如何下载各个版本的 macOS 呢？请输入 mas install 1246284741 ，后方的数字参考下表，替换成你要下载的版本代号，如下所列：</p>
+<ul>
+<li>macOS 10.7 Lion – 444303913</li>
+<li>macOS 10.8 Mountain Lion – 537386512</li>
+<li>macOS 10.9 Mavericks – 675248567</li>
+<li>macOS 10.10 Yosemite – 915041082</li>
+<li>macOS 10.11 El Capitan – 1147835434</li>
+<li>macOS 10.11 El Capitan – 1018109117</li>
+<li>macOS 10.12 Sierra – 1127487414</li>
+<li>macOS 10.13 High Sierra – 1246284741</li>
+</ul>
+<p>知道了这一点之后你就可以在个版本macOS之间随意穿梭了，简直太强大了有米有。<br>下载时必须保持终端机开启，同时也可以看到目前的下载进度，下载后安装程式会显示于应用程式资料夹。如果要为 macOS 制作可开机安装程式，可参考 Apple 支持说明。</p>
+<p>一切准备就绪之后，macOS High Sierra就开始安装了，等待一个小时左右安装完成后，点击重新启动就可以升级更新成新系统了。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/11/26/16ea5d0181e0c9e8?w=586&amp;h=354&amp;f=png&amp;s=96406" alt=""><br>在新系统上装上后马上就安装了docker。终于没有一大堆报错信息了，感觉整个人神清气爽,hahaha…</p>
+<p>参考连接：<br><a href="https://zhuanlan.zhihu.com/p/85568553" target="_blank" rel="noopener">macOS 10.15 Catalina 正式版 体验感受，软件兼容如何</a><br><a href="https://user-gold-cdn.xitu.io/2019/11/26/16ea5b1b5af20d22" target="_blank" rel="noopener">解决Mac OSX系统版本安装brew出错</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MacOS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/26/2019-11-26低版本MacbookPro通过mas-cli下载更新各版本-macOS-全解析/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-如何使用ESLint-Prettier来统一我们的前端代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1194,230 +1467,6 @@
 
 
   
-    <article id="post-centos独立服务器划分虚拟服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/20/centos独立服务器划分虚拟服务/">Centos搭建node项目</a>
-    </h1>
-  
-
-        
-        <a href="/2018/08/20/centos独立服务器划分虚拟服务/" class="archive-article-date">
-  	<time datetime="2018-08-20T08:27:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="node环境安装和配置"><a href="#node环境安装和配置" class="headerlink" title="node环境安装和配置"></a>node环境安装和配置</h1><ol>
-<li>下载并安装 Node.js<br>下载最新的稳定版 v6.10.3 到本地:<br><code>wget https://nodejs.org/dist/v8.11.4/node-v8.11.4-linux-x64.tar.xz</code><br>下载完成后, 将其解压:<br><code>tar xvJf node-v6.10.3-linux-x64.tar.xz</code><br>将解压的 Node.js 目录移动到 /usr/local 目录下:<br><code>mv node-v6.10.3-linux-x64 /usr/local/node-v6</code><br>配置 node 软链接到 /bin 目录:<br><code>ln -s /usr/local/node-v6/bin/node /bin/node</code></li>
-<li>配置和使用 npm<br>下载 node 的压缩包中已经包含了 npm , 我们只需要将其软链接到 bin 目录下即可:<br><code>ln -s /usr/local/node-v6/bin/npm /bin/npm</code><br>配置环境变量:<br>将 /usr/local/node-v6/bin 目录添加到 $PATH 环境变量中可以方便地使用通过 npm 全局安装的第三方工具<br><code>echo &#39;export PATH=/usr/local/node-v6/bin:$PATH&#39; &gt;&gt; /etc/profile</code><br>生效环境变量:<br><code>source /etc/profile</code><br>通过 npm 安装进程管理模块 forever:<br><code>npm install forever -g</code><h1 id="vscode配置ftp-sync插件同步代码到服务器"><a href="#vscode配置ftp-sync插件同步代码到服务器" class="headerlink" title="vscode配置ftp-sync插件同步代码到服务器"></a>vscode配置ftp-sync插件同步代码到服务器</h1></li>
-<li>Ctrl + Shift + P调出命令模式， &gt;ext install 安装扩展     </li>
-<li>搜索ftp-sync插件，安装，等待安装成功后点击冲击那加载插件</li>
-<li>Ctrl + Shift + P调出命令模式，输入命令Ftp-sync:Init</li>
-<li><p>配置服务器远程连接文件（项目根目录下.vscode/ftp-sync.json）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    &#123;</span><br><span class="line">    &quot;remotePath&quot;: &quot;./&quot;,   // 远程服务器路径</span><br><span class="line">    &quot;host&quot;: &quot;host&quot;,       // 服务器地址</span><br><span class="line">    &quot;username&quot;: &quot;username&quot;,    // 用户名</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,    // 密码</span><br><span class="line">    &quot;port&quot;: 21,                // 端口号</span><br><span class="line">    &quot;secure&quot;: false,        </span><br><span class="line">    &quot;protocol&quot;: &quot;ftp&quot;,         // 采用的协议</span><br><span class="line">    &quot;uploadOnSave&quot;: false,</span><br><span class="line">    &quot;passive&quot;: false,</span><br><span class="line">    &quot;debug&quot;: false,</span><br><span class="line">    &quot;privateKeyPath&quot;: null,</span><br><span class="line">    &quot;passphrase&quot;: null,</span><br><span class="line">    &quot;ignore&quot;: [</span><br><span class="line">        &quot;\\.vscode&quot;,</span><br><span class="line">        &quot;\\.git&quot;,</span><br><span class="line">        &quot;\\.DS_Store&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;generatedFiles&quot;: &#123;</span><br><span class="line">        &quot;uploadOnSave&quot;: false,</span><br><span class="line">        &quot;extensionsToInclude&quot;: [],</span><br><span class="line">        &quot;path&quot;: &quot;&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置完成后在命令模式下输入Ftp-sync: Local to Remote,同步本地到远程；Ftp-sync: Remote to Local同步远程到本地<br>因为在上一篇笔记中配置了nginx以及反向代理。在项目部署到服务器后在项目目录下启动服务后即可通过域名访问</p>
-</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/20/centos独立服务器划分虚拟服务/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-基于CentOs搭建网站服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/基于CentOs搭建网站服务/">基于CentOS搭建网站服务</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/25/基于CentOs搭建网站服务/" class="archive-article-date">
-  	<time datetime="2018-07-25T07:59:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="搭建Http静态服务器环境"><a href="#搭建Http静态服务器环境" class="headerlink" title="搭建Http静态服务器环境"></a>搭建Http静态服务器环境</h1><p>  搭建静态网站，首先需要部署环境。下面的步骤，将告诉大家如何在服务器上通过 Nginx 部署 HTTP 静态服务。</p>
-<h2 id="1、-安装-Nginx"><a href="#1、-安装-Nginx" class="headerlink" title="1、 安装 Nginx"></a>1、 安装 Nginx</h2><p>在 CentOS 上，可直接使用 yum 来安装 Nginx</p>
-<blockquote>
-<p>yum install nginx -y    </p>
-</blockquote>
-<p>安装完成后，使用 nginx 命令启动 Nginx：</p>
-<blockquote>
-<p>nginx     </p>
-</blockquote>
-<p>此时，访问 <a href="http://116.62.197.141" target="_blank" rel="noopener">http://116.62.197.141</a> 可以看到 Nginx 的测试页面        </p>
-<h2 id="2、-配置静态服务器访问路径"><a href="#2、-配置静态服务器访问路径" class="headerlink" title="2、 配置静态服务器访问路径"></a>2、 配置静态服务器访问路径</h2><p>外网用户访问服务器的 Web 服务由 Nginx 提供，Nginx 需要配置静态资源的路径信息才能通过 url 正确访问到服务器上的静态资源。<br>打开 Nginx 的默认配置文件 /etc/nginx/nginx.conf ，修改 Nginx 配置，将默认的 root /usr/share/nginx/html; 修改为: root /data/www;   </p>
-<p>配置文件将 /data/www/static 作为所有静态资源请求的根路径，如访问:<a href="http://116.62.197.141/static/index.js，将会去" target="_blank" rel="noopener">http://116.62.197.141/static/index.js，将会去</a> /data/www/static/ 目录下去查找 index.js。现在我们需要重启 Nginx 让新的配置生效，如：</p>
-<blockquote>
-<p>nginx -s reload       </p>
-</blockquote>
-<p>重启后，现在我们应该已经可以使用我们的静态服务器了，现在让我们新建一个静态文件，查看服务是否运行正常。<br>首先让我们在 /data 目录 下创建 www 目录，如：</p>
-<blockquote>
-<p>mkdir -p /data/www     </p>
-</blockquote>
-<h2 id="3、创建第一个静态文件"><a href="#3、创建第一个静态文件" class="headerlink" title="3、创建第一个静态文件"></a>3、创建第一个静态文件</h2><p>在 /data/www 目录下创建我们的第一个静态文件 index.html       </p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;zh&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;第一个静态文件&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-Hello world！
-&lt;/body&gt;
-&lt;/html&gt;   
-</code></pre><p>现在访问 <a href="http://116.62.197.141/index.html" target="_blank" rel="noopener">http://116.62.197.141/index.html</a> 应该可以看到页面输出 Hello world!<br>到此，一个基于 Nginx 的静态服务器就搭建完成了，现在所有放在 /data/www 目录下的的静态资源都可以直接通过域名访问。</p>
-<h1 id="准备域名和证书"><a href="#准备域名和证书" class="headerlink" title="准备域名和证书"></a>准备域名和证书</h1><h2 id="1、域名注册"><a href="#1、域名注册" class="headerlink" title="1、域名注册"></a>1、域名注册</h2><p>  购买域名</p>
-<h2 id="2、域名解析"><a href="#2、域名解析" class="headerlink" title="2、域名解析"></a>2、域名解析</h2><p>  域名购买完成后, 需要将域名解析到云主机上，我的主机的 IP 为：116.62.197.141,<br>  找到控制台，可以到控制台添加解析记录<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/域名解析.png" alt=""><br>  <a href="https://help.aliyun.com/document_detail/29725.html?spm=a2c4g.11186623.2.5.fe0SoL" target="_blank" rel="noopener">具体解析规则点击这里</a><br>  域名设置解析后需要过一段时间才会生效，通过 ping 命令检查域名是否生效 </p>
-<blockquote>
-<p>ping <a href="http://www.yourmpdomain.com" target="_blank" rel="noopener">www.yourmpdomain.com</a>    </p>
-</blockquote>
-<p>  如果 ping 命令返回的信息中含有你设置的解析的 IP 地址，说明解析成功。</p>
-<h2 id="3、申请-SSL-证书"><a href="#3、申请-SSL-证书" class="headerlink" title="3、申请 SSL 证书"></a>3、申请 SSL 证书</h2><p>  首先登陆自己的阿里云账户，找到左侧菜单的安全–SSL证书服务<br>  点击证书购买，进入页面，这个时候可以没有出现免费证书的选项，大家不用着急，看下一步<br>  我们选择Symantec，是不是很神奇的出现了免费型DV SSL呢，没错，我们找的就是它了，选择它购买就可以。<br>  付款成功后返回控制台，进入我的证书–我的订单页面，是不是已经有了一个证书了。别及，现在还用不了<br>  点击补全信息进入下一步，填写自己要绑定的域名进入下一步,继续补全信息等待审核吧，只要资料没有填错，基本都会通过的，<br>  <a href="https://jingyan.baidu.com/article/6c67b1d6431a872787bb1ece.html" target="_blank" rel="noopener">具体申请流程点击这里</a></p>
-<h2 id="4、安装以及nginx配置"><a href="#4、安装以及nginx配置" class="headerlink" title="4、安装以及nginx配置"></a>4、安装以及nginx配置</h2><p>  SSL证书签发完以后，需要下载证书并安装证书</p>
-<ul>
-<li>打开下载的文件夹有.pem证书文件以及.key私钥文件</li>
-<li>在服务器的nginx的安装目录下新建cert文件夹，将下载的证书以及私钥文件放到此文件夹下</li>
-<li>修改nginx.conf配置文件，将证书以及私钥文件分别指向cert目录下的证书以及私钥路径</li>
-<li><p>配置好nginx后重启nginx服务</p>
-<blockquote>
-<p>nginx -s reload    </p>
-</blockquote>
-<p>即可以通过加密的服务访问网址</p>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">https</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/25/基于CentOs搭建网站服务/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1519,27 +1568,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1555,15 +1584,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1571,15 +1592,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1595,27 +1608,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1627,7 +1644,43 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
               </li>
             
             <div class="clearfix"></div>
