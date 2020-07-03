@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/对象实例本质.png">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/两个原型链.png">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/constructor属性的维护.png">
-<meta property="og:updated_time" content="2020-06-22T07:25:11.857Z">
+<meta property="og:updated_time" content="2020-07-03T05:50:00.707Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript原型链与继承">
 <meta name="twitter:description" content="“面向对象”有三个基本特性，即”封装，继承，多态“。一般来说，三个特性都完全满足的话，我们称为“面向对象语言”，而称满足其中部分特性的语言为“基于对象语言”。“对象系统 ”的继承特性，有三种实现方案，包括基于类（class-based）、基于原型（prototype-based）和基于元类（metaclass-based ）。 JavaScript 没有采用我们常见的类继承体系，而是使用原型继承来">
@@ -364,6 +364,7 @@
 <li>成员的修改是正常的、标准的构造对象系统的方法。</li>
 </ul>
 <p>在这里，所谓“从无到有 ”是指：在理论上我们可以先构建一个“没有任何成员”的类属关系的继承系统，然后通过“不断地修改原型”，从而获得一个完整的对象系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 公共函数: 子类派生 extend()</span><br><span class="line">*/</span><br><span class="line">extend = function(subClass, baseClass) &#123;</span><br><span class="line">    // 暂存父类构造器</span><br><span class="line">    subClass.baseConstructor = baseClass;</span><br><span class="line">    subClass.base = &#123;&#125;;</span><br><span class="line">    // 复制父类特性(属性与方法)</span><br><span class="line">    baseClass.call(subClass.base);</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line">* 构建对象系统</span><br><span class="line">*/</span><br><span class="line">function Mouse() &#123; /* 测试用 */ &#125;</span><br><span class="line">function Animal(name) &#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.say = function(message) &#123;</span><br><span class="line">        alert(this.name + &quot;: &quot; + message);</span><br><span class="line">    &#125;</span><br><span class="line">    this.eat = function() &#123;</span><br><span class="line">        this.say(&quot;Yum!&quot;);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line">function Cat() &#123;</span><br><span class="line">    Cat.baseConstructor.call(this, &apos;cat&apos;);</span><br><span class="line">    this.eat = function(food) &#123;</span><br><span class="line">        if (food instanceof Mouse)</span><br><span class="line">            Cat.base.eat.call(this);</span><br><span class="line">        else</span><br><span class="line">            this.say(&quot;Yuk! I only eat mice - not &quot; + food.name);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line">extend(Cat, Animal);</span><br><span class="line">function Lion() &#123;</span><br><span class="line">    Lion.baseConstructor.call(this, &apos;lion&apos;);</span><br><span class="line">&#125;</span><br><span class="line">extend(Lion, Cat);</span><br><span class="line">/**</span><br><span class="line">* 测试</span><br><span class="line">*/</span><br><span class="line">var cat = new Cat();</span><br><span class="line">var lion = new Lion();</span><br><span class="line">var mouse = new Mouse();</span><br><span class="line">var unknowObj = &#123;&#125;;</span><br><span class="line">cat.eat(mouse); // Yum!</span><br><span class="line">cat.eat(unknowObj); // Yuk! I only eat mice - not undefined</span><br><span class="line">lion.eat(mouse); // Yum!</span><br></pre></td></tr></table></figure>
 
       
 
@@ -472,6 +473,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/07/02/精通模块化javascript/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          精通模块化javascript
+        
+      </div>
+    </a>
   
   
     <a href="/2020/06/16/玩转npm/" id="article-nav-older" class="article-nav-link-wrap">
@@ -614,11 +624,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -634,15 +664,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -658,14 +684,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -678,7 +696,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -694,35 +728,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
              
               <li class="article-tag-list-item">

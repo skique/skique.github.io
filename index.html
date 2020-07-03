@@ -156,6 +156,115 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-精通模块化javascript" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/02/精通模块化javascript/">精通模块化javascript</a>
+    </h1>
+  
+
+        
+        <a href="/2020/07/02/精通模块化javascript/" class="archive-article-date">
+  	<time datetime="2020-07-02T12:16:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="模块化思维"><a href="#模块化思维" class="headerlink" title="模块化思维"></a>模块化思维</h3><p>从抽象到具体：模块化封装的实质是抽象，它将复杂性隐藏在我们不敢触及的“岩⽯”之下，这些岩⽯是我们通往另⼀个世界的接口，让我们可以远离复杂性，⼏乎不会去想复杂性。将抽象、接口及其底层概念应⽤到我们的⼯作中，使我们面对复杂项目时，可以化整为零，从项目的整体功能上把握全局，同时将需要关注的复杂性最⼩化。</p>
+<p>拥抱模块化，认识复杂性，正确的抽象可以使一个看起来拥有复杂功能的庞大项目看起来更加精巧，方面使用和易于理解。对使用者暴露简洁的接口，而将复杂性隐藏在接口之下。推及到其他，任何一款好的产品都应该是这样，将复杂性留在内部，对外针对性的暴露简洁的接触点。</p>
+<p>系统可以按粒度划分：系统 -&gt; 项目 -&gt; 应用 -&gt; 层级 -&gt; 模块 -&gt; 函数。<br>一花一世界，一叶一菩提。这就像在宏观层⾯观察宇宙，逐渐深⼊，直⾄到达原⼦层⾯，然后越过这个层⾯。每⼀层都有⾃⼰的复杂性和有待被发现的精微之处。</p>
+<p>每当我们描绘⼀个组件时，就要有⼀个与之对应的公共接口，系统的其他部分都可以使⽤这个公共接⼜来访问这个组件。接口或API由组件暴露（expose）的⼀组⽅法或属性组成。<br>组件暴露公共接口（属性或方法）也应该遵循这个原则</p>
+<ul>
+<li>接口的接触点越少，暴露出来的“表⾯积”就越⼩，接口也就越简单。</li>
+<li>表⾯积⼤的接口有⾼度的灵活性，但是这种接⼜会暴露⼤量功能，所以很可能难以理解与使⽤。</li>
+</ul>
+<p>所以在面对必要的复杂性时，编写健壮的、有详细⽂档的接⼜是隔离⼀段复杂代码的最佳⽅法之⼀。这样使用者就可以在不了解任何实现细节的情况下使⽤它的功能。<br>同时在代码层面，由于设计出合适的接⼜是⼀件有难度的事情，所以采⽤⼀致的API形态是也是提⾼⽣产⼒的好⽅法。它可以保持组件的整齐以及层级的⼀致。从开发者的⾓度看，⼀致的层级（由模式和外观相似的组件组成）可带来熟悉感，这种熟悉感让⼈能够持久地使⽤它，并且随着时间的推移，开发⼈员会越来越熟悉API的形态，而不需要花另外的功夫。</p>
+<p>谈及代码性能的问题：我们并不是在为计算机优化程序，以使其更快地运⾏。如果是这样的话，直接把⼆进制代码或硬编码逻辑写⼊电路板就⾏了。相反， 我们的重点是将代码有序地组织起来，使开发⼈员能够⾼效地⼯作， 快速理解甚⾄修改他们以前从未遇到过的代码。确保未来的开发与应⽤程序⼀直所采⽤的⽅式保持⼀致，使开发⼈员在各种约定和实践的软约束下⼯作，处于⼀种平稳状态，这就完成了⼀个闭环。再来看性能问题，我们应该把它当作⼀个特性，并且在⼤多数情况下，不应该把它放在⽐其他特性更重要的位置。这样看来，框架开发（不同语言之争）其实也是在性能和可语言可读性易用性之间的取舍。<br>需要注意到的时，在编程刚刚兴起的时候，由于内存资源稀缺，程序员需要优化内存的分配，这通常意味着需要将关注点更多的集中在性能上。然而在现代系统中，我们不需要将内存视为⼀种稀缺、珍贵且有限的资源；相反，我们可以把重点放在程序的易读性上，让⽇后的⾃⼰或者共事的开发者阅读起来更容易懂。这就是为什么编程语言发展到如今，作用拥有更高灵活性和易理解性的python,node以及javascript更受欢迎的原因。</p>
+<p>综上：模块化设计，在对外暴露接口时，需要在接口的灵活性和简洁性之间取舍。在运行效率方面，需要在性能和代码可读性易用性之间取舍</p>
+<h3 id="模块设计原则"><a href="#模块设计原则" class="headerlink" title="模块设计原则"></a>模块设计原则</h3><h4 id="1-提供尽可能少的接触面，"><a href="#1-提供尽可能少的接触面，" class="headerlink" title="1. 提供尽可能少的接触面，"></a>1. 提供尽可能少的接触面，</h4><p><strong>揭示模式</strong>：遵循揭⽰模式，不提供对实现细节的访问权限，除非明确将他们从模块中导出（通过作用域保护私有变量，）</p>
+<h4 id="2-作为黑盒子的接口："><a href="#2-作为黑盒子的接口：" class="headerlink" title="2. 作为黑盒子的接口："></a>2. 作为黑盒子的接口：</h4><p>输入 –&gt; 内部实现 –&gt; 输出</p>
+<p><strong>守卫语句和条件翻转（短路）</strong>：⼀个典型函数的完整结构应该以守卫语句开头，过滤和短路错误的输入。<br><strong>分割大型函数</strong>：拿到正确的输入后，进行函数进行    输入-&gt;输出的转化。对于转换操作的每个部分都可以进⾏拆解，并将它们移到不同的函数中。<br><strong>包装状态（纯函数实现）</strong>：</p>
+<ul>
+<li>避免创建派生状态：创建派⽣状态可能导致同步问题，还会从原始数据中产⽣⼀些过时的副产物。   </li>
+<li>提取中间状态包含到组件中。所有中间状态都被包含到⼀个组件中⽽不是暴露给外部时，组件或函数交互时的摩擦就会减少。</li>
+<li>在函数中尽量避免修改输入参数， 因为输出只依赖于输⼊且不存在副作⽤   </li>
+</ul>
+<p><strong>数据结构</strong>：如果找到了合适的数据结构，你就会发现要使输⼊变成想要的输出，其所需的转换、映射与循环都不会很多。无论对于何种输入转化为输出，都可以通过模块化（总分结构，大函数包含小函数，通常纯函数，没有副作用）的方式达到。编程能力的体现也许不是实现了某种功能，而是架构，抽象和模块化和的能力。</p>
+<h4 id="3、封装：依赖⾦字塔结构"><a href="#3、封装：依赖⾦字塔结构" class="headerlink" title="3、封装：依赖⾦字塔结构"></a>3、封装：依赖⾦字塔结构</h4><p><strong>全局到局部</strong>：顶部处理⾼层的关注点，将阻碍当前流程的⼀切移到函数底部，在整体中抽出实现具体功能的代码封装为一个函数。让读者⼀开始对函数功能有⼀个宏观的印象，当他们继续阅读代码时，才会发现图表实现⽅式的细节。<br><strong>抽出函数</strong>：提高程序易读性和可维护行：为程序的某个部分命名⽽且不添加任何注释的方法，可以创建⼀个函数来包含这个功能。这样做不仅为算法所做的事情取了名字，⽽且使我们能将这段代码移出来，仅保留对流程的⾼层描述。<br><strong>特性分离</strong>：当我们把⼀个⼤组件的内部拆分成⼏个⼦组件时，会分解其内部的复杂性，最后得到⼏个简单的组件。但是复杂性并没有消失，⽽是隐藏在这些⼦组件与⽗组件之间的相互关联中。这就像在宏观层⾯观察宇宙，逐渐深⼊，直⾄到达原⼦层⾯，然后越过这个层⾯。每⼀层都有⾃⼰的复杂性和有待被发现的精微之处。<br><strong>流程控制与业务分离</strong>：和回调地狱一样，需要解决作用域限定问题，如果函数从其⽗级作⽤域⾄少引⽤⼀个变量，我们就可以选择保持它们原地不动或者将那些引⽤以参数的形式传递，以便继续对该函数解耦。<br><strong>分离数据与逻辑</strong>：数据转换应该与数据本⾝分离，以保证数据的每个中间表⽰的可重⽤性。<br><strong>单一这职责原则</strong>：当组件有⼀个唯⼀的精确⽬标时，就称它们遵循SRP。 遵循SRP的模块不⼀定必须导出⼀个函数作为该模块的API。只要从组件中导出的⽅法和属性是相互关联的，我们就不会破坏SRP。在考虑SRP时，很重要的⼀点是要弄清楚其中的“R（职责）”是什么。</p>
+<h4 id="4、一点一点抽象：循序渐进。"><a href="#4、一点一点抽象：循序渐进。" class="headerlink" title="4、一点一点抽象：循序渐进。"></a>4、一点一点抽象：循序渐进。</h4><p>避免过度设计：专注于解决当下或即将遇到的问题，⽐去预估可能到来的爆发式流量增长⽽为其设计对应的基础设施要好得多。这样我们的系统更加⾃然地发展，能适应近期的需求，并逐渐向⽀持更⼤ 的应⽤程序和更多的需求发展。</p>
+<p>当我们不确定是否将⼀些⽤例与某个抽象捆绑在⼀起时，最好的⽅法通常是先等⼀等。我们应该先等待⽤例出现，当抽象的好处变得很明显时再重新考虑它。不要⼀开始就试图让你的接口满⾜每⼀个可能的⽤例。先考虑更简单的选择，然后再花点时间让接口根据需要来演进和成熟。</p>
+<p>在开始思考如何对要实现的特性进⾏最妥当的抽象，使其满⾜将来可能出现的每⼀个需求之前，我们有必要先退⼀步，考虑更简单的选择。⼀个简单的实现意味着我们可以花费更少的前期成本，⽽且当新的需求来临时，也不需要对已有的实现做⼤量的修改。</p>
+<p>我不是提倡草率开发内部结构，⽽是⿎励经过充分的思考周全地设计接口。一旦原型阶段结束，清晰地定义层对设计出⾼效且可维护的应⽤程序就⾄关重要。</p>
+<h4 id="5、最后灵活对待这些原则："><a href="#5、最后灵活对待这些原则：" class="headerlink" title="5、最后灵活对待这些原则："></a>5、最后灵活对待这些原则：</h4><p>考虑⾃⼰的情况（上下⽂），当你改变某条规则以适应⾃⼰的情况时，并不代表你不同意这条规则（建议），你只是在不同的上下⽂解决相同的问题。</p>
+<h3 id="编写优雅的模块化代码"><a href="#编写优雅的模块化代码" class="headerlink" title="编写优雅的模块化代码"></a>编写优雅的模块化代码</h3><h4 id="多用变量，少用巧妙的学法，保持代码易读性。"><a href="#多用变量，少用巧妙的学法，保持代码易读性。" class="headerlink" title="多用变量，少用巧妙的学法，保持代码易读性。"></a>多用变量，少用巧妙的学法，保持代码易读性。</h4><h4 id="尽量使⽤简单的const绑定。"><a href="#尽量使⽤简单的const绑定。" class="headerlink" title="尽量使⽤简单的const绑定。"></a>尽量使⽤简单的const绑定。</h4><p>可以将赋值操作放到⼀个函数中，然后将返回值⽤const绑定。这样可以消除复杂性。<br><code>const value = getInitValue(）</code><br>如果需要反复地将操作结果分配给相同的绑定</p>
+<ul>
+<li>使⽤链式调⽤来避免重新分配绑定</li>
+<li>每次都创建新的绑定，根据之前的绑定计算它的值，享受使⽤const带来的好处</li>
+</ul>
+<h4 id="尽量使用纯函数。"><a href="#尽量使用纯函数。" class="headerlink" title="尽量使用纯函数。"></a>尽量使用纯函数。</h4><p>函数的输出只有输入决定，而不存在其他的副作用</p>
+<h4 id="模板字⾯量-s-hello-name"><a href="#模板字⾯量-s-hello-name" class="headerlink" title="模板字⾯量 s=hello ${name}"></a>模板字⾯量 s=<code>hello ${name}</code></h4><h4 id="解构、剩余参数和展开运算符。"><a href="#解构、剩余参数和展开运算符。" class="headerlink" title="解构、剩余参数和展开运算符。"></a>解构、剩余参数和展开运算符。</h4><p><code>const {low, height,ask, ...details} = ticker</code><br>解构：指明计算函数输出时会⽤到的对象字段。并且可以制定别名。<br>对象展开运算符：只需使⽤⼀⼩段原⽣语法就能创建⽬标对象的浅拷贝。我们还可以将对象展开符与⾃定义属性结合起来，创建⼀个对象拷贝并覆盖原始对象中的值。</p>
+<h4 id="巧用继承和组合实现特性行为。"><a href="#巧用继承和组合实现特性行为。" class="headerlink" title="巧用继承和组合实现特性行为。"></a>巧用继承和组合实现特性行为。</h4><p>Class继承<br>通过继承，我们可以为对象有顺序的添加添加层：从不具体的基础部分开始，构建到对象中最具体的部分。复杂性会分布在不同的类中，但主要位于基础层中，这些层会提供⼀个简洁的API，隐藏复杂性。<br>组合<br>组合的好处：对象的各部分与扩展<br>    组合是继承的⼀种替代⽅案，组合将功能中正交的部分串起来。正交性意味着我们互补而不会改变彼此的行为<br>例子：编写扩展函数，⽤新功能扩展现有对象。<br>      代码⽚段中有⼀个makeEmitter函数，它为所有的⽬标对象添加灵活的事件处理功能，其中的.on⽅法为⽬标对象添加事件监听器，⽽使⽤者通过.emit⽅法可以指⽰要传递给事件监听器的事件类型和任意数量的参数<br>正确的模块化写法，需要在在组合和继承之间进⾏选择</p>
+<h4 id="扁平化嵌套回调"><a href="#扁平化嵌套回调" class="headerlink" title="扁平化嵌套回调"></a>扁平化嵌套回调</h4><p>具有异步流程的代码库经常陷⼊回调地狱，每个回调创建新⼀级的缩进，导致进⼊异步流程链深处后代码越来越难以阅读：<br>嵌套回调这种结构的问题主要是作用域限定问题，在最深的回调中，继承了所有⽗回调的联合作⽤域。随着函数变得越来越⼤，越来越多的变量被绑定到这些作⽤域中，此时要想脱离⽗回调理解其中⼀个回调就变得越来越困难。在具体的编程实践中，这种耦合可以通过以下几种方式实现嵌套回调代码的的扁平化：<br>1、 通过给回调函数命名并把它们放到同样的嵌套层级中来解决<br>2、 如果确实需要使⽤⽗作⽤域中的某些变量，可以显式地在下⼀个回调中传递它们。<br>3、通过使⽤类似async的库来解决这个问题，简化了扁平化链接的过程<br>4、以串行的方式执行promise特性</p>
+<h4 id="重构相似任务"><a href="#重构相似任务" class="headerlink" title="重构相似任务"></a>重构相似任务</h4><p>如果⼀个并发流程在多个函数之间或多或少有⼀些⼀致性，也会出现相似的情况。这种情况下，可以考虑将该流程放在⼀个函数中， 然后把在各种情况下皆不相同的实际处理逻辑作为回调传递给这个函数。</p>
+<h3 id="CRUST-原则"><a href="#CRUST-原则" class="headerlink" title="CRUST 原则"></a>CRUST 原则</h3><p>前面说了进行模块化设计的过程时从抽象到具体的过程，层的抽象对应到具体的行为，每个层的设计应该遵循CRUST原则，即 一致性、弹性的、明确的、简单并且小巧。</p>
+<h4 id="⼀致的（consistent）"><a href="#⼀致的（consistent）" class="headerlink" title="⼀致的（consistent）"></a>⼀致的（consistent）</h4><p>在代码库的每个层级上，⼀致性都是有价值的：</p>
+<ul>
+<li>代码风格⼀致，能减少开发者之间的摩擦以及合并代码时的冲突；</li>
+<li>函数形态⼀致，能提⾼可读性，更符合直觉；</li>
+<li>命名和架构⼀致则能减少意外，并保持代码的⼀致性。</li>
+</ul>
+<h4 id="弹性的（resilient）"><a href="#弹性的（resilient）" class="headerlink" title="弹性的（resilient）"></a>弹性的（resilient）</h4><p>  这意味着它有灵活的接口，并且接受以⼏种不同⽅式表⽰的输⼊，包括可选参数和重载。</p>
+<h4 id="明确的（unambiguous）"><a href="#明确的（unambiguous）" class="headerlink" title="明确的（unambiguous）"></a>明确的（unambiguous）</h4><p>  对于如何使⽤API、API的功能、如何提供输⼊或理解其输出，没有多种不同的解释</p>
+<h4 id="简单（simple）"><a href="#简单（simple）" class="headerlink" title="简单（simple）"></a>简单（simple）</h4><p>  使⽤起来很简单，处理⼀般⽤例时⼏乎不需要配置，对于⾼级⽤例允许为其定制</p>
+<h4 id="⼩巧（tiny）"><a href="#⼩巧（tiny）" class="headerlink" title="⼩巧（tiny）"></a>⼩巧（tiny）</h4><p>  即够⽤但没有过度设计，它包含了尽可能⼩的“表⾯积（surface area）”，同时为未来的⾮破坏性拓展留有空间。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/07/02/精通模块化javascript/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-JavaScript原型链与继承" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -359,6 +468,7 @@
 <li>成员的修改是正常的、标准的构造对象系统的方法。</li>
 </ul>
 <p>在这里，所谓“从无到有 ”是指：在理论上我们可以先构建一个“没有任何成员”的类属关系的继承系统，然后通过“不断地修改原型”，从而获得一个完整的对象系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 公共函数: 子类派生 extend()</span><br><span class="line">*/</span><br><span class="line">extend = function(subClass, baseClass) &#123;</span><br><span class="line">    // 暂存父类构造器</span><br><span class="line">    subClass.baseConstructor = baseClass;</span><br><span class="line">    subClass.base = &#123;&#125;;</span><br><span class="line">    // 复制父类特性(属性与方法)</span><br><span class="line">    baseClass.call(subClass.base);</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line">* 构建对象系统</span><br><span class="line">*/</span><br><span class="line">function Mouse() &#123; /* 测试用 */ &#125;</span><br><span class="line">function Animal(name) &#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">    this.say = function(message) &#123;</span><br><span class="line">        alert(this.name + &quot;: &quot; + message);</span><br><span class="line">    &#125;</span><br><span class="line">    this.eat = function() &#123;</span><br><span class="line">        this.say(&quot;Yum!&quot;);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line">function Cat() &#123;</span><br><span class="line">    Cat.baseConstructor.call(this, &apos;cat&apos;);</span><br><span class="line">    this.eat = function(food) &#123;</span><br><span class="line">        if (food instanceof Mouse)</span><br><span class="line">            Cat.base.eat.call(this);</span><br><span class="line">        else</span><br><span class="line">            this.say(&quot;Yuk! I only eat mice - not &quot; + food.name);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line">extend(Cat, Animal);</span><br><span class="line">function Lion() &#123;</span><br><span class="line">    Lion.baseConstructor.call(this, &apos;lion&apos;);</span><br><span class="line">&#125;</span><br><span class="line">extend(Lion, Cat);</span><br><span class="line">/**</span><br><span class="line">* 测试</span><br><span class="line">*/</span><br><span class="line">var cat = new Cat();</span><br><span class="line">var lion = new Lion();</span><br><span class="line">var mouse = new Mouse();</span><br><span class="line">var unknowObj = &#123;&#125;;</span><br><span class="line">cat.eat(mouse); // Yum!</span><br><span class="line">cat.eat(unknowObj); // Yuk! I only eat mice - not undefined</span><br><span class="line">lion.eat(mouse); // Yum!</span><br></pre></td></tr></table></figure>
 
       
 
@@ -2062,249 +2172,6 @@ Array.prototype[@@iterator]()
 
 
   
-    <article id="post-动手撸一个页面生成器——移动端" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/14/动手撸一个页面生成器——移动端/">动手撸一个页面生成器——移动端</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/14/动手撸一个页面生成器——移动端/" class="archive-article-date">
-  	<time datetime="2020-05-14T11:44:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="移动端项目模板"><a href="#移动端项目模板" class="headerlink" title="移动端项目模板"></a>移动端项目模板</h2><p>​    采用taro实现建站项目移动端，实现一端编译多端发布，可以根据需要发布为h5，微信小程序，字节跳动小程序。</p>
-<!-- ### 项目实现思路 -->
-<p>taro采用类react语法。</p>
-<h3 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h3><p>本项目采用mobx作为状态管理。<br>1、src/store/site.js中定义siteData作为全局变量进行数据维护和渲染。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import &#123; observable &#125; from &apos;mobx&apos;</span><br><span class="line"></span><br><span class="line">const siteStore = observable(&#123;</span><br><span class="line">  siteData: &apos;&apos;,</span><br><span class="line">&#125;)</span><br><span class="line">export default siteStore</span><br></pre></td></tr></table></figure></p>
-<p>2、在app.jsx中把所有的state注入Provider中，后面的子组件都可以使用@inject(“想要使用的state”)注入被观察者。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Provider &#125; from &apos;@tarojs/mobx&apos;</span><br><span class="line">import siteStore from &apos;./store/site&apos;</span><br><span class="line">const store = &#123;</span><br><span class="line">  siteStore</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  ...</span><br><span class="line">  render () &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">        &lt;Index /&gt;</span><br><span class="line">      &lt;/Provider&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>3、在其他组件或页面中你可以这样使用他们<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import &#123; observer, inject &#125; from &apos;@tarojs/mobx&apos;</span><br><span class="line">@inject(&apos;siteStore&apos;)  // 注入被观察者</span><br><span class="line">@observer             // 观察器</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const &#123; siteStore: &#123; siteData &#125; &#125; = this.props  // 可以这样拿到存入store里的全局数据</span><br></pre></td></tr></table></figure></p>
-<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><h4 id="1、顶部导航"><a href="#1、顶部导航" class="headerlink" title="1、顶部导航"></a>1、顶部导航</h4><p>本项目已经实现自定义顶部导航组件，支持以下属性自定义</p>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">isBack</td>
-<td style="text-align:center">是否显示返回按钮</td>
-<td style="text-align:center">Boolean</td>
-<td style="text-align:center">false</td>
-</tr>
-<tr>
-<td style="text-align:center">title</td>
-<td style="text-align:center">顶部导航标题</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘测试标题’</td>
-</tr>
-<tr>
-<td style="text-align:center">background</td>
-<td style="text-align:center">顶部导航栏背景色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">color</td>
-<td style="text-align:center">顶部导航栏文字颜色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">center</td>
-<td style="text-align:center">文字是否居中颜色</td>
-<td style="text-align:center">Boolean</td>
-<td style="text-align:center">false</td>
-</tr>
-<tr>
-<td style="text-align:center">search</td>
-<td style="text-align:center">是否显示搜索栏</td>
-<td style="text-align:center">Boolean</td>
-<td style="text-align:center">false</td>
-</tr>
-<tr>
-<td style="text-align:center">searchStyle</td>
-<td style="text-align:center">自定义搜索栏样式</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">headerRight</td>
-<td style="text-align:center">右侧图标</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">[]</td>
-</tr>
-</tbody>
-</table>
-<p>使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import CustomNav from &apos;../../components/custom-nav/custom-nav&apos;</span><br><span class="line">...</span><br><span class="line">&lt;CustomNav </span><br><span class="line">  title=&#123;title&#125; </span><br><span class="line">  background=&#123;background&#125;</span><br><span class="line">  color=&#123;titleColor&#125;</span><br><span class="line">  center</span><br><span class="line">&gt;&lt;/CustomNav&gt;</span><br></pre></td></tr></table></figure></p>
-<h4 id="1、底部导航"><a href="#1、底部导航" class="headerlink" title="1、底部导航"></a>1、底部导航</h4><p>本项目已经实现自定义底部导航 Tabar 组件，支持以下属性自定义</p>
-<h5 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">current</td>
-<td style="text-align:center">当前激活的index</td>
-<td style="text-align:center">Number</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">background</td>
-<td style="text-align:center">背景色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">color</td>
-<td style="text-align:center">文字颜色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">activeColor</td>
-<td style="text-align:center">激活文字颜色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">tabList</td>
-<td style="text-align:center">tab 列表, object 字段说明请看下表</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">[]</td>
-</tr>
-</tbody>
-</table>
-<h5 id="tabList-object-字段详解"><a href="#tabList-object-字段详解" class="headerlink" title="tabList object 字段详解"></a>tabList object 字段详解</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">name</td>
-<td style="text-align:center">标题</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">icon</td>
-<td style="text-align:center">未选中时图片icon的链接</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">activeIcon</td>
-<td style="text-align:center">选中时图片icon的链接</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">link</td>
-<td style="text-align:center">点击跳转的链接，通常是页面id</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-</tbody>
-</table>
-<h5 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">事件名称</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">返回参数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">onClick</td>
-<td style="text-align:center">点击触发事件，开发者需要通过 onClick 事件来更新 current 值变化</td>
-<td style="text-align:center">（链接link，选中tab列表索引值）</td>
-</tr>
-</tbody>
-</table>
-<p>使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import TabBar from &apos;../../components/tab-bar/tab-bar&apos;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">&lt;TabBar </span><br><span class="line">  current=&#123;bottomNav.activeIndex&#125; </span><br><span class="line">  background=&#123;bottomNav.background&#125; </span><br><span class="line">  color=&#123;bottomNav.color&#125; </span><br><span class="line">  activeColor=&#123;bottomNav.activeColor&#125; </span><br><span class="line">  onChange=&#123;this.handleTabbar.bind(this)&#125;</span><br><span class="line">  tabList=&#123;bottomNav.navList&#125;</span><br><span class="line">/&gt;&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="2、公用组件库"><a href="#2、公用组件库" class="headerlink" title="2、公用组件库"></a>2、公用组件库</h4><p>本项目1.0版本目前集成类文本、图片、幻灯片等公用组件，封装在src/components目录文件夹下，接收oStyle, content, event作为组件样式、内容以及事件等属性作为props,渲染文本组件<br>以TextCom为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  const &#123; oStyle, content, event &#125; = this.props</span><br><span class="line">  return (</span><br><span class="line">    &lt;View className=&quot;widget&quot;&gt;</span><br><span class="line">      &lt;View  </span><br><span class="line">        className=&quot;text-box ui-sortable relative textActive&quot;</span><br><span class="line">        style=&#123;oStyle&#125;</span><br><span class="line">        &gt;</span><br><span class="line">        &lt;Text className=&quot;showtext&quot;&gt; &#123; content.text &#125;&lt;/Text&gt;</span><br><span class="line">      &lt;/View&gt;</span><br><span class="line">    &lt;/View&gt;</span><br><span class="line">  );     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>event事件已经在调用组件的页面里进行了统一处理   </p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">handleClick = (event) =&gt; &#123;</span><br><span class="line">  if(event.type === &apos;href&apos; &amp;&amp; event.linkId)&#123;</span><br><span class="line">      Taro.navigateTo(&#123;</span><br><span class="line">          url: `/pages/page$&#123;event.linkId&#125;/page$&#123;event.linkId&#125;`</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125; else if(event.type === &apos;href&apos; &amp;&amp; event.tel)&#123;</span><br><span class="line">      Taro.makePhoneCall(&#123;</span><br><span class="line">          phoneNumber: event.tel</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">&lt;TextCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="页面"><a href="#页面" class="headerlink" title="页面"></a>页面</h3><p>本项目作为小程序建站项目的生成器，已经实现了页面自动化生成。<br>package.json里集成了node script脚本<br>键入命令<br><code>npm run new:pages</code><br>即可一键生成页面并注册路由</p>
-<h4 id="处理逻辑"><a href="#处理逻辑" class="headerlink" title="处理逻辑"></a>处理逻辑</h4><p>自动生成命令的逻辑封装在src/scripts文件夹内，</p>
-<h5 id="1、生成文件的模版"><a href="#1、生成文件的模版" class="headerlink" title="1、生成文件的模版"></a>1、生成文件的模版</h5><p>我们已经把页面渲染所需要的公用组件封装在组件库内，那么页面所需要做的就是按照节点加载需要的组件，所以页面的通用逻辑是：<br>1、读取当前页面节点<br>2、遍历节点渲染公用组件</p>
-<p>在script/template.jsx提取页面公用逻辑封装页面模版：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  render () &#123;</span><br><span class="line">    const &#123;title, background, titleColor &#125; = this.state</span><br><span class="line">    const &#123; siteStore: &#123; siteData &#125; &#125; = this.props</span><br><span class="line">    const widgetsList = siteData.pages[$&#123;INDEX&#125;].components;   // 第一步读取当前页面节点，$&#123;INDEX&#125;接受遍历的索引值</span><br><span class="line">    </span><br><span class="line">    return (</span><br><span class="line">      &lt;View className=&apos;index&apos;&gt;</span><br><span class="line">        &lt;CustomNav </span><br><span class="line">          title=&#123;title&#125; </span><br><span class="line">          background=&#123;background&#125;</span><br><span class="line">          color=&#123;titleColor&#125;</span><br><span class="line">          center</span><br><span class="line">          &gt;&lt;/CustomNav&gt;</span><br><span class="line">        </span><br><span class="line">        &#123;</span><br><span class="line">          widgetsList.map((appUi,index) =&gt; &#123;   // 第二步遍历并根据类型渲染节点组件</span><br><span class="line">            &#123;</span><br><span class="line">              if(appUi.name === &apos;TextCom&apos;)&#123;</span><br><span class="line">                return &lt;TextCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br><span class="line">              &#125; else if(appUi.name === &apos;PicCom&apos;) &#123;</span><br><span class="line">                return &lt;PicCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br><span class="line">              &#125; else if(appUi.name === &apos;CarouselCom&apos;)&#123;</span><br><span class="line">                return &lt;CarouselCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">      &lt;/View&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h5 id="2、自动生成页面，并在生成文件后进行统一的注册路由操作"><a href="#2、自动生成页面，并在生成文件后进行统一的注册路由操作" class="headerlink" title="2、自动生成页面，并在生成文件后进行统一的注册路由操作"></a>2、自动生成页面，并在生成文件后进行统一的注册路由操作</h5><p>script/generateView.js生成页面的模版的文件,pageCreater对象封装了创建文件夹，创建文件和注册路由操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">handleEvent = (pgId, index) =&gt; &#123;  //  基于promise定义一个完整的事件流</span><br><span class="line">  return new Promise(resolve =&gt; &#123;</span><br><span class="line">    pageCreater.handleCreateDir(pgId).then(()=&gt;&#123;  // 创建文件夹</span><br><span class="line">      pageCreater.handleCreateFile(pgId, index).then(()=&gt;&#123;             // 创建文件</span><br><span class="line">        resolve(&#123;pgId,&#125;);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function generateTask() &#123;</span><br><span class="line">  if(siteDate.pages.length&gt;0)&#123;</span><br><span class="line">    let task = []</span><br><span class="line">    for(let i = 0; i &lt; siteDate.pages.length; i++)&#123;</span><br><span class="line">      task.push(handleEvent(siteDate.pages[i].pgId, i));</span><br><span class="line">    &#125;</span><br><span class="line">    Promise.all(task).then((res) =&gt; &#123;    //顺序执行Promise队列</span><br><span class="line">      let pgIds = res.map(item=&gt;item.pgId);   // 执行完后拿到队列的pgIds</span><br><span class="line">      console.log(pgIds)</span><br><span class="line"></span><br><span class="line">      pageCreater.handleCreatRouterPath(pgIds);                           // 基于pgIds进行统一注册路由操作</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generateTask()</span><br></pre></td></tr></table></figure></p>
-<h3 id="项目生成"><a href="#项目生成" class="headerlink" title="项目生成"></a>项目生成</h3><blockquote>
-<p>以微信小程序为例</p>
-</blockquote>
-<p>1、 安装依赖<br><code>npm install</code></p>
-<p>2、生成页面并注册路由<br><code>npm run new:pages</code></p>
-<p>3、本地调试<br><code>npm run dev:weapp</code></p>
-<p>4、打包编译<br><code>npm run build:weapp</code></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/14/动手撸一个页面生成器——移动端/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -2402,11 +2269,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2422,15 +2309,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2446,14 +2329,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -2466,7 +2341,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2482,35 +2373,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">js</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">模块化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
              
               <li class="article-tag-list-item">
