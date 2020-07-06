@@ -156,6 +156,335 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JavaScript查漏补缺——Array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/29/JavaScript查漏补缺——Array/">JavaScript查漏补缺——Array</a>
+    </h1>
+  
+
+        
+        <a href="/2020/05/29/JavaScript查漏补缺——Array/" class="archive-article-date">
+  	<time datetime="2020-05-29T11:26:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>JavaScript的 Array 对象是用于构造数组的全局对象，数组是类似于列表的高阶对象。</p>
+<h2 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h2><ul>
+<li>数组是一种类列表对象，它的原型中提供了遍历和修改元素的相关操作。</li>
+<li>JavaScript 数组的长度和元素类型都是非固定的。因为数组的长度可随时改变，并且其数据在内存中也可以不连续，所以 JavaScript 数组不一定是密集型的，这取决于它的使用方式。</li>
+<li>只能用整数作为数组元素的索引，而不能用字符串。</li>
+<li>关联数组: 使用非整数并通过方括号或点号来访问或设置数组元素时，所操作的并不是数组列表中的元素，而是数组对象的属性集合上的变量。数组对象的属性和数组元素列表是分开存储的，并且数组的遍历和修改操作也不能作用于这些命名属性。</li>
+</ul>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><p>Array.length<br>Array 构造函数的 length 属性，其值为1（注意该属性为静态属性，不是数组实例的 length 属性）。</p>
+<p>get Array[@@species]<br>返回 Array 构造函数</p>
+<p>Array.prototype<br>通过数组的原型对象可以为所有数组对象添加属性。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>Array.from()<br>从类数组对象或者可迭代对象中创建一个新的数组实例。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">console.log(Array.from(&apos;foo&apos;));</span><br><span class="line">// expected output: Array [&quot;f&quot;, &quot;o&quot;, &quot;o&quot;]</span><br><span class="line"></span><br><span class="line">console.log(Array.from([1, 2, 3], x =&gt; x + x));</span><br><span class="line">// expected output: Array [2, 4, 6]</span><br></pre></td></tr></table></figure></p>
+<p>Array.isArray()<br>用来判断某个变量是否是一个数组对象。   </p>
+<p>Array.of()<br>根据一组参数来创建新的数组实例，支持任意的参数数量和类型。</p>
+<h2 id="数组实例"><a href="#数组实例" class="headerlink" title="数组实例"></a>数组实例</h2><p>所有数组实例都会从 Array.prototype 继承属性和方法。修改 Array 的原型会影响到所有的数组实例</p>
+<h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><p>Array.prototype.constructor<br>所有的数组实例都继承了这个属性，它的值就是 Array，表明了所有的数组都是由 Array 构造出来的。<br>Array.prototype.length<br>上面说了，因为 Array.prototype 也是个数组，所以它也有 length 属性，这个值为 0，因为它是个空数组。</p>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><h4 id="修改器方法"><a href="#修改器方法" class="headerlink" title="修改器方法"></a>修改器方法</h4><p>下面的这些方法会改变调用它们的对象自身的值</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">copyWithin()</td>
+<td style="text-align:center">在数组内部，将一段元素序列拷贝到另一段元素序列上，覆盖原有的值。</td>
+</tr>
+<tr>
+<td style="text-align:center">fill()</td>
+<td style="text-align:center">将数组中指定区间的所有元素的值，都替换成某个固定的值。</td>
+</tr>
+<tr>
+<td style="text-align:center">pop()</td>
+<td style="text-align:center">删除数组的最后一个元素，并返回这个元素。</td>
+</tr>
+<tr>
+<td style="text-align:center">push()</td>
+<td style="text-align:center">在数组的末尾增加一个或多个元素，并返回数组的新长度。</td>
+</tr>
+<tr>
+<td style="text-align:center">reverse()</td>
+<td style="text-align:center">颠倒数组中元素的排列顺序，即原先的第一个变为最后一个，原先的最后一个变为第一个。</td>
+</tr>
+<tr>
+<td style="text-align:center">shift()</td>
+<td style="text-align:center">删除数组的第一个元素，并返回这个元素。</td>
+</tr>
+<tr>
+<td style="text-align:center">sort()</td>
+<td style="text-align:center">对数组元素进行排序，并返回当前数组。</td>
+</tr>
+<tr>
+<td style="text-align:center">splice()</td>
+<td style="text-align:center">在任意的位置给数组添加或删除任意个元素。参数：[].splice(index, deleteNums, addNums)</td>
+</tr>
+<tr>
+<td style="text-align:center">unshift()</td>
+<td style="text-align:center">在数组的开头增加一个或多个元素，并返回数组的新长度。</td>
+</tr>
+</tbody>
+</table>
+<!-- Array.prototype.copyWithin() 
+在数组内部，将一段元素序列拷贝到另一段元素序列上，覆盖原有的值。
+Array.prototype.fill() 
+将数组中指定区间的所有元素的值，都替换成某个固定的值。
+Array.prototype.pop()
+删除数组的最后一个元素，并返回这个元素。
+Array.prototype.push()
+在数组的末尾增加一个或多个元素，并返回数组的新长度。
+Array.prototype.reverse()
+颠倒数组中元素的排列顺序，即原先的第一个变为最后一个，原先的最后一个变为第一个。
+Array.prototype.shift()
+删除数组的第一个元素，并返回这个元素。
+Array.prototype.sort()
+对数组元素进行排序，并返回当前数组。
+Array.prototype.splice()
+在任意的位置给数组添加或删除任意个元素。
+Array.prototype.unshift()
+在数组的开头增加一个或多个元素，并返回数组的新长度。 -->
+<h4 id="访问器方法"><a href="#访问器方法" class="headerlink" title="访问器方法"></a>访问器方法</h4><p>下面的这些方法绝对不会改变调用它们的对象的值，只会返回一个新的数组或者返回一个其它的期望值。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">concat()</td>
+<td style="text-align:center">在数组内部，将一段元素序列拷贝到另一段元素序列上。</td>
+</tr>
+<tr>
+<td style="text-align:center">includes()</td>
+<td style="text-align:center">判断当前数组是否包含某指定的值，如果是返回 true，否则返回 false。</td>
+</tr>
+<tr>
+<td style="text-align:center">join()</td>
+<td style="text-align:center">连接所有数组元素组成一个字符串。</td>
+</tr>
+<tr>
+<td style="text-align:center">slice()</td>
+<td style="text-align:center">抽取当前数组中的一段元素组合成一个新数组。</td>
+</tr>
+<tr>
+<td style="text-align:center">toSource()</td>
+<td style="text-align:center">返回一个表示当前数组字面量的字符串。遮蔽了原型链上的 Object.prototype.toSource() 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">toString()</td>
+<td style="text-align:center">返回一个由所有数组元素组合而成的字符串。遮蔽了原型链上的 Object.prototype.toString() 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">toLocaleString()</td>
+<td style="text-align:center">返回一个由所有数组元素组合而成的本地化后的字符串。遮蔽了原型链上的 Object.prototype.toLocaleString() 方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">indexOf()</td>
+<td style="text-align:center">返回数组中第一个与指定值相等的元素的索引，如果找不到这样的元素，则返回 -1。</td>
+</tr>
+<tr>
+<td style="text-align:center">lastIndexOf()</td>
+<td style="text-align:center">返回数组中最后一个（从右边数第一个）与指定值相等的元素的索引，如果找不到这样的元素，则返回 -1。</td>
+</tr>
+</tbody>
+</table>
+<!-- Array.prototype.concat()
+返回一个由当前数组和其它若干个数组或者若干个非数组值组合而成的新数组。
+Array.prototype.includes() 
+判断当前数组是否包含某指定的值，如果是返回 true，否则返回 false。
+Array.prototype.join()
+连接所有数组元素组成一个字符串。
+Array.prototype.slice()
+抽取当前数组中的一段元素组合成一个新数组。
+Array.prototype.toSource() 
+返回一个表示当前数组字面量的字符串。遮蔽了原型链上的 Object.prototype.toSource() 方法。
+Array.prototype.toString()
+返回一个由所有数组元素组合而成的字符串。遮蔽了原型链上的 Object.prototype.toString() 方法。
+Array.prototype.toLocaleString()
+返回一个由所有数组元素组合而成的本地化后的字符串。遮蔽了原型链上的 Object.prototype.toLocaleString() 方法。
+Array.prototype.indexOf()
+返回数组中第一个与指定值相等的元素的索引，如果找不到这样的元素，则返回 -1。
+Array.prototype.lastIndexOf()
+返回数组中最后一个（从右边数第一个）与指定值相等的元素的索引，如果找不到这样的元素，则返回 -1。 -->
+<h4 id="迭代方法"><a href="#迭代方法" class="headerlink" title="迭代方法"></a>迭代方法</h4><p>在下面的众多遍历方法中，有很多方法都需要指定一个回调函数作为参数。在每一个数组元素都分别执行完回调函数之前，数组的length属性会被缓存在某个地方，所以，如果你在回调函数中为当前数组添加了新的元素，那么那些新添加的元素是不会被遍历到的。<br>此外，如果在回调函数中对当前数组进行了其它修改，比如改变某个元素的值或者删掉某个元素，那么随后的遍历操作可能会受到未预期的影响。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">forEach()</td>
+<td style="text-align:center">为数组中的每个元素执行一次回调函数。</td>
+</tr>
+<tr>
+<td style="text-align:center">every()</td>
+<td style="text-align:center">如果数组中的每个元素都满足测试函数，则返回 true，否则返回 false。</td>
+</tr>
+<tr>
+<td style="text-align:center">some()</td>
+<td style="text-align:center">如果数组中至少有一个元素满足测试函数，则返回 true，否则返回 false。</td>
+</tr>
+<tr>
+<td style="text-align:center">filter()</td>
+<td style="text-align:center">将所有在过滤函数中返回 true 的数组元素放进一个新数组中并返回。</td>
+</tr>
+<tr>
+<td style="text-align:center">find()</td>
+<td style="text-align:center">找到第一个满足测试函数的元素并返回那个元素的值，如果找不到，则返回 undefined。</td>
+</tr>
+<tr>
+<td style="text-align:center">findIndex()</td>
+<td style="text-align:center">找到第一个满足测试函数的元素并返回那个元素的索引，如果找不到，则返回 -1。</td>
+</tr>
+<tr>
+<td style="text-align:center">map()</td>
+<td style="text-align:center">返回一个由回调函数的返回值组成的新数组。</td>
+</tr>
+<tr>
+<td style="text-align:center">reduce()</td>
+<td style="text-align:center">从左到右为每个数组元素执行一次回调函数，并把上次回调函数的返回值放在一个暂存器中传给下次回调函数，并返回最后一次回调函数的返回值。</td>
+</tr>
+<tr>
+<td style="text-align:center">reduceRight()</td>
+<td style="text-align:center">从右到左为每个数组元素执行一次回调函数，并把上次回调函数的返回值放在一个暂存器中传给下次回调函数，并返回最后一次回调函数的返回值。</td>
+</tr>
+<tr>
+<td style="text-align:center">entries()</td>
+<td style="text-align:center">返回一个数组迭代器对象，该迭代器会包含所有数组元素的键值对。</td>
+</tr>
+<tr>
+<td style="text-align:center">keys()</td>
+<td style="text-align:center">返回一个数组迭代器对象，该迭代器会包含所有数组元素的键。</td>
+</tr>
+<tr>
+<td style="text-align:center">values()</td>
+<td style="text-align:center">返回一个数组迭代器对象，该迭代器会包含所有数组元素的值。</td>
+</tr>
+</tbody>
+</table>
+<!-- Array.prototype.forEach()
+为数组中的每个元素执行一次回调函数。
+Array.prototype.entries() 
+返回一个数组迭代器对象，该迭代器会包含所有数组元素的键值对。
+Array.prototype.every()
+如果数组中的每个元素都满足测试函数，则返回 true，否则返回 false。
+Array.prototype.some()
+如果数组中至少有一个元素满足测试函数，则返回 true，否则返回 false。
+Array.prototype.filter()
+将所有在过滤函数中返回 true 的数组元素放进一个新数组中并返回。
+Array.prototype.find() 
+找到第一个满足测试函数的元素并返回那个元素的值，如果找不到，则返回 undefined。
+Array.prototype.findIndex() 
+找到第一个满足测试函数的元素并返回那个元素的索引，如果找不到，则返回 -1。
+Array.prototype.keys() 
+返回一个数组迭代器对象，该迭代器会包含所有数组元素的键。
+Array.prototype.map()
+返回一个由回调函数的返回值组成的新数组。
+Array.prototype.reduce()
+从左到右为每个数组元素执行一次回调函数，并把上次回调函数的返回值放在一个暂存器中传给下次回调函数，并返回最后一次回调函数的返回值。
+Array.prototype.reduceRight()
+从右到左为每个数组元素执行一次回调函数，并把上次回调函数的返回值放在一个暂存器中传给下次回调函数，并返回最后一次回调函数的返回值。
+Array.prototype.values() 
+返回一个数组迭代器对象，该迭代器会包含所有数组元素的值。
+Array.prototype[@@iterator]() 
+和上面的 values() 方法是同一个函数。 -->
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ECMAScript 1st Edition</td>
+<td style="text-align:center">初始定义。</td>
+</tr>
+<tr>
+<td style="text-align:center">ECMAScript 5.1</td>
+<td style="text-align:center">新增方法: Array.isArray, indexOf, lastIndexOf, every, some, forEach, map, filter, reduce, reduceRight</td>
+</tr>
+<tr>
+<td style="text-align:center">ECMAScript 2015 (6th)</td>
+<td style="text-align:center">新增方法：Array.from, Array.of, find, findIndex, fill, copyWithin</td>
+</tr>
+<tr>
+<td style="text-align:center">ECMAScript</td>
+<td style="text-align:center">新增方法：Array.prototyp</td>
+</tr>
+</tbody>
+</table>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JavaScript基础</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/05/29/JavaScript查漏补缺——Array/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-动手撸一个页面生成器——移动端" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1563,15 +1892,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
         		</li>
       		
 		</ul>
@@ -1744,130 +2073,6 @@
 
 
   
-    <article id="post-前端工程化——构建工具" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/24/前端工程化——构建工具/">前端工程化——构建工具</a>
-    </h1>
-  
-
-        
-        <a href="/2020/02/24/前端工程化——构建工具/" class="archive-article-date">
-  	<time datetime="2020-02-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="何为构建"><a href="#何为构建" class="headerlink" title="何为构建"></a>何为构建</h2><p>Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。</p>
-<p>构建其实是工程化、自动化思想在前端开发中的体现，将开发流程中让人痛苦或耗时的任务自动化，让代码自动化地执行这一系列复杂的流程，从而减少你所浪费的时间、创造更大价值。</p>
-<p>比如我们执行一些例如CoffeeScript/ES6去代替Javascript、JS或CSS压缩、用Less去写CSS、用Jade去写HTML、用Browserify去模块化、为非覆盖式部署的资源加MD5戳等，这些操作如果我们一遍遍手动执行，非常耗费时间和精力，所以前端构建工具，或者较前端自动化构建工具，就是用来让我们不再做机械重复的事情，让我们从重复性工作中脱身，更加专注于代码本身。</p>
-<p>构建可以实现如下内容：</p>
-<blockquote>
-<p>代码转换：ts/es6-&gt;js,scss-&gt;css。<br>文件优化：压缩JS、CSS、HTML，压缩合并图片等。<br>代码分割：提取公共代码。<br>模块合并：将多个模块和文件通过构建合并成一个文件。<br>自动刷新：监听本地源代码变化，自动重新构建、刷新浏览器。<br>代码校验：校验代码是否符合规范，以及单元测试是否通过。<br>自动发布：自动构建出线上发布代码并部署到服务器。</p>
-</blockquote>
-<h2 id="构建工具发展"><a href="#构建工具发展" class="headerlink" title="构建工具发展"></a>构建工具发展</h2><p>构建工具发展：Npm Scripts、Grunt、Gulp、FIS 3、Webpack、Rollup、Parcel</p>
-<h3 id="1-Npm-Scripts"><a href="#1-Npm-Scripts" class="headerlink" title="1. Npm Scripts"></a>1. Npm Scripts</h3><p>npm是nodejs附带的包管理器，npm script是npm内置的一个功能，允许在package.json文件里面使用script字段定义任务，需要注意的是node script可以结合node实现更为灵活的自动化构建任务，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;node index.js&quot;,</span><br><span class="line">  &quot;new&quot;: &quot;node generateView.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>script字段中的一个属性对应一段shell脚本，除了常用的dev命令，还可以自定义自己的命令，比如我在开发网站管理后台的时候注意到有太多相似的页面需要填充相同的html结构，为了摆脱这些重复性工作，我结合node自定义了一个新增模版页面的命令。</p>
-<p>优点:</p>
-<ul>
-<li>内置，无需安装其他依赖<br>缺点: </li>
-<li>功能简单，不方便管理多个任务依赖,对于自定义任务则需要熟悉node,编写大量代码</li>
-</ul>
-<h3 id="2-Grunt"><a href="#2-Grunt" class="headerlink" title="2. Grunt"></a>2. <a href="https://www.gruntjs.net/" target="_blank" rel="noopener">Grunt</a></h3><p>Grunt 相当于进化版的 Npm scripts，它的诞生其实是为了弥补 Npm Scripts 的不足。<br>当你在Gruntfile文件正确配置好了任务，任务运行器就会自动帮你或你的小组完成大部分无聊的工作。<br>查看一个Guntfile示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(grunt) &#123;</span><br><span class="line">  grunt.initConfig(&#123;</span><br><span class="line">    jshint: &#123;         // 检查代码是否符合语法规范</span><br><span class="line">      files: [&apos;Gruntfile.js&apos;, &apos;src/**/*.js&apos;, &apos;test/**/*.js&apos;],</span><br><span class="line">      options: &#123;</span><br><span class="line">        globals: &#123;</span><br><span class="line">          jQuery: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    watch: &#123;           ／／ 监听代码更改时检查代码</span><br><span class="line">      files: [&apos;&lt;%= jshint.files %&gt;&apos;],</span><br><span class="line">      tasks: [&apos;jshint&apos;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-jshint&apos;);</span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-watch&apos;);</span><br><span class="line"></span><br><span class="line">  grunt.registerTask(&apos;default&apos;, [&apos;jshint&apos;]);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>优点：</p>
-<ul>
-<li>灵活，只执行我们定义的任务</li>
-<li>拥有数量庞大的插件可供选择<br>缺点：</li>
-<li>集成度不高，要写很多配置后才可以用</li>
-</ul>
-<h3 id="3-gulp"><a href="#3-gulp" class="headerlink" title="3. gulp"></a>3. <a href="https://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp</a></h3><p>Gulp 是一个基于流的自动化构建工具，是Grunt的加强版，增加文件监听，文件读写，流式处理任务。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);     //引用基础模块</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);    //js压缩模块</span><br><span class="line"></span><br><span class="line">gulp.task(&apos;script&apos;,function()&#123;  //启动任务script</span><br><span class="line">  gulp.src(&apos;js/*.js&apos;)           //找到文件</span><br><span class="line">  .pipe(uglify())               //压缩文件</span><br><span class="line">  .pipe(gulp.dest(&apos;dist/js&apos;))   //另存压缩文件</span><br><span class="line">&#125;);</span><br><span class="line">//监听</span><br><span class="line">gulp.task(&apos;auto&apos;,function () &#123;</span><br><span class="line">  gulp.watch(&apos;js/*.js&apos;,[&apos;script&apos;]);     //监听script任务</span><br><span class="line">  gulp.watch(&apos;css/*.css&apos;,[&apos;css&apos;]);      //监听css任务</span><br><span class="line">  gulp.watch(&apos;images/*.*&apos;,[&apos;images&apos;]);  //监听images任务</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
-<p>优点：</p>
-<ul>
-<li>灵活，可单独使用也可搭配其他工具<br>缺点：</li>
-<li>集成度不高，要写很多配置后才可以用</li>
-</ul>
-<h3 id="4-Webpack"><a href="#4-Webpack" class="headerlink" title="4. Webpack"></a>4. <a href="https://www.webpackjs.com/" target="_blank" rel="noopener">Webpack</a></h3><p>在Webpack里一切文件皆模块，通过loader转换文件，通过Plugin注入钩子，最后输出由多个模块组合成的文件。Webpack专注于构建模块化项目。<br>Webpack是一个打包模块化的JavaScript的工具，在官网打出的口号是“打包所有资源，脚本，图片，样式”。<br>其官网的首页图很形象的展示了 Webpack 的定义，如下图：</p>
-<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png" alt=""></p>
-<p>一切文件，如JavaScript、CSS、SCSS、图片、模板，对于Webpack 来说都是一个个模块，这样的好处是能清晰地描绘各个模块之间的依赖关系，以方便Webpack进行组合和打包，经过Webpack的处理，最终会输出浏览器能使用的静态资源。</p>
-<p>Webpack具有很大的灵活性，能配置处理文件的方式，使用方法大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,     // 所有模块的入口，webpack从入口开始递归解析出所有依赖的模块</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),    // 设置打包输出文件生成的文件夹</span><br><span class="line">    filename: &apos;bundle.js&apos;                     // 将入口所依赖的所有模块打包成一个文件 bundle.js 输出</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>优点：</p>
-<ul>
-<li>专注于模块化，开箱即用一步到位</li>
-<li>通过plugin拓展，完整好用又不失灵活</li>
-<li>使用场景不局限于web开发</li>
-<li>社区庞大活跃</li>
-<li>良好的开发体验<br>缺点：</li>
-<li>只能用于模块化开发</li>
-</ul>
-<h3 id="异同点"><a href="#异同点" class="headerlink" title="异同点"></a>异同点</h3><p>上面介绍的几种构建工具构建工具是按照他们的诞生时间排序的，他们是时代的产物，侧面反映出 Web 开发的发展趋势，如下所述：</p>
-<blockquote>
-<p>在 Npm Scripts 和 Grunt 时代，Web 开发要做的事情变多，流程复杂，自动化思想被引入，用于简化流程；<br>在 Gulp 时代，开始出现一些新语言用于提高开发效率，流程处理思想的出现是为了简化文件转换的流程，例如将ES6转换为ES5；<br>在Webpack时代，由于单页应用的流行，网页的功能和实现代码变的复杂、庞大，Web开发向模块化改进。</p>
-</blockquote>
-<p>grunt和glup几乎是为了解决同一个问题而生，那就是让自动化流程来解决你的双手。强调的是前端开发的工作流程，在glup中我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。 简单说就一个Task Runner，就是用来跑一个一个任务的。</p>
-<p>Gulp 没法解决的是 js module 的问题，是你写代码时候如何组织代码结构的问题。在以前这些问题，还是只能通过工程师在做项目前首先就要想到如何做到模块化的问题，并且在这个问题上每个工程师都有各个的一套看法和解决方案。</p>
-<p>Webpack出现后，模块化的问题才第一次被标准化，Webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、脚本、样式等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。</p>
-<p>glup和webpack的异同点：<br>相同点：文件合并与压缩（css,js），sass/less预编译，启动server，版本控制。<br>不同点，虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。<br>gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。<br>webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。</p>
-<p>经过多年的额发展，Webpack 已经成为构建工具中的首选，这是因为：<br>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack可以为这些新项目提供一站式的解决方案；<br>Webpack有良好的生态和维护团队，能提供良好的开发体验并保证质量；<br>Webpack 被全世界大量的Web开发者使用和验证，能找到各个层面所需要的教程和经验分享。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/02/24/前端工程化——构建工具/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1965,19 +2170,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1985,11 +2178,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2005,7 +2194,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2025,6 +2214,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -2037,15 +2234,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2057,7 +2250,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2081,11 +2278,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
               </li>
             
             <div class="clearfix"></div>

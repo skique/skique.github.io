@@ -156,6 +156,130 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-前端工程化——构建工具" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/24/前端工程化——构建工具/">前端工程化——构建工具</a>
+    </h1>
+  
+
+        
+        <a href="/2020/02/24/前端工程化——构建工具/" class="archive-article-date">
+  	<time datetime="2020-02-24T09:19:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="何为构建"><a href="#何为构建" class="headerlink" title="何为构建"></a>何为构建</h2><p>Web前端这几年进化速度之快让人咂舌，很多前端工程师都不禁吐槽“学不动了”。如今已经不是HTML、CSS、JS前端三剑客仗剑走天下的时代了。Web应用日益庞大，代码也更加庞大，因此许多新的思想（例如模块化和工程化等）和框架（React和Vue等），以及新的语言（Es6 TypeScript）随之出现，而构建工具则承担起了中间的桥梁作用。</p>
+<p>构建其实是工程化、自动化思想在前端开发中的体现，将开发流程中让人痛苦或耗时的任务自动化，让代码自动化地执行这一系列复杂的流程，从而减少你所浪费的时间、创造更大价值。</p>
+<p>比如我们执行一些例如CoffeeScript/ES6去代替Javascript、JS或CSS压缩、用Less去写CSS、用Jade去写HTML、用Browserify去模块化、为非覆盖式部署的资源加MD5戳等，这些操作如果我们一遍遍手动执行，非常耗费时间和精力，所以前端构建工具，或者较前端自动化构建工具，就是用来让我们不再做机械重复的事情，让我们从重复性工作中脱身，更加专注于代码本身。</p>
+<p>构建可以实现如下内容：</p>
+<blockquote>
+<p>代码转换：ts/es6-&gt;js,scss-&gt;css。<br>文件优化：压缩JS、CSS、HTML，压缩合并图片等。<br>代码分割：提取公共代码。<br>模块合并：将多个模块和文件通过构建合并成一个文件。<br>自动刷新：监听本地源代码变化，自动重新构建、刷新浏览器。<br>代码校验：校验代码是否符合规范，以及单元测试是否通过。<br>自动发布：自动构建出线上发布代码并部署到服务器。</p>
+</blockquote>
+<h2 id="构建工具发展"><a href="#构建工具发展" class="headerlink" title="构建工具发展"></a>构建工具发展</h2><p>构建工具发展：Npm Scripts、Grunt、Gulp、FIS 3、Webpack、Rollup、Parcel</p>
+<h3 id="1-Npm-Scripts"><a href="#1-Npm-Scripts" class="headerlink" title="1. Npm Scripts"></a>1. Npm Scripts</h3><p>npm是nodejs附带的包管理器，npm script是npm内置的一个功能，允许在package.json文件里面使用script字段定义任务，需要注意的是node script可以结合node实现更为灵活的自动化构建任务，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;node index.js&quot;,</span><br><span class="line">  &quot;new&quot;: &quot;node generateView.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>script字段中的一个属性对应一段shell脚本，除了常用的dev命令，还可以自定义自己的命令，比如我在开发网站管理后台的时候注意到有太多相似的页面需要填充相同的html结构，为了摆脱这些重复性工作，我结合node自定义了一个新增模版页面的命令。</p>
+<p>优点:</p>
+<ul>
+<li>内置，无需安装其他依赖<br>缺点: </li>
+<li>功能简单，不方便管理多个任务依赖,对于自定义任务则需要熟悉node,编写大量代码</li>
+</ul>
+<h3 id="2-Grunt"><a href="#2-Grunt" class="headerlink" title="2. Grunt"></a>2. <a href="https://www.gruntjs.net/" target="_blank" rel="noopener">Grunt</a></h3><p>Grunt 相当于进化版的 Npm scripts，它的诞生其实是为了弥补 Npm Scripts 的不足。<br>当你在Gruntfile文件正确配置好了任务，任务运行器就会自动帮你或你的小组完成大部分无聊的工作。<br>查看一个Guntfile示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = function(grunt) &#123;</span><br><span class="line">  grunt.initConfig(&#123;</span><br><span class="line">    jshint: &#123;         // 检查代码是否符合语法规范</span><br><span class="line">      files: [&apos;Gruntfile.js&apos;, &apos;src/**/*.js&apos;, &apos;test/**/*.js&apos;],</span><br><span class="line">      options: &#123;</span><br><span class="line">        globals: &#123;</span><br><span class="line">          jQuery: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    watch: &#123;           ／／ 监听代码更改时检查代码</span><br><span class="line">      files: [&apos;&lt;%= jshint.files %&gt;&apos;],</span><br><span class="line">      tasks: [&apos;jshint&apos;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-jshint&apos;);</span><br><span class="line">  grunt.loadNpmTasks(&apos;grunt-contrib-watch&apos;);</span><br><span class="line"></span><br><span class="line">  grunt.registerTask(&apos;default&apos;, [&apos;jshint&apos;]);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>灵活，只执行我们定义的任务</li>
+<li>拥有数量庞大的插件可供选择<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="3-gulp"><a href="#3-gulp" class="headerlink" title="3. gulp"></a>3. <a href="https://www.gulpjs.com.cn/" target="_blank" rel="noopener">gulp</a></h3><p>Gulp 是一个基于流的自动化构建工具，是Grunt的加强版，增加文件监听，文件读写，流式处理任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);     //引用基础模块</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);    //js压缩模块</span><br><span class="line"></span><br><span class="line">gulp.task(&apos;script&apos;,function()&#123;  //启动任务script</span><br><span class="line">  gulp.src(&apos;js/*.js&apos;)           //找到文件</span><br><span class="line">  .pipe(uglify())               //压缩文件</span><br><span class="line">  .pipe(gulp.dest(&apos;dist/js&apos;))   //另存压缩文件</span><br><span class="line">&#125;);</span><br><span class="line">//监听</span><br><span class="line">gulp.task(&apos;auto&apos;,function () &#123;</span><br><span class="line">  gulp.watch(&apos;js/*.js&apos;,[&apos;script&apos;]);     //监听script任务</span><br><span class="line">  gulp.watch(&apos;css/*.css&apos;,[&apos;css&apos;]);      //监听css任务</span><br><span class="line">  gulp.watch(&apos;images/*.*&apos;,[&apos;images&apos;]);  //监听images任务</span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure>
+<p>优点：</p>
+<ul>
+<li>灵活，可单独使用也可搭配其他工具<br>缺点：</li>
+<li>集成度不高，要写很多配置后才可以用</li>
+</ul>
+<h3 id="4-Webpack"><a href="#4-Webpack" class="headerlink" title="4. Webpack"></a>4. <a href="https://www.webpackjs.com/" target="_blank" rel="noopener">Webpack</a></h3><p>在Webpack里一切文件皆模块，通过loader转换文件，通过Plugin注入钩子，最后输出由多个模块组合成的文件。Webpack专注于构建模块化项目。<br>Webpack是一个打包模块化的JavaScript的工具，在官网打出的口号是“打包所有资源，脚本，图片，样式”。<br>其官网的首页图很形象的展示了 Webpack 的定义，如下图：</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/webpack@2x.png" alt=""></p>
+<p>一切文件，如JavaScript、CSS、SCSS、图片、模板，对于Webpack 来说都是一个个模块，这样的好处是能清晰地描绘各个模块之间的依赖关系，以方便Webpack进行组合和打包，经过Webpack的处理，最终会输出浏览器能使用的静态资源。</p>
+<p>Webpack具有很大的灵活性，能配置处理文件的方式，使用方法大致如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: &apos;./src/index.js&apos;,     // 所有模块的入口，webpack从入口开始递归解析出所有依赖的模块</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &apos;dist&apos;),    // 设置打包输出文件生成的文件夹</span><br><span class="line">    filename: &apos;bundle.js&apos;                     // 将入口所依赖的所有模块打包成一个文件 bundle.js 输出</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>优点：</p>
+<ul>
+<li>专注于模块化，开箱即用一步到位</li>
+<li>通过plugin拓展，完整好用又不失灵活</li>
+<li>使用场景不局限于web开发</li>
+<li>社区庞大活跃</li>
+<li>良好的开发体验<br>缺点：</li>
+<li>只能用于模块化开发</li>
+</ul>
+<h3 id="异同点"><a href="#异同点" class="headerlink" title="异同点"></a>异同点</h3><p>上面介绍的几种构建工具构建工具是按照他们的诞生时间排序的，他们是时代的产物，侧面反映出 Web 开发的发展趋势，如下所述：</p>
+<blockquote>
+<p>在 Npm Scripts 和 Grunt 时代，Web 开发要做的事情变多，流程复杂，自动化思想被引入，用于简化流程；<br>在 Gulp 时代，开始出现一些新语言用于提高开发效率，流程处理思想的出现是为了简化文件转换的流程，例如将ES6转换为ES5；<br>在Webpack时代，由于单页应用的流行，网页的功能和实现代码变的复杂、庞大，Web开发向模块化改进。</p>
+</blockquote>
+<p>grunt和glup几乎是为了解决同一个问题而生，那就是让自动化流程来解决你的双手。强调的是前端开发的工作流程，在glup中我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。 简单说就一个Task Runner，就是用来跑一个一个任务的。</p>
+<p>Gulp 没法解决的是 js module 的问题，是你写代码时候如何组织代码结构的问题。在以前这些问题，还是只能通过工程师在做项目前首先就要想到如何做到模块化的问题，并且在这个问题上每个工程师都有各个的一套看法和解决方案。</p>
+<p>Webpack出现后，模块化的问题才第一次被标准化，Webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、脚本、样式等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。</p>
+<p>glup和webpack的异同点：<br>相同点：文件合并与压缩（css,js），sass/less预编译，启动server，版本控制。<br>不同点，虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。<br>gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。<br>webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。</p>
+<p>经过多年的额发展，Webpack 已经成为构建工具中的首选，这是因为：<br>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack可以为这些新项目提供一站式的解决方案；<br>Webpack有良好的生态和维护团队，能提供良好的开发体验并保证质量；<br>Webpack 被全世界大量的Web开发者使用和验证，能找到各个层面所需要的教程和经验分享。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/02/24/前端工程化——构建工具/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-小白入门docker指南" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1514,109 +1638,6 @@
 
 
   
-    <article id="post-关于区块链中的Dapp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/12/关于区块链中的Dapp/">关于区块链中的Dapp</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/12/关于区块链中的Dapp/" class="archive-article-date">
-  	<time datetime="2018-09-12T06:40:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有人说2018年是区块链元年，区块链这个概念被越炒越火，也是之前一直知道比特币，知道最近才更多的了解到区块链的发展，知道了以太坊，智能合约，看到各种系名词RAM、DAPP、OTCBTC，今天主要讲的是Dapp</p>
-<h2 id="什么是DAPP"><a href="#什么是DAPP" class="headerlink" title="什么是DAPP"></a>什么是DAPP</h2><p>  经过这几年移动互联网以及智能手机的普及，相信几乎所有人都知道了什么是APP(Application的简称)。 时间转眼迈入区块链时代， 一个新的名词DAPP(Decentralized Application)出现了。Dapp是Decentralized Application的简称，也就是分散式应用程序   </p>
-<p>  只有当满足以下所有条件时，一个应用才可以称之为DAPP：</p>
-<ul>
-<li>应用必须完全开源、自治并且没有一个实体控制着该应用的大部分代币(Token)。该应用必须能够根据市场的反馈及技术要求进行升级，但是升级必须由应用的用户达成共识之后才可以进行；</li>
-<li>应用的数据必须加密后存储在公开的区块链上；</li>
-<li>应用必须拥有代币机制（可以使用已存在的代币或者新发行一种内置代币），矿工或者应用维护节点需要得到代币奖励；</li>
-<li>应用代币的产生必须依据标准的加密算法，有价值的节点可以根据该算法获取应用的代币奖励。    </li>
-</ul>
-<p>  根据以上的标准，比特币、Asch都算是DAPP，<br>所以比特币是一个DAPP，Asch是一个DAPP，而基于Asch开发的<a href="http://link.zhihu.com/?target=https%3A//cctime.org" title="CCTIME" target="_blank" rel="noopener">CCTIME</a>。也是一个DAPP。不同的是，有些DAPP扮演了操作系统的角色(比如Ethereum、Asch)，基于这些平台可以很容易的开发出特定需求的DAPP，而有些DAPP(比如CCTIME)则是具体的应用。但它们都满足上面的标准。</p>
-<h2 id="DAPP的核心要素"><a href="#DAPP的核心要素" class="headerlink" title="DAPP的核心要素"></a>DAPP的核心要素</h2><p>对于DAPP的开发，我们可以从零开始，重新创建一个完整的区块链系统并开发自己的应用，这相当于开发一个新的区块链项目，比较费事费力且对个人能力要求较高。对于一个普通的开发者来说，如果你想基于区块链开发自己的应用，那选择一个成熟的区块链应用开发平台就好了。这些平台一般会提供完善的接口以及开发工具，只需要操心业务逻辑及其实现就好了。关于区块链的底层部分，这些平台都会帮你处理好。 </p>
-<ol>
-<li>开发平台:<br> 目前最流行的开发平台是Ethereum：Ethereum是目前全球除了比特币以外第二大的区块链项目，它就像一台遍及全世界的分布式计算机，你只需要把你的应用部署在Ethereum上，应用的运行就可以由所有的Ethereum节点来保证了。应用的运行需要支付手续费(GAS)。缺点是需要学习一门新的语言Solidity。<br> 另外一个建议就是基于笔者所在团队开发的Asch(中文名叫做阿希)。只要掌握JavaScript，就可以基于Asch开发DAPP。 Asch采用的是侧链架构，每一个DAPP就是一套侧链。侧链可以有独立的区块链和节点网络。不同的DAPP之间互相不会影响。不同于Ethereum， Asch系统上DAPP数量的增加不会增加主链的负担，是一套更加先进的机制。</li>
-<li>共识机制：<br> 共识机制决定了运行DAPP的各节点如何达成共识及获取奖励，<br> 目前最常用的共识机制有POW、POS以及DPOS等。POW依据计算资源分配奖励，目前Bitcoin、Ethereum都采用了这种机制(不过Ethereum后面可能要迁移到POS)。Asch采用的是经过PBFT优化后的DPOS机制，核心系统是由 101 个委托人节点组成，委托人是被社区选举的可信账户，得票最高的 101 个委托人负责生产区块。得票排名未进入前 101 名的账户被称为候选人，当他们将来获得足够多的选票并进入前 101 名后，将成为正式的委托人。基于阿希开发的DAPP默认采用这种共识机制，不过开发者可以自己修改并决定使用哪种共识机制。</li>
-<li>代币分发:<br> 一般DAPP都会内置代币(Token), 而想让更多用户参与到DAPP的维护与使用中的话，就需要考虑好如何把代币分发到用户手中。<br> 目前最常见的有以下几种方案：<ul>
-<li>挖矿：以Bitcoin为例，任何拥有计算资源的人都可以加入到Bitcoin的挖矿中来，通过挖矿奖励来获取新的Bitcoin。</li>
-<li>ICO: 可以简单理解为众筹。通过收集市面上已经成熟的其他代币，根据一定比例兑换为本DAPP内的代币来完成。Ethereum就是按照 1BTC/2000ETH的比例通过ICO众筹到了很多BTC作为起始资金。这种分发方式在国内已被禁止。</li>
-<li>空投： 将代币免费分发到用户手中。持有其他代币的用户只需要完成一个简单的绑定流程，就可以得到代币。最近的案例有CCTIME空投，具体方式可参考<a href="CCTime 加密货币时讯">CCTIME官网</a>。</li>
-<li>私募：这个就跟找投资一样，依个人能力而定了。</li>
-</ul>
-</li>
-</ol>
-<h2 id="DAPP的生命周期"><a href="#DAPP的生命周期" class="headerlink" title="DAPP的生命周期"></a>DAPP的生命周期</h2><p>一个DAPP的生命周期主要分为三部分：</p>
-<ol>
-<li>撰写白皮书白皮书描述了DAPP的技术原理、要解决的问题以及特点等。社区对白皮书的反馈可以添加到后期的更新中。</li>
-<li>分发代币可以采用上一章节描述的代币分发机制的一种。</li>
-<li>开发DAPP，逐步进化完善在DAPP发布之后，如果该DAPP走向了一个健康发展的道路，可以期望会有越来越多掌握各种技能的用户加入到社区，一起维护DAPP的发展。DAPP的发展交由社区整体进行运营、更新。无论是比特币还是比特股，早期开发者所起到的作用已经越来越小，去中心化的社区已经可以推动这些项目的继续发展。</li>
-</ol>
-<h2 id="为什么需要DAPP开发"><a href="#为什么需要DAPP开发" class="headerlink" title="为什么需要DAPP开发"></a>为什么需要DAPP开发</h2><p>目前社会对于dapp开发的关注还刚刚开始，市面上还难以看到流行的DAPP应用。但是随着区块链技术的发展，传统的C/S模式可能会被颠覆，开发者也不用再去买云服务器部署自己的应用。有了区块链开发平台，开发者可以很容易的把应用部署到区块链上，这是一个基于全球服务器，7*24不间断服务的应用平台。另外由于DAPP代币机制的存在，开发者可以很容易的基于代币获得价值回报。相信在不久的将来，DAPP会超越传统APP，在人们的社会生活中扮演越来越重要的角色。</p>
-<p>此文仅用于学习，原文转载自<a href="https://zhuanlan.zhihu.com/p/31578996" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/31578996</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">区块链</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/09/12/关于区块链中的Dapp/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1714,19 +1735,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1734,11 +1743,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1754,7 +1759,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1774,6 +1779,14 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -1786,15 +1799,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1806,7 +1815,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1830,11 +1843,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
               </li>
             
             <div class="clearfix"></div>
