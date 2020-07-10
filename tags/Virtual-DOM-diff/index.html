@@ -6,20 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>动手撸一个页面生成器——移动端 | taoyouyou的博客</title>
+  <title>Tag: -Virtual DOM -diff | taoyouyou的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="移动端项目模板​    采用taro实现建站项目移动端，实现一端编译多端发布，可以根据需要发布为h5，微信小程序，字节跳动小程序。  taro采用类react语法。 数据存储本项目采用mobx作为状态管理。1、src/store/site.js中定义siteData作为全局变量进行数据维护和渲染。123456import &amp;#123; observable &amp;#125; from &amp;apos;mo">
+  <meta name="description" content="一枚嗜好太多，能力太小的普通程序媛，">
 <meta name="keywords" content="前端,js,jquery,javascript,html5,vue,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验,视觉设计,摄影摄像">
-<meta property="og:type" content="article">
-<meta property="og:title" content="动手撸一个页面生成器——移动端">
-<meta property="og:url" content="http://yoursite.com/2020/05/14/动手撸一个页面生成器——移动端/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="taoyouyou的博客">
+<meta property="og:url" content="http://yoursite.com/tags/Virtual-DOM-diff/index.html">
 <meta property="og:site_name" content="taoyouyou的博客">
-<meta property="og:description" content="移动端项目模板​    采用taro实现建站项目移动端，实现一端编译多端发布，可以根据需要发布为h5，微信小程序，字节跳动小程序。  taro采用类react语法。 数据存储本项目采用mobx作为状态管理。1、src/store/site.js中定义siteData作为全局变量进行数据维护和渲染。123456import &amp;#123; observable &amp;#125; from &amp;apos;mo">
+<meta property="og:description" content="一枚嗜好太多，能力太小的普通程序媛，">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2020-05-29T03:36:12.255Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="动手撸一个页面生成器——移动端">
-<meta name="twitter:description" content="移动端项目模板​    采用taro实现建站项目移动端，实现一端编译多端发布，可以根据需要发布为h5，微信小程序，字节跳动小程序。  taro采用类react语法。 数据存储本项目采用mobx作为状态管理。1、src/store/site.js中定义siteData作为全局变量进行数据维护和渲染。123456import &amp;#123; observable &amp;#125; from &amp;apos;mo">
+<meta name="twitter:title" content="taoyouyou的博客">
+<meta name="twitter:description" content="一枚嗜好太多，能力太小的普通程序媛，">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -155,363 +154,60 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-动手撸一个页面生成器——移动端" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      动手撸一个页面生成器——移动端
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2020" class="archive-year">2020</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2020/07/10/从Snabbdom的基本用法解剖源码实现/" class="archive-article-date">
+  	<time datetime="2020-07-10T06:25:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-10</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2020/07/10/从Snabbdom的基本用法解剖源码实现/">从Snabbdom的基本用法解剖源码实现</a>
     </h1>
   
 
-        
-        <a href="/2020/05/14/动手撸一个页面生成器——移动端/" class="archive-article-date">
-  	<time datetime="2020-05-14T11:44:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="移动端项目模板"><a href="#移动端项目模板" class="headerlink" title="移动端项目模板"></a>移动端项目模板</h2><p>​    采用taro实现建站项目移动端，实现一端编译多端发布，可以根据需要发布为h5，微信小程序，字节跳动小程序。</p>
-<!-- ### 项目实现思路 -->
-<p>taro采用类react语法。</p>
-<h3 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h3><p>本项目采用mobx作为状态管理。<br>1、src/store/site.js中定义siteData作为全局变量进行数据维护和渲染。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import &#123; observable &#125; from &apos;mobx&apos;</span><br><span class="line"></span><br><span class="line">const siteStore = observable(&#123;</span><br><span class="line">  siteData: &apos;&apos;,</span><br><span class="line">&#125;)</span><br><span class="line">export default siteStore</span><br></pre></td></tr></table></figure></p>
-<p>2、在app.jsx中把所有的state注入Provider中，后面的子组件都可以使用@inject(“想要使用的state”)注入被观察者。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Provider &#125; from &apos;@tarojs/mobx&apos;</span><br><span class="line">import siteStore from &apos;./store/site&apos;</span><br><span class="line">const store = &#123;</span><br><span class="line">  siteStore</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  ...</span><br><span class="line">  render () &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">        &lt;Index /&gt;</span><br><span class="line">      &lt;/Provider&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>3、在其他组件或页面中你可以这样使用他们<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import &#123; observer, inject &#125; from &apos;@tarojs/mobx&apos;</span><br><span class="line">@inject(&apos;siteStore&apos;)  // 注入被观察者</span><br><span class="line">@observer             // 观察器</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const &#123; siteStore: &#123; siteData &#125; &#125; = this.props  // 可以这样拿到存入store里的全局数据</span><br></pre></td></tr></table></figure></p>
-<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><h4 id="1、顶部导航"><a href="#1、顶部导航" class="headerlink" title="1、顶部导航"></a>1、顶部导航</h4><p>本项目已经实现自定义顶部导航组件，支持以下属性自定义</p>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">isBack</td>
-<td style="text-align:center">是否显示返回按钮</td>
-<td style="text-align:center">Boolean</td>
-<td style="text-align:center">false</td>
-</tr>
-<tr>
-<td style="text-align:center">title</td>
-<td style="text-align:center">顶部导航标题</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘测试标题’</td>
-</tr>
-<tr>
-<td style="text-align:center">background</td>
-<td style="text-align:center">顶部导航栏背景色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">color</td>
-<td style="text-align:center">顶部导航栏文字颜色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">center</td>
-<td style="text-align:center">文字是否居中颜色</td>
-<td style="text-align:center">Boolean</td>
-<td style="text-align:center">false</td>
-</tr>
-<tr>
-<td style="text-align:center">search</td>
-<td style="text-align:center">是否显示搜索栏</td>
-<td style="text-align:center">Boolean</td>
-<td style="text-align:center">false</td>
-</tr>
-<tr>
-<td style="text-align:center">searchStyle</td>
-<td style="text-align:center">自定义搜索栏样式</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">headerRight</td>
-<td style="text-align:center">右侧图标</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">[]</td>
-</tr>
-</tbody>
-</table>
-<p>使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import CustomNav from &apos;../../components/custom-nav/custom-nav&apos;</span><br><span class="line">...</span><br><span class="line">&lt;CustomNav </span><br><span class="line">  title=&#123;title&#125; </span><br><span class="line">  background=&#123;background&#125;</span><br><span class="line">  color=&#123;titleColor&#125;</span><br><span class="line">  center</span><br><span class="line">&gt;&lt;/CustomNav&gt;</span><br></pre></td></tr></table></figure></p>
-<h4 id="1、底部导航"><a href="#1、底部导航" class="headerlink" title="1、底部导航"></a>1、底部导航</h4><p>本项目已经实现自定义底部导航 Tabar 组件，支持以下属性自定义</p>
-<h5 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">current</td>
-<td style="text-align:center">当前激活的index</td>
-<td style="text-align:center">Number</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">background</td>
-<td style="text-align:center">背景色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">color</td>
-<td style="text-align:center">文字颜色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">activeColor</td>
-<td style="text-align:center">激活文字颜色</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">tabList</td>
-<td style="text-align:center">tab 列表, object 字段说明请看下表</td>
-<td style="text-align:center">Array</td>
-<td style="text-align:center">[]</td>
-</tr>
-</tbody>
-</table>
-<h5 id="tabList-object-字段详解"><a href="#tabList-object-字段详解" class="headerlink" title="tabList object 字段详解"></a>tabList object 字段详解</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">参数</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">类型</th>
-<th style="text-align:center">默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">name</td>
-<td style="text-align:center">标题</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">icon</td>
-<td style="text-align:center">未选中时图片icon的链接</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">activeIcon</td>
-<td style="text-align:center">选中时图片icon的链接</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-<tr>
-<td style="text-align:center">link</td>
-<td style="text-align:center">点击跳转的链接，通常是页面id</td>
-<td style="text-align:center">String</td>
-<td style="text-align:center">‘’</td>
-</tr>
-</tbody>
-</table>
-<h5 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h5><table>
-<thead>
-<tr>
-<th style="text-align:center">事件名称</th>
-<th style="text-align:center">说明</th>
-<th style="text-align:center">返回参数</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">onClick</td>
-<td style="text-align:center">点击触发事件，开发者需要通过 onClick 事件来更新 current 值变化</td>
-<td style="text-align:center">（链接link，选中tab列表索引值）</td>
-</tr>
-</tbody>
-</table>
-<p>使用示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import TabBar from &apos;../../components/tab-bar/tab-bar&apos;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">&lt;TabBar </span><br><span class="line">  current=&#123;bottomNav.activeIndex&#125; </span><br><span class="line">  background=&#123;bottomNav.background&#125; </span><br><span class="line">  color=&#123;bottomNav.color&#125; </span><br><span class="line">  activeColor=&#123;bottomNav.activeColor&#125; </span><br><span class="line">  onChange=&#123;this.handleTabbar.bind(this)&#125;</span><br><span class="line">  tabList=&#123;bottomNav.navList&#125;</span><br><span class="line">/&gt;&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="2、公用组件库"><a href="#2、公用组件库" class="headerlink" title="2、公用组件库"></a>2、公用组件库</h4><p>本项目1.0版本目前集成类文本、图片、幻灯片等公用组件，封装在src/components目录文件夹下，接收oStyle, content, event作为组件样式、内容以及事件等属性作为props,渲染文本组件<br>以TextCom为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  const &#123; oStyle, content, event &#125; = this.props</span><br><span class="line">  return (</span><br><span class="line">    &lt;View className=&quot;widget&quot;&gt;</span><br><span class="line">      &lt;View  </span><br><span class="line">        className=&quot;text-box ui-sortable relative textActive&quot;</span><br><span class="line">        style=&#123;oStyle&#125;</span><br><span class="line">        &gt;</span><br><span class="line">        &lt;Text className=&quot;showtext&quot;&gt; &#123; content.text &#125;&lt;/Text&gt;</span><br><span class="line">      &lt;/View&gt;</span><br><span class="line">    &lt;/View&gt;</span><br><span class="line">  );     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>event事件已经在调用组件的页面里进行了统一处理   </p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">handleClick = (event) =&gt; &#123;</span><br><span class="line">  if(event.type === &apos;href&apos; &amp;&amp; event.linkId)&#123;</span><br><span class="line">      Taro.navigateTo(&#123;</span><br><span class="line">          url: `/pages/page$&#123;event.linkId&#125;/page$&#123;event.linkId&#125;`</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125; else if(event.type === &apos;href&apos; &amp;&amp; event.tel)&#123;</span><br><span class="line">      Taro.makePhoneCall(&#123;</span><br><span class="line">          phoneNumber: event.tel</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">&lt;TextCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="页面"><a href="#页面" class="headerlink" title="页面"></a>页面</h3><p>本项目作为小程序建站项目的生成器，已经实现了页面自动化生成。<br>package.json里集成了node script脚本<br>键入命令<br><code>npm run new:pages</code><br>即可一键生成页面并注册路由</p>
-<h4 id="处理逻辑"><a href="#处理逻辑" class="headerlink" title="处理逻辑"></a>处理逻辑</h4><p>自动生成命令的逻辑封装在src/scripts文件夹内，</p>
-<h5 id="1、生成文件的模版"><a href="#1、生成文件的模版" class="headerlink" title="1、生成文件的模版"></a>1、生成文件的模版</h5><p>我们已经把页面渲染所需要的公用组件封装在组件库内，那么页面所需要做的就是按照节点加载需要的组件，所以页面的通用逻辑是：<br>1、读取当前页面节点<br>2、遍历节点渲染公用组件</p>
-<p>在script/template.jsx提取页面公用逻辑封装页面模版：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  render () &#123;</span><br><span class="line">    const &#123;title, background, titleColor &#125; = this.state</span><br><span class="line">    const &#123; siteStore: &#123; siteData &#125; &#125; = this.props</span><br><span class="line">    const widgetsList = siteData.pages[$&#123;INDEX&#125;].components;   // 第一步读取当前页面节点，$&#123;INDEX&#125;接受遍历的索引值</span><br><span class="line">    </span><br><span class="line">    return (</span><br><span class="line">      &lt;View className=&apos;index&apos;&gt;</span><br><span class="line">        &lt;CustomNav </span><br><span class="line">          title=&#123;title&#125; </span><br><span class="line">          background=&#123;background&#125;</span><br><span class="line">          color=&#123;titleColor&#125;</span><br><span class="line">          center</span><br><span class="line">          &gt;&lt;/CustomNav&gt;</span><br><span class="line">        </span><br><span class="line">        &#123;</span><br><span class="line">          widgetsList.map((appUi,index) =&gt; &#123;   // 第二步遍历并根据类型渲染节点组件</span><br><span class="line">            &#123;</span><br><span class="line">              if(appUi.name === &apos;TextCom&apos;)&#123;</span><br><span class="line">                return &lt;TextCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br><span class="line">              &#125; else if(appUi.name === &apos;PicCom&apos;) &#123;</span><br><span class="line">                return &lt;PicCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br><span class="line">              &#125; else if(appUi.name === &apos;CarouselCom&apos;)&#123;</span><br><span class="line">                return &lt;CarouselCom content=&#123;appUi.content&#125; oStyle=&#123;appUi.style&#125; key=&#123;&apos;i&apos;+index&#125; event=&#123;appUi.event&#125; onClick=&#123;()=&gt;&#123;this.handleClick(event)&#125;&#125;/&gt;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">      &lt;/View&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h5 id="2、自动生成页面，并在生成文件后进行统一的注册路由操作"><a href="#2、自动生成页面，并在生成文件后进行统一的注册路由操作" class="headerlink" title="2、自动生成页面，并在生成文件后进行统一的注册路由操作"></a>2、自动生成页面，并在生成文件后进行统一的注册路由操作</h5><p>script/generateView.js生成页面的模版的文件,pageCreater对象封装了创建文件夹，创建文件和注册路由操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">handleEvent = (pgId, index) =&gt; &#123;  //  基于promise定义一个完整的事件流</span><br><span class="line">  return new Promise(resolve =&gt; &#123;</span><br><span class="line">    pageCreater.handleCreateDir(pgId).then(()=&gt;&#123;  // 创建文件夹</span><br><span class="line">      pageCreater.handleCreateFile(pgId, index).then(()=&gt;&#123;             // 创建文件</span><br><span class="line">        resolve(&#123;pgId,&#125;);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function generateTask() &#123;</span><br><span class="line">  if(siteDate.pages.length&gt;0)&#123;</span><br><span class="line">    let task = []</span><br><span class="line">    for(let i = 0; i &lt; siteDate.pages.length; i++)&#123;</span><br><span class="line">      task.push(handleEvent(siteDate.pages[i].pgId, i));</span><br><span class="line">    &#125;</span><br><span class="line">    Promise.all(task).then((res) =&gt; &#123;    //顺序执行Promise队列</span><br><span class="line">      let pgIds = res.map(item=&gt;item.pgId);   // 执行完后拿到队列的pgIds</span><br><span class="line">      console.log(pgIds)</span><br><span class="line"></span><br><span class="line">      pageCreater.handleCreatRouterPath(pgIds);                           // 基于pgIds进行统一注册路由操作</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generateTask()</span><br></pre></td></tr></table></figure></p>
-<h3 id="项目生成"><a href="#项目生成" class="headerlink" title="项目生成"></a>项目生成</h3><blockquote>
-<p>以微信小程序为例</p>
-</blockquote>
-<p>1、 安装依赖<br><code>npm install</code></p>
-<p>2、生成页面并注册路由<br><code>npm run new:pages</code></p>
-<p>3、本地调试<br><code>npm run dev:weapp</code></p>
-<p>4、打包编译<br><code>npm run build:weapp</code></p>
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">-Virtual DOM -diff</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-      
+          
 
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/img/alipay.png">
-                      <span class="reward-type">支付宝</span>
-                    </div>
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
         </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
-        </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2020/05/14/动手撸一个页面生成器——移动端/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2020/05/29/JavaScript查漏补缺——Array/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          JavaScript查漏补缺——Array
-        
-      </div>
-    </a>
   
   
-    <a href="/2020/05/07/Vue-Draggable/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Vue.Draggable使用文档总结</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#移动端项目模板"><span class="toc-number">1.</span> <span class="toc-text">移动端项目模板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据存储"><span class="toc-number">1.1.</span> <span class="toc-text">数据存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组件"><span class="toc-number">1.2.</span> <span class="toc-text">组件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、顶部导航"><span class="toc-number">1.2.1.</span> <span class="toc-text">1、顶部导航</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#属性"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">属性</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1、底部导航"><span class="toc-number">1.2.2.</span> <span class="toc-text">1、底部导航</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#属性-1"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#tabList-object-字段详解"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">tabList object 字段详解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#事件"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">事件</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、公用组件库"><span class="toc-number">1.2.3.</span> <span class="toc-text">2、公用组件库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#页面"><span class="toc-number">1.3.</span> <span class="toc-text">页面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#处理逻辑"><span class="toc-number">1.3.1.</span> <span class="toc-text">处理逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、生成文件的模版"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">1、生成文件的模版</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、自动生成页面，并在生成文件后进行统一的注册路由操作"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">2、自动生成页面，并在生成文件后进行统一的注册路由操作</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#项目生成"><span class="toc-number">1.4.</span> <span class="toc-text">项目生成</span></a></li></ol></li></ol>
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -534,9 +230,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,

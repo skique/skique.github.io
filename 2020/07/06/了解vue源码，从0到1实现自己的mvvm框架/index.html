@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-cn">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mvvm.png">
 <meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mvvm函数流程实现.png">
-<meta property="og:updated_time" content="2020-07-06T12:51:50.294Z">
+<meta property="og:updated_time" content="2020-07-08T00:54:54.200Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="了解vue源码，从0到1实现自己的mvvm框架">
 <meta name="twitter:description" content="武学之道，切勿贪多嚼不烂，博儿不精不如 一招鲜吃遍天，编程亦是如此，源码就是内力的修炼。这里我们根据对vue源码的分析和理解来实现一个自定义的mvvm框架：KVue。 实现目标： 1、数据劫持：defineProperty。2、依赖收集：Dep &amp;amp;&amp;amp; Watcher。3、编译：插值绑定，指令绑定(v-text)，双向绑定（v-model）,事件处理（@click）,html解析。">
@@ -224,7 +224,7 @@
 <h3 id="html解析"><a href="#html解析" class="headerlink" title="html解析"></a>html解析</h3><p>同理，处理v-html指令，只需要添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">html(node, vm, exp)&#123;</span><br><span class="line">    this.update(node, vm, exp, &apos;html&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">htmlUpdater(node, value)&#123;</span><br><span class="line">    node.innerHTML = value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h3><p>在compile函数的处理的元素分子上判断处理之间的指令，dir匹配到事件类型，如：click<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">if(this.isEvent(attrName))&#123;  // 处理事件</span><br><span class="line">  const dir = attrName.substring(1);</span><br><span class="line">  this.eventHandler(node, this.$vm, exp, dir)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">eventHandler(node, vm, exp, dir) &#123;</span><br><span class="line">  // 取事件名</span><br><span class="line">  let fn = vm.$options.methods &amp;&amp; vm.$options.methods[exp];</span><br><span class="line">  if(dir &amp;&amp; fn) &#123;</span><br><span class="line">      node.addEventListener(dir, fn.bind(vm)); // 绑定事件监听</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>至此一个基于vue的基本语法mvvn框架KVue就已经实现，能够实现类似于vue指令的语法解析，以及实时的数据视图的双向绑定。支持插值绑定、指令绑定、双向绑定html解析、事件处理等语法特性。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上过程整理成脑图如下，也许能有助于理解<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mvvm函数流程实现.png" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上过程整理成脑图如下，也许能有助于理解。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mvvm函数流程实现.png" alt=""></p>
 <h2 id="项目源码："><a href="#项目源码：" class="headerlink" title="项目源码：　"></a>项目源码：　</h2><p>gitee地址：<a href="https://gitee.com/taoyouyou/kvue.git" target="_blank" rel="noopener">kvue: 了解vue源码，从0到1实现自己的mvvm框架</a><br>如果你觉得有帮助可以给个star哦！</p>
 
       
@@ -342,6 +342,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/07/10/从Snabbdom的基本用法解剖源码实现/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          从Snabbdom的基本用法解剖源码实现
+        
+      </div>
+    </a>
   
   
     <a href="/2020/07/02/熟记这几个原则，掌握模块化开发/" id="article-nav-older" class="article-nav-link-wrap">
@@ -484,14 +493,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
@@ -508,11 +509,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -532,22 +541,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
@@ -564,11 +557,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -580,11 +585,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -592,15 +593,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -612,7 +605,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
               </li>
             
             <div class="clearfix"></div>

@@ -156,6 +156,190 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-从Snabbdom的基本用法解剖源码实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/10/从Snabbdom的基本用法解剖源码实现/">从Snabbdom的基本用法解剖源码实现</a>
+    </h1>
+  
+
+        
+        <a href="/2020/07/10/从Snabbdom的基本用法解剖源码实现/" class="archive-article-date">
+  	<time datetime="2020-07-10T06:25:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用vnode的优点"><a href="#使用vnode的优点" class="headerlink" title="使用vnode的优点"></a>使用vnode的优点</h2><ul>
+<li>手动操作dom比较复杂，还需要考虑浏览器的兼容性问题，虽然有jquery等库简化dom操作，但是随着项目越来越复杂，dom操作复杂提升</li>
+<li>Virtual DOM的好处是当状态改变时不需要立即更新dom,只需要创建一个虚拟树来描述dom，Virtual DOM内部将弄清楚如何有效(diff)的更新dom。</li>
+</ul>
+<h2 id="Snabbdom基本用法"><a href="#Snabbdom基本用法" class="headerlink" title="Snabbdom基本用法"></a>Snabbdom基本用法</h2><p>为什么选择snabbdom呢，因为Snabbdom对于vnode的实现的非常精简，源代码实现不到200行，比较有利于读者对源码的理解和解析。同时 VueJS 的 virtual dom 部分基于snabbdom改造，理解了snabbdom有利于理解VueJS。</p>
+<h3 id="安装snabbdom"><a href="#安装snabbdom" class="headerlink" title="安装snabbdom"></a>安装snabbdom</h3><ul>
+<li>安装snabbdom<br><code>yarn add snabbdom</code><h3 id="导入-snabbdom"><a href="#导入-snabbdom" class="headerlink" title="导入 snabbdom"></a>导入 snabbdom</h3><ul>
+<li>snabbdom的官网demo中导入使用的是commonjs模块化语法，我们使用更流行的es6模块化的语法 import</li>
+<li>关于模块化的语法请参考阮一峰老师的<a href="">Modules的语法</a></li>
+<li>ES6模块与CommonJS模块的差异</li>
+</ul>
+</li>
+</ul>
+<p>最简单的入门示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import &#123; init, h, thunk&#125; from &apos;snabbdom&apos;</span><br><span class="line"></span><br><span class="line">let patch = init([])</span><br><span class="line">let vnode = h(&apos;div#container&apos;, [</span><br><span class="line">    h(&apos;h1&apos;, &apos;Hello Snabbdom&apos;),</span><br><span class="line">    h(&apos;p&apos;, &apos;这是一个p标签&apos;),</span><br><span class="line">]);  </span><br><span class="line"></span><br><span class="line">let app = document.querySelector(&apos;#app&apos;);</span><br><span class="line">patch(app, vnode);</span><br></pre></td></tr></table></figure></p>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>snabbdom的核心并不能处理元素的属性/样式/事件等，如果需要处理的话，可以使用模块</p>
+<h4 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h4><p>官方提供了6个模块</p>
+<p>1、 attribute</p>
+<ul>
+<li>设置dom元素的属性，使用setAttribute()</li>
+<li>处理布尔类型的属性</li>
+</ul>
+<p>2、 props</p>
+<ul>
+<li>和attribute模块相似，设置dom属性<code>element[attr] = value</code></li>
+<li>不处理布尔类型的属性</li>
+</ul>
+<p>3、 class</p>
+<ul>
+<li>切换类样式</li>
+<li>注意：给元素设置类样式是通过sel选择器</li>
+</ul>
+<p>4、 dataset</p>
+<ul>
+<li>设置’data-*’的自定义属性</li>
+</ul>
+<p>5、 eventlisteners</p>
+<ul>
+<li>注册和移除事件</li>
+</ul>
+<p>6、 style</p>
+<ul>
+<li>设置行内样式，支持动画</li>
+<li>delayed/remove/destory</li>
+</ul>
+<h4 id="模块使用"><a href="#模块使用" class="headerlink" title="模块使用"></a>模块使用</h4><p>导入模块<br>init()注册模块<br>使用h()函数创建vnode的时候，可以把第二个参数设置为对象，其他参数往后移，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import &#123; h, init &#125;  from &apos;snabbdom&apos;;</span><br><span class="line">import style from &apos;snabbdom/modules/style&apos;;</span><br><span class="line">import eventlisteners from &apos;snabbdom/modules/eventlisteners&apos;;</span><br><span class="line"></span><br><span class="line">let patch = init([style, eventlisteners])</span><br><span class="line">let vnode = h(&apos;div&apos;, &#123;</span><br><span class="line">    style: &#123;</span><br><span class="line">        backgroundColor: &apos;red&apos;,</span><br><span class="line">        fontSize: &apos;14px&apos;,</span><br><span class="line">    &#125;,</span><br><span class="line">    on: &#123;</span><br><span class="line">        click: eventHandler</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, [</span><br><span class="line">    h(&apos;h1&apos;, &apos;hello snabbdom&apos;),</span><br><span class="line">    h(&apos;p&apos;, &apos;这是p标签&apos;),</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">function eventHandler()&#123;</span><br><span class="line">    console.log(&apos;点击我了&apos;)</span><br><span class="line">&#125;</span><br><span class="line">let app = document.querySelector(&apos;#app&apos;);</span><br><span class="line">patch(app, vnode);</span><br></pre></td></tr></table></figure></p>
+<h2 id="snabbdom源码"><a href="#snabbdom源码" class="headerlink" title="snabbdom源码"></a>snabbdom源码</h2><p>在这里分享阅读源码时的几个方法：</p>
+<ul>
+<li>先宏观了解组件实现的功能以及用法</li>
+<li>将目标分解，带如特定的功能去看源码</li>
+<li>看源码的过程不求甚解（先把主线逻辑走通，排除其他分支干扰）</li>
+<li>编写示例子，进行断点调试</li>
+</ul>
+<h3 id="snabbdom的核心"><a href="#snabbdom的核心" class="headerlink" title="snabbdom的核心"></a>snabbdom的核心</h3><p>所以学习源码的第一步我们需要先从整体上了解snabbdom这个组件实现怎样的功能。我们从上文已经介绍了snabbdom的基本用法与模块的用法。可以将snabbdom核心总结为一下几点：</p>
+<ul>
+<li>从snabbdom库中导入h函数,和init函数</li>
+<li>使用h函数创建JavaScript对象（vnode）描述真实dom。</li>
+<li>init()  设置模块，创建patch()。</li>
+<li>patch()比较新旧两个vnode。</li>
+<li>把变化的内容更新到真实的dom上。</li>
+</ul>
+<h3 id="snabbdom源码-1"><a href="#snabbdom源码-1" class="headerlink" title="snabbdom源码"></a>snabbdom源码</h3><p>接下来需要将源码clone下来，了解源码目录。</p>
+<blockquote>
+<p>此次分析的源码版本是<code>v0.7.4</code></p>
+</blockquote>
+<ul>
+<li>源码地址：<a href="http://github.com/snabbdom/snabbdom" target="_blank" rel="noopener">http://github.com/snabbdom/snabbdom</a></li>
+<li>src目录结构<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">── h.ts   创建vnode的函数</span><br><span class="line">── helpers</span><br><span class="line"> └── attachto.ts</span><br><span class="line">── hooks.ts  定义钩子</span><br><span class="line">── htmldomapi.ts   操作dom的一些工具类</span><br><span class="line">── is.ts   判断类型</span><br><span class="line">── modules  模块</span><br><span class="line"> ├── attributes.ts</span><br><span class="line"> ├── class.ts</span><br><span class="line"> ├── dataset.ts</span><br><span class="line"> ├── eventlisteners.ts</span><br><span class="line"> ├── hero.ts</span><br><span class="line"> ├── module.ts</span><br><span class="line"> ├── props.ts</span><br><span class="line"> └── style.ts</span><br><span class="line">── snabbdom.bundle.ts 入口文件</span><br><span class="line">── snabbdom.ts  初始化函数</span><br><span class="line">── thunk.ts  分块</span><br><span class="line">── tovnode.ts   dom元素转vnode</span><br><span class="line">── vnode.ts  虚拟节点对象</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="分析源码实现"><a href="#分析源码实现" class="headerlink" title="分析源码实现"></a>分析源码实现</h3><p>一般做法是从入口函数开始解析主线逻辑，所以可以从h函数开始解析。</p>
+<h4 id="1、h"><a href="#1、h" class="headerlink" title="1、h()"></a>1、h()</h4><p>h函数创建虚拟节点（vnodes），函数接收一个字符串形式的标签/选择器、一个可选的数据对象、一个可选的字符串或数组作为子代。</p>
+<p>实现：在ts中通过调整代码实现了<strong>函数重载</strong>，通过调用vnode函数传入不同的参数值和参数类型，返回一个vnode节点。</p>
+<blockquote>
+<p>函数重载：</p>
+<ul>
+<li>参数个数或类型不同的函数</li>
+<li>javascript中没有重载的概念</li>
+<li>typescript中与重载，不过重载的实现还是通过代码调整参数<br>如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function add(a,b)&#123;</span><br><span class="line">   console.log(a,b)</span><br><span class="line">&#125;</span><br><span class="line">function add(a,b,c)&#123;</span><br><span class="line">   console.log(a+b+c)</span><br><span class="line">&#125;</span><br><span class="line">add(1,2);</span><br><span class="line">add(1,2,3)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<h4 id="2、vnode"><a href="#2、vnode" class="headerlink" title="2、vnode()"></a>2、vnode()</h4><p>vnode定义了一种vnode数据对象，作为对真实dom的描述。</p>
+<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><ul>
+<li>sel</li>
+<li>data</li>
+<li>children</li>
+<li>text</li>
+<li>elm</li>
+<li>key</li>
+</ul>
+<h4 id="4、init"><a href="#4、init" class="headerlink" title="4、init()"></a>4、init()</h4><p>init接收一个模块列表，并返回一个使用指定模块集的patch函数</p>
+<p>用法：<code>patch() = init(modules: Array&lt;Partial&lt;Module&gt;&gt;, domApi?: DOMAPI);</code></p>
+<blockquote>
+<p>高阶函数：一个函数里面返回另一个函数<br>高阶函数的作用：<br>形成闭包：内部函数可以访问外部函数upvalue, patch()可以访问到modules和domAp等外部函数参数;</p>
+</blockquote>
+<p>init()处理过程：</p>
+<ol>
+<li>domapi给定默认值</li>
+<li>把传入的所有模块的钩子函数，统一存储到cbs对象中</li>
+<li>init 内部返回 patch, 把vnode渲染成真实dom,并返回vnode。</li>
+</ol>
+<h4 id="3、patch"><a href="#3、patch" class="headerlink" title="3、patch()"></a>3、patch()</h4><p>init返回的patch函数需要接受两个参数。第一个是表示当前视图的DOM元素或vnode。第二个是表示更新后的新视图的vnode。</p>
+<p>用法：<code>patch(oldVnode, newVnode)</code><br>作用：打补丁，把新节点中变化的内容渲染到真实的dom，最后返回新节点作为下一次处理的旧节点。<br>实现过程：</p>
+<ul>
+<li>对比新旧节点是否相同节点（节点的key和sel相同）</li>
+<li>如果不是相同节点，删除之前的内容，重新渲染</li>
+<li>如果是相同的节点，在判断新的vnode是否有text，如果有并且和oldVnode的text不同，直接更新文本</li>
+<li>如果新的vnode有children，判断子节点是否有变化，判断子节点的过程使用的就是diff算法</li>
+<li>diff的过程只进行同层比较</li>
+</ul>
+<p>针对snabbdom源码，笔者对于真实dom到虚拟dom的相互转化的过程整理总结成脑图。希望对于读者理解snabbdom的实现有一点帮助。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/snabbdom.png" alt=""></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">-Virtual DOM -diff</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/07/10/从Snabbdom的基本用法解剖源码实现/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-了解vue源码，从0到1实现自己的mvvm框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -222,7 +406,7 @@
 <h3 id="html解析"><a href="#html解析" class="headerlink" title="html解析"></a>html解析</h3><p>同理，处理v-html指令，只需要添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">html(node, vm, exp)&#123;</span><br><span class="line">    this.update(node, vm, exp, &apos;html&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">htmlUpdater(node, value)&#123;</span><br><span class="line">    node.innerHTML = value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h3><p>在compile函数的处理的元素分子上判断处理之间的指令，dir匹配到事件类型，如：click<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">if(this.isEvent(attrName))&#123;  // 处理事件</span><br><span class="line">  const dir = attrName.substring(1);</span><br><span class="line">  this.eventHandler(node, this.$vm, exp, dir)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">eventHandler(node, vm, exp, dir) &#123;</span><br><span class="line">  // 取事件名</span><br><span class="line">  let fn = vm.$options.methods &amp;&amp; vm.$options.methods[exp];</span><br><span class="line">  if(dir &amp;&amp; fn) &#123;</span><br><span class="line">      node.addEventListener(dir, fn.bind(vm)); // 绑定事件监听</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>至此一个基于vue的基本语法mvvn框架KVue就已经实现，能够实现类似于vue指令的语法解析，以及实时的数据视图的双向绑定。支持插值绑定、指令绑定、双向绑定html解析、事件处理等语法特性。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上过程整理成脑图如下，也许能有助于理解<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mvvm函数流程实现.png" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上过程整理成脑图如下，也许能有助于理解。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/mvvm函数流程实现.png" alt=""></p>
 <h2 id="项目源码："><a href="#项目源码：" class="headerlink" title="项目源码：　"></a>项目源码：　</h2><p>gitee地址：<a href="https://gitee.com/taoyouyou/kvue.git" target="_blank" rel="noopener">kvue: 了解vue源码，从0到1实现自己的mvvm框架</a><br>如果你觉得有帮助可以给个star哦！</p>
 
       
@@ -1853,136 +2037,6 @@
 
 
   
-    <article id="post-ECMAScript面面观" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/30/ECMAScript面面观/">ECMAScript面面观</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/30/ECMAScript面面观/" class="archive-article-date">
-  	<time datetime="2020-05-30T03:56:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="ECMAScript"><a href="#ECMAScript" class="headerlink" title="ECMAScript"></a>ECMAScript</h2><p>ECMAScript是一种由Ecma国际（前身为欧洲计算机制造商协会）在标准ECMA-262中定义的脚本语言规范。这种语言在万维网上应用广泛，它往往被称为JavaScript或JScript，但实际上后两者是ECMA-262标准的实现和扩展。</p>
-<!-- | 方法    | 说明    | -->
-<table>
-<thead>
-<tr>
-<th>版本</th>
-<th>发表日期</th>
-<th>与前版本的差异</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>1997年6月</td>
-<td>首版</td>
-</tr>
-<tr>
-<td>2</td>
-<td>1998年6月</td>
-<td>格式修正，以使得其形式与ISO/IEC16262国际标准一致</td>
-</tr>
-<tr>
-<td>3</td>
-<td>1999年12月</td>
-<td>强大的正则表达式，更好的词法作用域链处理，<br>新的控制指令，异常处理，错误定义更加明确，数据输出的格式化及其它改变</td>
-</tr>
-<tr>
-<td>4</td>
-<td>放弃</td>
-<td>由于关于语言的复杂性出现分歧，第4版本被放弃，<br>其中的部分成为了第5版本及Harmony的基础</td>
-</tr>
-<tr>
-<td>5</td>
-<td>2009年12月</td>
-<td>新增“严格模式（strict mode）”，<br>一个子集用作提供更彻底的错误检查,以避免结构出错。<br>澄清了许多第3版本的模糊规范，并适应了与规范不一致的真实世界实现的行为。<br>增加了部分新功能，如getters及setters，支持JSON以及在对象属性上更完整的反射[4][5][6][7][8]</td>
-</tr>
-<tr>
-<td>5.1</td>
-<td>2011年6月</td>
-<td>ECMAScript标5.1版形式上完全一致于国际标准ISO/IEC 16262:2011。</td>
-</tr>
-<tr>
-<td>6</td>
-<td>2015年6月</td>
-<td>ECMAScript 2015（ES2015），第 6 版，最早被称作是 ECMAScript 6（ES6），<br>添加了类和模块的语法，其他特性包括迭代器，Python风格的生成器和生成器表达式，箭头函数，二进制数据，静态类型数组，<br>集合（maps，sets 和 weak maps），promise，reflection 和 proxies。<br>作为最早的 ECMAScript Harmony 版本，也被叫做ES6 Harmony。</td>
-</tr>
-<tr>
-<td>7</td>
-<td>2016年6月</td>
-<td>ECMAScript 2016（ES2016），第 7 版，多个新的概念和语言特性[9]</td>
-</tr>
-<tr>
-<td>8</td>
-<td>2017年6月</td>
-<td>ECMAScript 2017（ES2017），第 8 版，多个新的概念和语言特性[10]</td>
-</tr>
-<tr>
-<td>9</td>
-<td>2018年6月</td>
-<td>ECMAScript 2018 （ES2018），第 9 版，包含了异步循环，生成器，新的正则表达式特性和 rest/spread 语法。</td>
-</tr>
-<tr>
-<td>10</td>
-<td>2019年6月</td>
-<td>ECMAScript 2019 （ES2019），第 10 版</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/30/ECMAScript面面观/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -2080,14 +2134,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
@@ -2104,11 +2150,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2128,22 +2182,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
@@ -2160,11 +2198,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2176,11 +2226,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2188,15 +2234,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2208,7 +2246,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
               </li>
             
             <div class="clearfix"></div>

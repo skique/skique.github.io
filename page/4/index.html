@@ -156,6 +156,103 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-农夫过河算法实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/12/农夫过河算法实现/">农夫过河算法实现</a>
+    </h1>
+  
+
+        
+        <a href="/2018/11/12/农夫过河算法实现/" class="archive-article-date">
+  	<time datetime="2018-11-12T08:41:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>  一个农夫带着—只狼、一只羊和—棵白菜，身处河的南岸。他要把这些东西全部运到北岸。他面前只有一条小船，船只能容下他和—件物品，另外只有农夫才能撑船。如果农夫在场，则狼不能吃羊，羊不能吃白菜，否则狼会吃羊，羊会吃白菜，所以农夫不能留下羊和白菜自己离开，也不能留下狼和羊自己离开，而狼不吃白菜。请求出农夫将所有的东西运过河的方案。</p>
+<h2 id="问题抽象"><a href="#问题抽象" class="headerlink" title="问题抽象"></a>问题抽象</h2><p>“人狼羊菜”乘船过河<br>只有人能撑船，船只有两个位置（包括人）<br>狼羊、羊菜不能在没有人时共处</p>
+<h2 id="数据抽象"><a href="#数据抽象" class="headerlink" title="数据抽象"></a>数据抽象</h2><p>每个角色的位置进行描述<br>农夫、狼、菜和羊，四个目标各用一位（假定按照农夫、狼、白菜、羊次序），目标在起始岸位置：0，目标岸：1</p>
+<p>确定每个角色位置的函数：  返回true则在目标岸， 返回false则在起始岸<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">bool farmer(int status)&#123;</span><br><span class="line">  return ((status &amp; 0x08) != 0);</span><br><span class="line">&#125;</span><br><span class="line">bool wolf(int status)&#123;</span><br><span class="line">  return ((status &amp;0x04)!= 0);</span><br><span class="line">&#125;</span><br><span class="line">bool cabbage(int status)&#123;</span><br><span class="line">  return((status &amp; 0x02) != 0);</span><br><span class="line">&#125;</span><br><span class="line">bool goat(int status)&#123;</span><br><span class="line">  return((status &amp; 0x01) != 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>安全状态的判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bool safe(intstatus)&#123;     // 返回true:安全，false:不安全</span><br><span class="line">  if((goat(status)==cabbage(status)) &amp;&amp; (goat(status)!=farmer(status)))</span><br><span class="line">    return(false);        // 羊吃白菜</span><br><span class="line">  if((goat(status)==wolf(status)) &amp;&amp; (goat(status)!=farmer(status)))</span><br><span class="line">    return(false);        // 狼吃羊return(true);</span><br><span class="line">&#125;// 其它状态为安全</span><br></pre></td></tr></table></figure></p>
+<h2 id="算法抽象"><a href="#算法抽象" class="headerlink" title="算法抽象"></a>算法抽象</h2><p>  问题变为从状态0000（整数0）出发，寻找全部由安全状态构成的状态序列，以状态1111（整数15）为最终目标。</p>
+<ul>
+<li>状态序列中每个状态都可以从前一状态通过农夫（可以带一样东西）划船过河的动作到达。</li>
+<li>序列中不能出现重复状态<h2 id="算法设计"><a href="#算法设计" class="headerlink" title="算法设计"></a>算法设计</h2></li>
+<li>定义一个整数队列moveTo，它的每个元素表示一个可以安全到达的中间状态</li>
+<li>还需要定义一个数据结构记录已被访问过的各个状态，以及已被发现的能够到达当前这个状态的路径</li>
+<li>用顺序表route 的第i 个元素记录状态i是否已被访问过，若route[i] 已被访问过，则在这个顺序表元素中记入前驱状态值；-1表示未被访问，route 的大小（长度）为16<h2 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> void solve() &#123;</span><br><span class="line">   int movers, i, location, newlocation;</span><br><span class="line">   vector&lt;int&gt; route(END+1, -1);  // 记录已考虑的状态路径</span><br><span class="line">   queue&lt;int&gt; moveTo;// 准备初值</span><br><span class="line">   moveTo.push(0x00);</span><br><span class="line">   route[0]=0;</span><br><span class="line">   while(!moveTo.empty() &amp;&amp; route[15] == -1) &#123;// 得到现在的状态</span><br><span class="line">    status = moveTo.front();</span><br><span class="line">    moveTo.pop();</span><br><span class="line">    for(movers = 1; movers &lt;= 8; movers &lt;&lt;= 1) &#123;// 农夫总是在移动，随农夫移动的也只能是在农夫同侧的东西</span><br><span class="line">      if (farmer(status)  == (bool)(status &amp; movers)) &#123;</span><br><span class="line">        newstatus = status ^ (0x08| movers);// 安全的，并且未考虑过的走法</span><br><span class="line">        if (safe(newstatus) &amp;&amp; (route[newstatus] == -1)) &#123;</span><br><span class="line">          route[newstatus] = status;moveTo.push(newstatus); </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  // 反向打印出路径</span><br><span class="line">  if(route[15] != -1) &#123; </span><br><span class="line">    cout &lt;&lt;&quot;The reverse path is : “ &lt;&lt; endl;</span><br><span class="line">    for (intstatus = 15; status &gt;= 0; status = route[status]) &#123;</span><br><span class="line">      cout &lt;&lt; &quot;The status is : “ &lt;&lt; status &lt;&lt; endl;if(status == 0) </span><br><span class="line">      break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  else</span><br><span class="line">    cout &lt;&lt; &quot;No solution.“ &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>作为一名前端工程师，将以上逻辑使用了javascript实现了，全部代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line">class Queue &#123;</span><br><span class="line"></span><br><span class="line">  constructor() &#123;</span><br><span class="line">    // 定义一个数组来保存队列里面的元素</span><br><span class="line">    this.items = []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 在队列尾部添加一个或者多个元素</span><br><span class="line">  enqueue(element) &#123; </span><br><span class="line">    this.items.push(element)</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 移除队列顶部的元素，并返回被移除的元素</span><br><span class="line">  dequeue() &#123;</span><br><span class="line">    return this.items.shift()</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 清空队列</span><br><span class="line">  remove() &#123;</span><br><span class="line">    this.items = []</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 返回队列顶部的元素，不对队列本身做修改</span><br><span class="line">  front() &#123;</span><br><span class="line">    return this.items[0]</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 判断队列是否为空</span><br><span class="line">  isEmpty() &#123;</span><br><span class="line">    return this.items.length === 0</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  // 返回队列里面元素的个数</span><br><span class="line">  length() &#123;</span><br><span class="line">    return this.item.length</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function farmer(status)&#123;</span><br><span class="line">  return ((status &amp; 0x08) != 0);</span><br><span class="line">&#125;</span><br><span class="line">function wolf(status)&#123;</span><br><span class="line">  return ((status &amp;0x04)!= 0);</span><br><span class="line">&#125;</span><br><span class="line">function cabbage(status)&#123;</span><br><span class="line">  return((status &amp; 0x02) != 0);</span><br><span class="line">&#125;</span><br><span class="line">function goat(status)&#123;</span><br><span class="line">  return((status &amp; 0x01) != 0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function safe(status)&#123;    // 返回true:安全，false:不安全</span><br><span class="line">  if((goat(status)==cabbage(status)) &amp;&amp; (goat(status)!=farmer(status))) // 羊吃白菜</span><br><span class="line">    return(false);        </span><br><span class="line">  if((goat(status)==wolf(status)) &amp;&amp; (goat(status)!=farmer(status))) // 狼吃羊</span><br><span class="line">    return(false);       </span><br><span class="line">  return(true);</span><br><span class="line">&#125;// 其它状态为安全</span><br><span class="line"></span><br><span class="line">(function ()&#123;</span><br><span class="line">  let movers;   // 移动的状态</span><br><span class="line">  let route = [];      // 存储对应的状态是否重复</span><br><span class="line">  let results = [],     // 输出结果</span><br><span class="line">      aftercross,</span><br><span class="line">      counter;     // 记录移动次数</span><br><span class="line">  for(let i =0; i&lt;16; i++)&#123;</span><br><span class="line">    route.push(-1);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  let moveTo = new Queue();  // 准备初值, 队列存储目标岸状态值</span><br><span class="line">  moveTo.enqueue(0x00);</span><br><span class="line">  route[0]=0;</span><br><span class="line">  while(!moveTo.isEmpty() &amp;&amp; route[15] == -1) &#123;  // 得到现在的状态</span><br><span class="line">    status = moveTo.front();</span><br><span class="line">    moveTo.dequeue();</span><br><span class="line">    </span><br><span class="line">    for(movers = 1; movers &lt;= 8; movers &lt;&lt;= 1) &#123;</span><br><span class="line">      if (farmer(status)  == Boolean(status &amp; movers)) &#123;// 随农夫移动的也只能是在农夫同侧的东西</span><br><span class="line">        newstatus = status ^ (0x08| movers); // 渡河后的情况</span><br><span class="line">        if (safe(newstatus) &amp;&amp; (route[newstatus] == -1)) &#123; // 安全的，并且未考虑过的走法</span><br><span class="line">          route[newstatus] = status;</span><br><span class="line">          moveTo.enqueue(newstatus);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if(route[15] != -1)&#123;</span><br><span class="line">    counter = 0;</span><br><span class="line">    for(status = 15; status &gt; 0; status = route[status])&#123;</span><br><span class="line">      results.push(status);</span><br><span class="line">      counter++;      </span><br><span class="line">      if(status == 0) return;</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(results);</span><br><span class="line">    for(let i = 0; i&lt; counter; i++)&#123;</span><br><span class="line">      status= results[i];</span><br><span class="line">      aftercross = results[i+1];</span><br><span class="line">      if(status &amp; 0x08)&#123;</span><br><span class="line">        console.log(&quot;农夫从起始岸到目标岸:&quot;);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        console.log(&quot;农夫从目标岸到起始岸:&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">      switch(status^aftercross)&#123;</span><br><span class="line">      case 12:</span><br><span class="line">        console.log(&quot;把狼带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      case 10:</span><br><span class="line">        console.log(&quot;把菜带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      case 9:</span><br><span class="line">        console.log(&quot;把羊带过河\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      default:</span><br><span class="line">        console.log(&quot;什么也不带\n&quot;);</span><br><span class="line">        break;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">      console.log(&quot;No solution for this problem.\n&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>程序运行截图：<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/农夫过河实现.png" alt=""><br>源文件已上传到gitee代码片段： <a href="https://gitee.com/taoyouyou/codes/frxzgasyvpt71bjcq59d055" target="_blank" rel="noopener">https://gitee.com/taoyouyou/codes/frxzgasyvpt71bjcq59d055</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">队列</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/11/12/农夫过河算法实现/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-关于区块链中的Dapp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1085,14 +1182,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
@@ -1109,11 +1198,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">区块链</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1133,22 +1230,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
               </li>
              
@@ -1165,11 +1246,23 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1181,11 +1274,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1193,15 +1282,7 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1213,7 +1294,27 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">模块化</a>
               </li>
             
             <div class="clearfix"></div>
