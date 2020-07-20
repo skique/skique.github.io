@@ -156,6 +156,179 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-善用插件统一你的代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/01/善用插件统一你的代码风格/">善用工具统一你的代码风格</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/01/善用插件统一你的代码风格/" class="archive-article-date">
+  	<time datetime="2020-06-01T02:12:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在团队开发中，我们总是碰到这样或者那样的问题，加分号还是不加分号？tab还是空格？换行还是不换行？你是否还在为代码风格与同事争论不休？关于代码风格，我们很难区分谁对谁错，不同的人有不同偏好，唯有强制要求才能规避争论。</p>
+<p>所以，团队关于代码风格必须遵循两个基本原则：</p>
+<ul>
+<li>少数服从多数；</li>
+<li>用工具统一风格。</li>
+</ul>
+<p>以下几个工具可以帮助你在开发中来统一我们的前端代码风格。</p>
+<h2 id="Eslint"><a href="#Eslint" class="headerlink" title="Eslint"></a>Eslint</h2><p>Eslint大家对这种工具可能比较熟悉，它是一个可组装的JavaScript和JSX检查工具，发现并修复JavaScript代码中的问题，用来进行代码的校验。</p>
+<h3 id="简单的使用入门"><a href="#简单的使用入门" class="headerlink" title="简单的使用入门"></a>简单的使用入门</h3><ol>
+<li>安装eslint<br><code>npm install -g eslint</code></li>
+<li><p>准备一个js文件来测试一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function merge () &#123;</span><br><span class="line">  var ret = &#123;&#125;;</span><br><span class="line">  for (var i in arguments) &#123;</span><br><span class="line">    var m = arguments[i];</span><br><span class="line">    for (var j in m) ret[j] = m[j];</span><br><span class="line">  &#125;</span><br><span class="line">  return ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(merge(&#123;a: 123&#125;, &#123;b: 456&#125;));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建一个eslint配置文件.eslintrc.js，我们以eslint:recommended为基础配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  extends: &apos;eslint:recommended&apos;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行eslint merge.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">eslint merge.js</span><br><span class="line">  10:1  error  Unexpected console statement  no-console</span><br><span class="line">  10:1  error  &apos;console&apos; is not defined      no-undef</span><br><span class="line"></span><br><span class="line">✖ 2 problem (2 error, 0 warnings)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>根据提示信息，我们可以知道：<br>第一条报错，不能使用console；<br>针对第 1 条提示，我们可以禁用no-console规则。将配置文件.eslintrc.js改为这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  extends: &apos;eslint:recommended&apos;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;no-console&apos;: &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>第二条报错，console变量未定义，不能使用未定义的变量。<br>这是因为 JavaScript 有很多种运行环境，比如常见的有浏览器和 Node.js，另外还有很多软件系统使用 JavaScript 作为其脚本引擎，比如 PostgreSQL 就支持使用 JavaScript 来编写存储引擎，而这些运行环境可能并不存在console这个对象。另外在浏览器环境下会有window对象，而 Node.js 下没有；在 Node.js 下会有process对象，而浏览器环境下没有。</p>
+<p>所以在配置文件中我们还需要指定程序的目标环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  extends: &apos;eslint:recommended&apos;,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;no-console&apos;: &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>再重新执行检查时，已经没有任何提示输出了，说明merge.js已经完全通过了检查。</p>
+<ol>
+<li>使用eslint –fix 自动修复命令</li>
+</ol>
+<p>eslint提供了自动修复命令，可以对一些常见的错误进行自动修复。我们可以利用这个特性来自动格式化项目代码，这样就可以保证代码书写风格的统一。</p>
+<p>将merge.js中的var ret = {};这一行前面多加一个空格，再执行 ESLint 检查：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">eslint merge.js</span><br><span class="line">  2:4  error  Expected indentation of 2 space characters but found 3  indent</span><br><span class="line"></span><br><span class="line">✖ 1 problem (1 error, 0 warnings)</span><br></pre></td></tr></table></figure></p>
+<p>这时候提示的是缩进只能为 2 个空格，而文件的第 2 行却发现了 3 个空格。<br>之后再执行</p>
+<p><code>eslint merge.js --fix</code></p>
+<p>可以发现merge.js文件被修改了，新添加的空格被去除了。</p>
+<p>以上过程通过展示了在一个简单的js文件中引入eslint，进行文件格式校验的过程，了解了eslint在项目中是如何被引入以及如何发挥作用的。</p>
+<p>很多人刚开始接触 ESLint 时觉得太难，是因为过太过于迷信权威。刚接触eslint就直接引入一些业界已经集成好的高度定制化的配置eslint规范。比如 Airbnb 公司的 JavaScript 风格，在 GitHub 上受到了很大的好评，其实我自己也非常认可这样的编码风格。但每个团队都会根据自己的的实际情况来定制不同的东西，我们并不能随便照搬过来。<br>直接使用eslint-config-airbnb这种某个公司高度定制化的配置，直接用来检查整个项目好几十个JS文件，而不是eslint:recommended这样保守的。可想而知那是怎样的画面。</p>
+<p>当我们学会了走路之后，可以试着跑一跑了，这时可以尝试引入上文提到的各大公司提供的高度配置的规范，这样当项目文件很大很多的时候可以省一些事。当然每个项目每个团队都有适合自己的开发规范，如果我们觉得 eslint-config-airbnb 规则配置中个别规则并不符合当前项目的要求，可以直接在 .eslintrc.js 配置 rules 属性，优先级高于共享规则 airbnb。</p>
+<p>顺便说一句，如果觉得官方提供的默认规则不好用，可以自定义规则配置文件，然后发布成 Npm 包。</p>
+<p>先学会简单地配置规则，如果要更深入地定制自己的规则，建议阅读<br><a href="https://cn.eslint.org/docs/rules/" target="_blank" rel="noopener">规则说明文档</a><br><a href="https://zhuanlan.zhihu.com/p/25271435" target="_blank" rel="noopener">ESLint 规则详解（一）</a><br><a href="https://zhuanlan.zhihu.com/p/26910986" target="_blank" rel="noopener">ESLint 规则详解（二）</a></p>
+<h3 id="文件配置"><a href="#文件配置" class="headerlink" title="文件配置"></a>文件配置</h3><p>ESLint 支持几种格式的配置文件</p>
+<ul>
+<li>JavaScript - 使用 .eslintrc.js 然后输出一个配置对象。</li>
+<li>YAML - 使用 .eslintrc.yaml 或 .eslintrc.yml 去定义配置的结构。</li>
+<li>JSON - 使用 .eslintrc.json 去定义配置的结构，ESLint 的 JSON 文件允许 JavaScript 风格的注释。</li>
+<li>(弃用) - 使用 .eslintrc，可以使 JSON 也可以是 YAML。</li>
+<li>package.json - 在 package.json 里创建一个 eslintConfig属性，在那里定义配置。</li>
+</ul>
+<p>如果同一个目录下有多个配置文件，ESLint 只会使用一个。优先级顺序如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 .eslintrc.js</span><br><span class="line">2 .eslintrc.yaml</span><br><span class="line">3 .eslintrc.yml</span><br><span class="line">4 .eslintrc.json</span><br><span class="line">5 .eslintrc</span><br><span class="line">6  package.json</span><br></pre></td></tr></table></figure></p>
+<h2 id="Prettier"><a href="#Prettier" class="headerlink" title="Prettier"></a>Prettier</h2><p>Prettier翻译过来是“更漂亮的”，来看看官网对他的定义：</p>
+<ul>
+<li>它是一款代码格式化工具，</li>
+<li>支持多种语言</li>
+<li>与大多数编辑器集成</li>
+<li>不需要太多配置</li>
+</ul>
+<p>使用prettier配置我们的项目，按下保存键，代码即被格式化，使得我们可以节省更多的时间和精力，不需要在代码评审中讨论风格。</p>
+<p>很多人通常会将eslint与prettier混为一谈，首先从定义上看eslint是一款代码校验工具，而Prettier区别于eslint的，prettier一款代码格式化工具。<br>prettier不仅能格式化javascript，还能支持jsx和css。总的来说它支持以下文件格式：</p>
+<ul>
+<li>JavaScript, including ES2017</li>
+<li>JSX</li>
+<li>Angular</li>
+<li>Vue</li>
+<li>Flow</li>
+<li>TypeScript</li>
+<li>CSS, Less, and SCSS</li>
+<li>HTML</li>
+<li>JSON</li>
+<li>GraphQL</li>
+<li>Markdown, including GFM and MDX</li>
+<li>YAML</li>
+</ul>
+<p>最重要的区别在于，prettier提供很少的配置项，它本身就是为了让用户少思考这些风格，把代码风格全部交给工具。它更像是提供了一种方案，用以保持所有输出的代码符合一致性的原则。</p>
+<h3 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h3><p>一共有三种方式支持对Prettier进行配置：</p>
+<ol>
+<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
+<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
+<li>在package.json中新建prettier属性。   </li>
+</ol>
+<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
+<p>注意一点，parser的配置项官网列出了如下可选项：</p>
+<ul>
+<li>babylon</li>
+<li>flow</li>
+<li>typescript Since v1.4.0</li>
+<li>postcss Since v1.4.0</li>
+<li>json Since v1.5.0</li>
+<li>graphql Since v1.5.0</li>
+<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
+</ul>
+<h3 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h3><p>通常，ESLint 与 Prettier配合使用。<br>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
+<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
+<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
+<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>借助ESLint的autofix功能，在保存代码的时候，自动将抛出error的地方进行fix。因为我们项目是在webpack中引入eslint-loader来启动eslint的，所以我们只要稍微修改webpack的配置，就能在启动webpack-dev-server的时候，每次保存代码同时自动对代码进行格式化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.(js|vue)$/,</span><br><span class="line">        loader: &apos;eslint-loader&apos;,</span><br><span class="line">        enforce: &apos;pre&apos;,</span><br><span class="line">        include: [path.join(__dirname, &apos;src&apos;)],</span><br><span class="line">        options: &#123;</span><br><span class="line">          fix: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h2><p>一些细心的童鞋可能回发现，项目里面经常会有个.editorconfig的文件,那么，它究竟是干嘛的呢？事实上，它也能帮助我们在开发中保持一定的规范。</p>
+<p>先设想一个场景，一个大型项目，可能有很多位同事一起工作，而由于习惯的不同，导致他们用的编辑器五花八门，有vscode,有webstorm,有sublime,等等，它们默认的格式化设置是不同的，有的是2格缩进，有的则是4格。规则的不同，导致代码风格的差异，这样就会给后期的运维工作带来不可预料的风险。so bad！</p>
+<p>所以，EditorConfig就是来做这件事的工具，它的作用就是</p>
+<blockquote>
+<p>帮助跨不同的编辑器和ide为多个开发人员维护一致的编码风格。</p>
+</blockquote>
+<p>知道了它是干什么，那么它是怎么用的呢？</p>
+<h3 id="配置EditorConfig"><a href="#配置EditorConfig" class="headerlink" title="配置EditorConfig"></a>配置EditorConfig</h3><ol>
+<li>安装插件</li>
+</ol>
+<p>每个编辑器都有相应的插件，这里以vscode为例，我们需要安装EditorConfig:<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/eslintconfig.png" alt=""></p>
+<ol>
+<li>配置.editorconfig文件</li>
+</ol>
+<p>在根目录下新建.editorconfig文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 是否是顶级配置文件，设置为true的时候才会停止搜索.editorconfig文件</span><br><span class="line">root = true</span><br><span class="line"></span><br><span class="line">[*]</span><br><span class="line"># 文件编码格式,一般为utf-8</span><br><span class="line">charset = utf-8</span><br><span class="line"># 缩进类型</span><br><span class="line">indent_style = space</span><br><span class="line"># 缩进数量</span><br><span class="line">indent_size = 2</span><br><span class="line"># 换行符类型格式,一般用lf</span><br><span class="line">end_of_line = lf</span><br><span class="line"># 末尾行后加多一行空行</span><br><span class="line">insert_final_newline = true</span><br><span class="line"># 删除行尾的空格</span><br><span class="line">trim_trailing_whitespace = true</span><br></pre></td></tr></table></figure></p>
+<p>做完以上两步后，vscode会自动的按照以上规范进行新建文件。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/01/善用插件统一你的代码风格/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ECMAScript面面观" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1970,106 +2143,6 @@ Array.prototype[@@iterator]()
 
 
   
-    <article id="post-前端工程化——CI-CD-自动化构建部署" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/">前端工程化——CI/CD 自动化构建部署</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/" class="archive-article-date">
-  	<time datetime="2020-03-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="什么是-CI-CD"><a href="#什么是-CI-CD" class="headerlink" title="什么是 CI/CD"></a>什么是 CI/CD</h2><p>CI/CD 是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法。具体而言，CI/CD 可让持续自动化和持续监控贯穿于应用的整个生命周期（从集成和测试阶段，到交付和部署）。这些关联的事务通常被统称为“CI/CD 管道”，由开发和运维团队以敏捷方式协同支持。<br>CI/CD 的核心概念是持续集成、持续交付和持续部署。</p>
-<ol>
-<li>持续集成<br>持续集成，是属于开发人员的自动化流程，成功的CI意味着应用代码的更改会被定期构建，测试合并到共享存储库中，解决在一次开发中有太多应用分支，从而导致相互冲突的问题。</li>
-<li>持续交付<br>开发人员对应用的更改会自动进行测试并上传到存储库</li>
-<li>持续部署<br>自动的将开发人员的更改从存储库发布到生产环境，以供客户使用，解决因手动的流程降低应用交付速度。持续部署是以持续交付为根基，实现了管道后续阶段的自动化<br>用一张图可以清晰的理解CI/CD管道工作的整个流程<br><img src="https://www.redhat.com/cms/managed-files/ci-cd-flow-desktop_1.png" alt=""><br>CI/CD其实就是一个流程，通常形象的表述为管道，用于实现应用开发中高度持续自动化和持续监控。因案例而异，该术语的具体含义取决于CI/CD管道的自动化程度，许多企业最先开始添加CI，然后逐步实现交付和部署的自动化</li>
-</ol>
-<h2 id="CI-CD实现"><a href="#CI-CD实现" class="headerlink" title="CI/CD实现"></a>CI/CD实现</h2><p>对于业界来说，实现CI/CD的方法不是唯一的，大家可以用自己喜欢的方式来部署。本文以drone+gogs为例搭建自己的CI/CD自动化部署系统<br><a href="https://www.cntofu.com/book/139/cases/ci/drone.md" target="_blank" rel="noopener">drone</a> 是一个基于容器的本地持续交付平台，和Jenkins是差不多的。基于 Docker 的 CI/CD 工具 Drone 所有编译、测试的流程都在 Docker 容器中进行。</p>
-<blockquote>
-<p>Drone引入了Pipelnes的概念，管道可帮助我们自动化软件交付过程中的步骤，例如启动代码构建，运行自动化测试以及部署到暂存或生产环境。<br>通过将.drone.yml文件放在git信息库的根目录中来配置管道。 yaml语法旨在易于阅读和表达，以便查看存储库的任何人都可以理解工作流程。<br>Drone通过多个step来完成一系列的指令。</p>
-</blockquote>
-<p><a href="https://gogs.io/" target="_blank" rel="noopener">gogs</a> 是一款极易搭建的自助 Git 服务, 掌握了它, 我们就可以搭建自己的git服务站点。<br>首先我们要先安装docker，这里默认已经安装好了docker,并且已经掌握了相关知识。docker基础可以参考我的上一篇文章<a href="https://taoyouyou.github.io/2020/01/20/小白入门docker指南/" target="_blank" rel="noopener">小白入门docker指南</a></p>
-<h3 id="配置-Drone"><a href="#配置-Drone" class="headerlink" title="配置 Drone"></a>配置 Drone</h3><p>我们通过使用 Docker Compose 来启动 Drone，编写 docker-compose.yml 文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;3&apos;</span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  drone-server:</span><br><span class="line">    image: drone/drone:latest</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:80&quot;</span><br><span class="line">      - 8843:443</span><br><span class="line">      - 9000</span><br><span class="line">    volumes:</span><br><span class="line">      - ./drone:/var/lib/drone/</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock</span><br><span class="line">    environment:</span><br><span class="line">      - DRONE_OPEN=true</span><br><span class="line">      - DRONE_SERVER_HOST=drone-server</span><br><span class="line">      - DRONE_DEBUG=true</span><br><span class="line">      - DRONE_GIT_ALWAYS_AUTH=false</span><br><span class="line">      - DRONE_GOGS=true</span><br><span class="line">      - DRONE_GOGS_SKIP_VERIFY=false</span><br><span class="line">      - DRONE_GOGS_SERVER=http://gogs:3000</span><br><span class="line">      - DRONE_PROVIDER=gogs</span><br><span class="line">      - DRONE_DATABASE_DATASOURCE=/var/lib/drone/drone.sqlite</span><br><span class="line">      - DRONE_DATABASE_DRIVER=sqlite3</span><br><span class="line">      - DRONE_SERVER_PROTO=http</span><br><span class="line">      - DRONE_RPC_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line">      - DRONE_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line"></span><br><span class="line">  gogs:</span><br><span class="line">    image: gogs/gogs:latest</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;10022:22&quot;</span><br><span class="line">      - &quot;3000:3000&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - ./data/gogs:/data</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line">  mysql:</span><br><span class="line">    image: mysql:5.7.16</span><br><span class="line">    volumes:</span><br><span class="line">      - ./gogs/mysql:/var/lib/mysql</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock</span><br><span class="line">    ports:</span><br><span class="line">      - 3308:3306</span><br><span class="line">    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: pass</span><br><span class="line">      MYSQL_DATABASE: gogs</span><br><span class="line">      MYSQL_USER: gogs</span><br><span class="line">      MYSQL_PASSWORD: pass</span><br><span class="line">      TZ: Asia/Shanghai</span><br><span class="line">  drone-agent:</span><br><span class="line">    image: drone/agent:latest</span><br><span class="line">    depends_on:</span><br><span class="line">      - drone-server</span><br><span class="line">    environment:</span><br><span class="line">      - DRONE_RPC_SERVER=http://drone-server</span><br><span class="line">      - DRONE_RPC_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line">      - DRONE_DEBUG=true</span><br><span class="line">      - DOCKER_HOST=tcp://docker-bind:2375</span><br><span class="line">      - DRONE_SERVER=drone-server:9000</span><br><span class="line">      - DRONE_SECRET=ALQU2M0KdptXUdTPKcEw</span><br><span class="line">      - DRONE_MAX_PROCS=5</span><br><span class="line">  docker-bind:</span><br><span class="line">     image: docker:dind</span><br><span class="line">     privileged: true</span><br><span class="line">    #  command: --storage-driver=overlay</span><br></pre></td></tr></table></figure></p>
-<p>我们创建一个存放docker-compose.yml文件的目录比如就叫gogs，然后我们把这些yml保存成docker-compose.yml，然后执行docker-compose来安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>配合yml文件，我们就安装好了drone-server和drone-agent还有gogs。</p>
-<h3 id="初始化gogs"><a href="#初始化gogs" class="headerlink" title="初始化gogs"></a>初始化gogs</h3><p>我们用浏览器打开 <a href="http://localhost:3000/" target="_blank" rel="noopener">http://localhost:3000/</a> 来进入gogs并初始化它。<br><img src="https://upload-images.jianshu.io/upload_images/2705690-0bc116c3ceae8135.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>域名和应用URL记得一样,接着我们创建一个管理员用户，然后其他的都默认，点击立即安装完成。<br><img src="https://upload-images.jianshu.io/upload_images/2705690-54b8c484e5dbe1d3.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>初始化成功之后我们可以在gogs里边创建一个仓库，然后登陆drone。</p>
-<h3 id="登录drone"><a href="#登录drone" class="headerlink" title="登录drone"></a>登录drone</h3><p>根据docker-compose.yml可以看到drone的服务运行在8080端口下<br>打开浏览器输入<a href="http://localhost/直接进入drone，密码是gogs的你的刚刚的账户和密码。" target="_blank" rel="noopener">http://localhost/直接进入drone，密码是gogs的你的刚刚的账户和密码。</a><br><img src="https://upload-images.jianshu.io/upload_images/2705690-f90b9a41beeadd24.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>我们会看到一个刚刚创建的仓库，激活它！<br>激活之后，我们回到gogs那边，仓库的设置里边的webhook应该已经配置好了<br><img src="https://upload-images.jianshu.io/upload_images/2705690-d4371874417d862a.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>我们可以测试web hook，如果没有问题的话，应该会提示成功。</p>
-<h3 id="上传源码"><a href="#上传源码" class="headerlink" title="上传源码"></a>上传源码</h3><p>测试没有问题之后，我们初始化我们的代码文件夹为git仓库，然后push到gogos上边。<br>然后为你的仓库加上.drone.yml配置文件，drone-server会自动读取这个文件进行CI、CD操作等。以下这个是我们的示例文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">kind: pipeline</span><br><span class="line">name: demo</span><br><span class="line"></span><br><span class="line">steps:</span><br><span class="line">  - name: build</span><br><span class="line">    image: golang:1.11.4</span><br><span class="line">    commands:</span><br><span class="line">      - pwd</span><br><span class="line">      - go version</span><br><span class="line">      - go build .</span><br><span class="line">      - go test demo/util</span><br><span class="line"></span><br><span class="line">  #  - name: frontend</span><br><span class="line">  #    image: node:6</span><br><span class="line">  #    commands:</span><br><span class="line">  #      - npm install</span><br><span class="line">  #      - npm test</span><br><span class="line"></span><br><span class="line">  - name: publish</span><br><span class="line">    image: plugins/docker:latest</span><br><span class="line">    settings:</span><br><span class="line">      username:</span><br><span class="line">        from_secret: docker_username</span><br><span class="line">      password:</span><br><span class="line">        from_secret: docker_password</span><br><span class="line">      repo: example/demo</span><br><span class="line">      tags: latest</span><br><span class="line"></span><br><span class="line">  - name: deploy</span><br><span class="line">    image: appleboy/drone-ssh</span><br><span class="line">    pull: true</span><br><span class="line">    settings:</span><br><span class="line">      host: example.me</span><br><span class="line">      user: root</span><br><span class="line">      key:</span><br><span class="line">        from_secret: deploy_key</span><br><span class="line">      script:</span><br><span class="line">        - cd /data</span><br><span class="line">        - mkdir app/</span><br><span class="line">        - cd /data/app</span><br><span class="line">        - docker rmi -f example/demo</span><br><span class="line">        - echo &quot;login docker&quot;</span><br><span class="line">        - echo &quot;login success, pulling...&quot;</span><br><span class="line">        - docker pull example/demo:latest</span><br><span class="line">        - echo &quot;image running&quot;</span><br><span class="line">        - docker run -p 8088:8088 -d example/demo</span><br><span class="line">        - echo &quot;run success&quot;</span><br></pre></td></tr></table></figure></p>
-<p>我们首先进行简单的golang build和test操作然后根据Dockerfile文件把我们的程序构建成docker镜像，接着上传到docker hub中，然后通过drone-ssh插件部署这个镜像。</p>
-<h3 id="开始构建"><a href="#开始构建" class="headerlink" title="开始构建"></a>开始构建</h3><p>有了配置文件之后，推送代码我们就可以去drone查看构建进度：<br><img src="https://upload-images.jianshu.io/upload_images/2705690-5eb695ee67737000.png?imageMogr2/auto-orient/strip|imageView2/2/w/1200/format/webp" alt=""><br>等待drone构建完成，即完成了基于drone+gogs搭建的CI/CD自动化部署过程</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">前端工程化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/20/前端工程化——CI-CD-自动化构建部署/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -2167,7 +2240,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2180,18 +2265,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2211,31 +2284,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2251,47 +2304,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2303,11 +2340,51 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Virtual DOM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">性能优化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
               </li>
             
             <div class="clearfix"></div>

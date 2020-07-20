@@ -156,6 +156,148 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-从缓存的角度来谈谈前端性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/20/从缓存的角度来谈谈前端性能优化/">从缓存的角度来谈谈前端性能优化</a>
+    </h1>
+  
+
+        
+        <a href="/2020/07/20/从缓存的角度来谈谈前端性能优化/" class="archive-article-date">
+  	<time datetime="2020-07-20T03:03:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在我们考虑提高页面渲染速度之前先来思考一个问题，一个页面的速度由什么决定？<br>显而易见，这里主要包含两方面的影响因素。</p>
+<ol>
+<li>资源传输时间（tcp链接时间和响应时间）</li>
+<li>dom渲染时间</li>
+</ol>
+<p>这两方面的耗时可以通过浏览器环境下通过window的内置对象window.performance拿到相关数据并计算得到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const &#123; timing &#125; = window.performance</span><br><span class="line">// 计算资源传输耗时</span><br><span class="line">const tcpTimes = (timing.connectEnd - timing.connectStart)/1000</span><br><span class="line">// 计算dom渲染耗时</span><br><span class="line">const domTimes = (timing.domComplete - timing.domLoading)/1000</span><br></pre></td></tr></table></figure>
+<h3 id="前端常见的优化方式"><a href="#前端常见的优化方式" class="headerlink" title="前端常见的优化方式"></a>前端常见的优化方式</h3><p>所以进行前端优化的方式，通常是针对围绕两个方面进行优化，即尽可能的减少资源传输时间和dom渲染时间。<br>以下是前端常见的三种优化方式：</p>
+<ol>
+<li>服务器优化   </li>
+<li>减少传输体积-压缩和切片技术</li>
+<li>合理利用缓存</li>
+</ol>
+<p>展开来讲每一种优化方式都能对应跟多具体的行为，对于服务器优化，vue和react生态体系下都给出了较为成熟的解决方案。比如Vue提出的Nuxt.js和React提出的Next.js。     </p>
+<p>对于第二种方式，通过减少传输体积来达到优化的目的可以采用一下几种方法：</p>
+<ul>
+<li>资源压缩（包括图片、字体库以及js脚本）</li>
+<li>Tree shaking技术：剔除无用代码</li>
+<li>代码分离以及提取公共代码</li>
+<li>懒加载</li>
+<li>使用webp格式图片</li>
+<li>在生产环境关闭source map</li>
+<li>…</li>
+</ul>
+<p>对于第三种方式，即通过合理利用缓存的方式来达到性能优化的目的，这是本文侧重讨论的重点。</p>
+<h3 id="缓存方式有哪些"><a href="#缓存方式有哪些" class="headerlink" title="缓存方式有哪些"></a>缓存方式有哪些</h3><ol>
+<li>cookies-缓存量，不安全   </li>
+<li>全局状态缓存-不持久, 占用内存   </li>
+<li>本地缓存-locaStorage,sessionStroage，持久化   </li>
+</ol>
+<p>对于本地缓存，我们需要知道locaStorage，sessionStroage有哪些区别：</p>
+<ul>
+<li>locaStorage，除非手动删除，不然会一直存在，   </li>
+<li>sessionStroage，基于会话级别的缓存策略，页面会话关闭，则清除。</li>
+</ul>
+<h3 id="做一个缓存架构"><a href="#做一个缓存架构" class="headerlink" title="做一个缓存架构"></a>做一个缓存架构</h3><p>这里我们基于请求发送实现一个缓存架构。在运用缓存进行性能优化时需要考虑的问题有： </p>
+<ul>
+<li>缓存的量引起的压力，储存压力。</li>
+<li>缓存的更新问题-如何在数据更新后保持最新数据。   </li>
+</ul>
+<p>基于这两点的考虑，在对数据进行缓存的时候，数据的变动越少越好。</p>
+<blockquote>
+<p>解决跨域<br>1、webpack 代理转发：做了一个node中间层——只对开发环境有效<br>2、nginx代理或者手动做node中间层–成本太大<br>3、jsonp，适合静态页面和jquery–不适合vue<br>4、后端接口配置跨域资源共享(CORS)–简单高效   </p>
+</blockquote>
+<p>缓存思路:<br>第一次加载后，后续无需请求<br>热门商品放入localStroage,非热门的放到状态缓存里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">// 缓存对象的创建应该使用单例模式——全局只能有一个缓存对象。</span><br><span class="line">if(!window.mycache)&#123;</span><br><span class="line">    window.mycache = function()&#123;</span><br><span class="line">        window.cache = &#123;&#125;;</span><br><span class="line">        window.cachArr = [];</span><br><span class="line">        return function()&#123;</span><br><span class="line">            get:function(api)&#123;</span><br><span class="line">                return new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">                    if(cache[api])&#123;</span><br><span class="line">                        resolve(cache[api])</span><br><span class="line">                    &#125;else&#123;</span><br><span class="line">                        if(localStroage.getItem(api))&#123;</span><br><span class="line">                            resolve(JSON.parse(localStroage.getItem(api)));</span><br><span class="line">                        &#125;else &#123;</span><br><span class="line">                            this.set(api).then(res=&gt;&#123;</span><br><span class="line">                                var name = &apos;&apos;;</span><br><span class="line">                                if(res.data.ishot)&#123;</span><br><span class="line">                                    if(cacheArr[1].length&gt;4)&#123;</span><br><span class="line">                                        name=cacheArr[1].shift();</span><br><span class="line">                                        localStroage.removeItem(name)</span><br><span class="line">                                    &#125;</span><br><span class="line">                                    localStroage.setItem(api, Json.stringify(res));</span><br><span class="line">                                    cacheArr[1].push(api)</span><br><span class="line">                                &#125;else &#123;</span><br><span class="line">                                    if(cacheArr[0].length&gt;3)&#123;</span><br><span class="line">                                        name = cahceArr[0].shift();</span><br><span class="line">                                        delete cache[name];</span><br><span class="line">                                    &#125;</span><br><span class="line">                                    cache[api] = res;</span><br><span class="line">                                    cacheArr[0].push(api);</span><br><span class="line">                                    </span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;)</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;,</span><br><span class="line">            set:function(api)&#123;</span><br><span class="line">                return axios.get(api);</span><br><span class="line">            &#125;,</span><br><span class="line">            remove:function(api)&#123;</span><br><span class="line">                delete cache(api);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码中设计到大量的条件判断语句。总结起来缓存入口可以分为三类：   </p>
+<ol>
+<li>缓存   </li>
+<li>localStroage   </li>
+<li>发送请求，处理缓存逻辑   </li>
+</ol>
+<p>我们可以利用享元模式优化这一流程，享元模式是⼀种经典的结构型解决⽅案，⽤于优化重复、缓慢及数据共享效率较低的代码。它旨在通过与相关的对象共享尽可能多的数据来减少应⽤程序中内存的使⽤。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">if(!window.mycache)&#123;</span><br><span class="line">    window.mycache = function()&#123;</span><br><span class="line">        window.cache = &#123;&#125;;</span><br><span class="line">        window.cacheArr = [];</span><br><span class="line">        return &#123;</span><br><span class="line">            get:function ( api ) &#123;</span><br><span class="line">                var state = 0;</span><br><span class="line">                var stateHandler = [</span><br><span class="line">                    function(resolve,reject) &#123;</span><br><span class="line">                        resolve(cache[api]);</span><br><span class="line">                    &#125;,</span><br><span class="line">                    function(resolve,reject) &#123;</span><br><span class="line">                        resolve(JSON.parse(localStorage.getItem(api)));</span><br><span class="line">                    &#125;,</span><br><span class="line">                    function(resolve,reject) &#123;</span><br><span class="line">                        this.set(api).then((res) =&gt; &#123;</span><br><span class="line">                            var type = 0;</span><br><span class="line">                            var name = cacheArr[type].shift();</span><br><span class="line">                            if(res.data.ishot)&#123;</span><br><span class="line">                                type == 1;</span><br><span class="line">                                name = cacheArr[type].shift();</span><br><span class="line">                                if(cacheArr[1].length&gt;4)&#123;</span><br><span class="line">                                    localStorage.removeItem(name);</span><br><span class="line">                                &#125;</span><br><span class="line">                                localStorage.setItem(api,JSON.stringify(res));</span><br><span class="line">                            &#125; else &#123;</span><br><span class="line">                                if(cacheArr[0].length&gt;3)&#123;</span><br><span class="line">                                    delete cache[name];</span><br><span class="line">                                &#125;</span><br><span class="line">                                cache[api] = res;</span><br><span class="line">                            &#125;</span><br><span class="line">                            cacheArr[type].push(api);</span><br><span class="line">                            resolve(res);</span><br><span class="line">                        &#125;)</span><br><span class="line">                    &#125;</span><br><span class="line">                ]</span><br><span class="line">                return new Promise((resolve,reject)=&gt;&#123;</span><br><span class="line">                    if(localStorage.getItem(api))&#123;</span><br><span class="line">                        state = 1;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if(!cache[api] &amp;&amp; !localStorage.getItem(api))&#123;</span><br><span class="line">                        state = 2;</span><br><span class="line">                    &#125;</span><br><span class="line">                    stateHandler[state].call(this, resolve, reject);</span><br><span class="line">                &#125;)</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set:function(api)&#123;</span><br><span class="line">                return axios.get(api);</span><br><span class="line">            &#125;,</span><br><span class="line">            remove:function(api)&#123;</span><br><span class="line">                delete cache(api);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基于此，我们已经完成了一个缓存架构的实现，现在可以直接在项目中引入并使用这个缓存架构。<br>新建.vue文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">    date() &#123;</span><br><span class="line">        return &#123;</span><br><span class="line">            goodInfo: &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    mounted: function()&#123;</span><br><span class="line">        mycahce.get(&apos;/api/&apos;+this.$route.params.goodApi).then(res=&gt;&#123;</span><br><span class="line">            this.goodsInfo = res.data</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>现在运行这段代码时候会进入到缓存架构里，先判断localStroage下或者全局状态缓存cache下有没有对应api的值，如果有则直接取出，如果没有则发送axios请求，并缓存对应的数据内容。</p>
+<p>在上面的讨论中我们注意到了使用缓存提高性能的同时需要考虑到缓存的量引起的储存压力，在代码里我们设置了最大缓存的量，超过这个量时需要将旧数据删除，存入新数据，这样就能控制最大能缓存的数据的量。<br>关于第二点考虑，缓存的更新问题，如何保证缓存与实际资源一致的同时，提高缓存命中率。如果时静态资源缓存的话，最好的方式时通过hash值来达到这个目的。但是基于本文提高的针对api请求接口缓存暂时没有很好的解决方案，即便如此，仍然可以通过以下几种方式来达到缓存更新这一目的：</p>
+<ol>
+<li>你缓存的接口变动的越少越少，可以设置缓存时限以及设定触发删除的动作：比如退出登陆，手动触发缓存删除。这种方式的成本较小，同时也适用与很多前端应用场景，如菜单信息以及个人信息接口等数据可以使用这种缓存策略。</li>
+<li><p>websocket, 成本比较大，需要后段启动一个websocket服务，能够达到较即时的数据更新。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var ws = new Websocket();</span><br><span class="line">ws.onmessage=(data)=&gt; &#123;</span><br><span class="line">    if(data.api)&#123;</span><br><span class="line">        mycache.remove(api);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>小成本请求：进入项目时，先发一个小请求，响应只会给你回传改变的接口。关键的设计在于传输的数据量定小，接口需要传入当前抓取数据的时间节点。接口拿到这个时间节点后，对比当前的数据是否更新，如果更新的话返回更新了数据的api。</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">缓存</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/07/20/从缓存的角度来谈谈前端性能优化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-从Snabbdom的基本用法解剖源码实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -247,46 +389,47 @@
 </ul>
 <h3 id="分析源码实现"><a href="#分析源码实现" class="headerlink" title="分析源码实现"></a>分析源码实现</h3><p>一般做法是从入口函数开始解析主线逻辑，所以可以从h函数开始解析。</p>
 <h4 id="1、h"><a href="#1、h" class="headerlink" title="1、h()"></a>1、h()</h4><p>h函数创建虚拟节点（vnodes），函数接收一个字符串形式的标签/选择器、一个可选的数据对象、一个可选的字符串或数组作为子代。</p>
-<p>实现：在ts中通过调整代码实现了<strong>函数重载</strong>，通过调用vnode函数传入不同的参数值和参数类型，返回一个vnode节点。</p>
 <blockquote>
 <p>函数重载：</p>
 <ul>
 <li>参数个数或类型不同的函数</li>
 <li>javascript中没有重载的概念</li>
-<li>typescript中与重载，不过重载的实现还是通过代码调整参数<br>如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function add(a,b)&#123;</span><br><span class="line">   console.log(a,b)</span><br><span class="line">&#125;</span><br><span class="line">function add(a,b,c)&#123;</span><br><span class="line">   console.log(a+b+c)</span><br><span class="line">&#125;</span><br><span class="line">add(1,2);</span><br><span class="line">add(1,2,3)</span><br></pre></td></tr></table></figure>
-</li>
+<li>typescript中与重载，不过重载的实现还是通过代码调整参数</li>
 </ul>
 </blockquote>
-<h4 id="2、vnode"><a href="#2、vnode" class="headerlink" title="2、vnode()"></a>2、vnode()</h4><p>vnode定义了一种vnode数据对象，作为对真实dom的描述。</p>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><ul>
-<li>sel</li>
-<li>data</li>
-<li>children</li>
-<li>text</li>
-<li>elm</li>
-<li>key</li>
+<p>在ts中通过调整代码实现了<strong>函数重载</strong>，通过调用vnode函数传入不同的参数值和参数类型，返回一个vnode节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// h 函数的重载</span><br><span class="line">export function h(sel: string): VNode;</span><br><span class="line">export function h(sel: string, data: VNodeData): VNode;</span><br><span class="line">export function h(sel: string, children: VNodeChildren): VNode;</span><br><span class="line">export function h(sel: string, data: VNodeData, children: VNodeChildren): VNode;</span><br><span class="line">export function h(sel: any, b?: any, c?: any): VNode &#123;</span><br><span class="line">  var data: VNodeData = &#123;&#125;, children: any, text: any, i: number;</span><br><span class="line">  // 处理参数，实现重载的机制</span><br><span class="line">  if (c !== undefined) &#123;  // 处理三个参数的情况：sel,data,children/text</span><br><span class="line">    data = b;</span><br><span class="line">    if (is.array(c)) &#123; children = c; &#125;         // 如果c是数组，c代表了当前节点的子节点</span><br><span class="line">    else if (is.primitive(c)) &#123; text = c; &#125;    // 如果c是字符串或数字,代表了文本值</span><br><span class="line">    else if (c &amp;&amp; c.sel) &#123; children = [c]; &#125;   // 如果c是vnode, 会被处理成数组</span><br><span class="line">  &#125; else if (b !== undefined) &#123;              //处理两个参数的情况</span><br><span class="line">    if (is.array(b)) &#123; children = b; &#125;       // 如果b是数组，b代表了当前节点的子节点</span><br><span class="line">    else if (is.primitive(b)) &#123; text = b; &#125;  // 如果b是字符串或数字,代表了文本值</span><br><span class="line">    else if (b &amp;&amp; b.sel) &#123; children = [b]; &#125; // 如果b是vnode, 会被处理成数组</span><br><span class="line">    else &#123; data = b; &#125;                       // 否则，b作为data</span><br><span class="line">  &#125;</span><br><span class="line">  if (children !== undefined) &#123;</span><br><span class="line">    for (i = 0; i &lt; children.length; ++i) &#123;</span><br><span class="line">      if (is.primitive(children[i])) children[i] = vnode(undefined, undefined, undefined, children[i], undefined);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  if (</span><br><span class="line">    sel[0] === &apos;s&apos; &amp;&amp; sel[1] === &apos;v&apos; &amp;&amp; sel[2] === &apos;g&apos; &amp;&amp;</span><br><span class="line">    (sel.length === 3 || sel[3] === &apos;.&apos; || sel[3] === &apos;#&apos;)</span><br><span class="line">  ) &#123;       //  处理选择器是svg的情况</span><br><span class="line">    addNS(data, children, sel);   // 给节点和节点的子节点递归添加命名空间</span><br><span class="line">  &#125;</span><br><span class="line">  return vnode(sel, data, children, text, undefined);  // 调用vnode()函数返回一个vnode</span><br><span class="line">&#125;;</span><br><span class="line">export default h;  // 将h函数导出为默认模块</span><br></pre></td></tr></table></figure></p>
+<h4 id="2、vnode"><a href="#2、vnode" class="headerlink" title="2、vnode()"></a>2、vnode()</h4><p>vnode定义了一种vnode数据对象，作为对真实dom的描述。<br>vnode = vnode(sel,data,children,text,elm)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">export function vnode(sel: string | undefined,</span><br><span class="line">                      data: any | undefined,</span><br><span class="line">                      children: Array&lt;VNode | string&gt; | undefined,</span><br><span class="line">                      text: string | undefined,</span><br><span class="line">                      elm: Element | Text | undefined): VNode &#123;</span><br><span class="line">  let key = data === undefined ? undefined : data.key;</span><br><span class="line">  return &#123;sel, data, children, text, elm, key&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="vnode属性"><a href="#vnode属性" class="headerlink" title="vnode属性"></a>vnode属性</h5><ul>
+<li>sel: 选择器</li>
+<li>data: 模块数据</li>
+<li>children: 子节点</li>
+<li>text: 记录vnode对应的真实dom</li>
+<li>elm: 和children互斥</li>
+<li>key: 优化用</li>
 </ul>
-<h4 id="4、init"><a href="#4、init" class="headerlink" title="4、init()"></a>4、init()</h4><p>init接收一个模块列表，并返回一个使用指定模块集的patch函数</p>
+<h4 id="3、init"><a href="#3、init" class="headerlink" title="3、init()"></a>3、init()</h4><p>init接收一个模块列表，并返回一个使用指定模块集的patch函数</p>
 <p>用法：<code>patch() = init(modules: Array&lt;Partial&lt;Module&gt;&gt;, domApi?: DOMAPI);</code></p>
 <blockquote>
 <p>高阶函数：一个函数里面返回另一个函数<br>高阶函数的作用：<br>形成闭包：内部函数可以访问外部函数upvalue, patch()可以访问到modules和domAp等外部函数参数;</p>
 </blockquote>
-<p>init()处理过程：</p>
+<p>init()实现过程：</p>
 <ol>
 <li>domapi给定默认值</li>
 <li>把传入的所有模块的钩子函数，统一存储到cbs对象中</li>
 <li>init 内部返回 patch, 把vnode渲染成真实dom,并返回vnode。</li>
 </ol>
-<h4 id="3、patch"><a href="#3、patch" class="headerlink" title="3、patch()"></a>3、patch()</h4><p>init返回的patch函数需要接受两个参数。第一个是表示当前视图的DOM元素或vnode。第二个是表示更新后的新视图的vnode。</p>
+<p>代码实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">export function init(modules: Array&lt;Partial&lt;Module&gt;&gt;, domApi?: DOMAPI) &#123;</span><br><span class="line">  let i: number, j: number, cbs = (&#123;&#125; as ModuleHooks);</span><br><span class="line">  // 初始化转换虚拟节点的api</span><br><span class="line">  const api: DOMAPI = domApi !== undefined ? domApi : htmlDomApi;</span><br><span class="line">  </span><br><span class="line">  // 把传入的所有模块的钩子函数，统一存储到cbs对象中</span><br><span class="line">  // 最终构建的cbs对象形式 cbs=&#123;creat:[fn1,fn2], update:[], ...&#125;</span><br><span class="line">  for (i = 0; i &lt; hooks.length; ++i) &#123;</span><br><span class="line">    // cbs.create = [], cbs.update=[]...</span><br><span class="line">    cbs[hooks[i]] = [];</span><br><span class="line">    for (j = 0; j &lt; modules.length; ++j) &#123;</span><br><span class="line">      // modules 传入的模块数组</span><br><span class="line">      // 获取模块中的hook函数</span><br><span class="line">      // hook= modules[0][create]...</span><br><span class="line">      const hook = modules[j][hooks[i]];</span><br><span class="line">      if (hook !== undefined) &#123;</span><br><span class="line">        (cbs[hooks[i]] as Array&lt;any&gt;).push(hook);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ... // 一系列辅助函数</span><br><span class="line"></span><br><span class="line">  // init 内部返回 patch, 把vnode渲染成真实dom,并返回vnode</span><br><span class="line">  return function patch(oldVnode: VNode | Element, vnode: VNode): VNode &#123;</span><br><span class="line">     ... // patch内部函数实现</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="4、patch"><a href="#4、patch" class="headerlink" title="4、patch()"></a>4、patch()</h4><p>init返回的patch函数需要接受两个参数。第一个是表示当前视图的DOM元素或vnode。第二个是表示更新后的新视图的vnode。</p>
 <p>用法：<code>patch(oldVnode, newVnode)</code><br>作用：打补丁，把新节点中变化的内容渲染到真实的dom，最后返回新节点作为下一次处理的旧节点。<br>实现过程：</p>
 <ul>
 <li>对比新旧节点是否相同节点（节点的key和sel相同）</li>
 <li>如果不是相同节点，删除之前的内容，重新渲染</li>
 <li>如果是相同的节点，在判断新的vnode是否有text，如果有并且和oldVnode的text不同，直接更新文本</li>
 <li>如果新的vnode有children，判断子节点是否有变化，判断子节点的过程使用的就是diff算法</li>
-<li>diff的过程只进行同层比较</li>
+<li>diff的过程只进行同层比较。</li>
 </ul>
-<p>针对snabbdom源码，笔者对于真实dom到虚拟dom的相互转化的过程整理总结成脑图。希望对于读者理解snabbdom的实现有一点帮助。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/snabbdom.png" alt=""></p>
+<p>代码实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">return function patch(oldVnode: VNode | Element, vnode: VNode): VNode &#123;</span><br><span class="line">   let i: number, elm: Node, parent: Node;</span><br><span class="line"></span><br><span class="line">   // 保存新插入节点的队列，为了触发钩子函数</span><br><span class="line">   const insertedVnodeQueue: VNodeQueue = [];</span><br><span class="line"></span><br><span class="line">   // 执行模块中pre函数</span><br><span class="line">   for (i = 0; i &lt; cbs.pre.length; ++i) cbs.pre[i]();</span><br><span class="line"></span><br><span class="line">   // 如果oldVnode不是vnode,创建vnode并设置elm</span><br><span class="line">   if (!isVnode(oldVnode)) &#123;</span><br><span class="line">   // 把dom元素转换成空的 vnode</span><br><span class="line">   oldVnode = emptyNodeAt(oldVnode);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   // 如果新旧节点相同</span><br><span class="line">   if (sameVnode(oldVnode, vnode)) &#123;</span><br><span class="line">   // 找节点差异并更新dom</span><br><span class="line">   patchVnode(oldVnode, vnode, insertedVnodeQueue);</span><br><span class="line">   &#125; else &#123;</span><br><span class="line">   // 如果节点不同，vnode创建对应的dom</span><br><span class="line">   // 获取当前节点的dom元素</span><br><span class="line">   elm = oldVnode.elm as Node;</span><br><span class="line">   parent = api.parentNode(elm);</span><br><span class="line"></span><br><span class="line">   // 创建vnode对应的dom元素，并触发init/create 钩子函数</span><br><span class="line">   createElm(vnode, insertedVnodeQueue);</span><br><span class="line"></span><br><span class="line">   if (parent !== null) &#123;</span><br><span class="line">      // 如果父节点不为空，把vnode对应的dom插入到文档中</span><br><span class="line">      api.insertBefore(parent, vnode.elm as Node, api.nextSibling(elm));</span><br><span class="line">      // 移除老节点</span><br><span class="line">      removeVnodes(parent, [oldVnode], 0, 0);</span><br><span class="line">   &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   // 执行用户设置的insert钩子函数</span><br><span class="line">   for (i = 0; i &lt; insertedVnodeQueue.length; ++i) &#123;</span><br><span class="line">   (((insertedVnodeQueue[i].data as VNodeData).hook as Hooks).insert as any)(insertedVnodeQueue[i]);</span><br><span class="line">   &#125;</span><br><span class="line">   // 执行模块的post函数</span><br><span class="line">   for (i = 0; i &lt; cbs.post.length; ++i) cbs.post[i]();</span><br><span class="line">   // 返回vnode</span><br><span class="line">   return vnode;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>针对snabbdom源码，笔者对于真实dom到虚拟dom的相互转化的过程整理总结成脑图。希望对于读者理解snabbdom的实现有一点帮助。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/sanbbdom.png" alt=""></p>
 
       
 
@@ -1868,179 +2011,6 @@
 
 
   
-    <article id="post-善用插件统一你的代码风格" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/01/善用插件统一你的代码风格/">善用工具统一你的代码风格</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/01/善用插件统一你的代码风格/" class="archive-article-date">
-  	<time datetime="2020-06-01T02:12:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在团队开发中，我们总是碰到这样或者那样的问题，加分号还是不加分号？tab还是空格？换行还是不换行？你是否还在为代码风格与同事争论不休？关于代码风格，我们很难区分谁对谁错，不同的人有不同偏好，唯有强制要求才能规避争论。</p>
-<p>所以，团队关于代码风格必须遵循两个基本原则：</p>
-<ul>
-<li>少数服从多数；</li>
-<li>用工具统一风格。</li>
-</ul>
-<p>以下几个工具可以帮助你在开发中来统一我们的前端代码风格。</p>
-<h2 id="Eslint"><a href="#Eslint" class="headerlink" title="Eslint"></a>Eslint</h2><p>Eslint大家对这种工具可能比较熟悉，它是一个可组装的JavaScript和JSX检查工具，发现并修复JavaScript代码中的问题，用来进行代码的校验。</p>
-<h3 id="简单的使用入门"><a href="#简单的使用入门" class="headerlink" title="简单的使用入门"></a>简单的使用入门</h3><ol>
-<li>安装eslint<br><code>npm install -g eslint</code></li>
-<li><p>准备一个js文件来测试一下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function merge () &#123;</span><br><span class="line">  var ret = &#123;&#125;;</span><br><span class="line">  for (var i in arguments) &#123;</span><br><span class="line">    var m = arguments[i];</span><br><span class="line">    for (var j in m) ret[j] = m[j];</span><br><span class="line">  &#125;</span><br><span class="line">  return ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(merge(&#123;a: 123&#125;, &#123;b: 456&#125;));</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>新建一个eslint配置文件.eslintrc.js，我们以eslint:recommended为基础配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  extends: &apos;eslint:recommended&apos;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>执行eslint merge.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">eslint merge.js</span><br><span class="line">  10:1  error  Unexpected console statement  no-console</span><br><span class="line">  10:1  error  &apos;console&apos; is not defined      no-undef</span><br><span class="line"></span><br><span class="line">✖ 2 problem (2 error, 0 warnings)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>根据提示信息，我们可以知道：<br>第一条报错，不能使用console；<br>针对第 1 条提示，我们可以禁用no-console规则。将配置文件.eslintrc.js改为这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  extends: &apos;eslint:recommended&apos;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;no-console&apos;: &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>第二条报错，console变量未定义，不能使用未定义的变量。<br>这是因为 JavaScript 有很多种运行环境，比如常见的有浏览器和 Node.js，另外还有很多软件系统使用 JavaScript 作为其脚本引擎，比如 PostgreSQL 就支持使用 JavaScript 来编写存储引擎，而这些运行环境可能并不存在console这个对象。另外在浏览器环境下会有window对象，而 Node.js 下没有；在 Node.js 下会有process对象，而浏览器环境下没有。</p>
-<p>所以在配置文件中我们还需要指定程序的目标环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  extends: &apos;eslint:recommended&apos;,</span><br><span class="line">  env: &#123;</span><br><span class="line">    node: true,</span><br><span class="line">  &#125;,</span><br><span class="line">  rules: &#123;</span><br><span class="line">    &apos;no-console&apos;: &apos;off&apos;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>再重新执行检查时，已经没有任何提示输出了，说明merge.js已经完全通过了检查。</p>
-<ol>
-<li>使用eslint –fix 自动修复命令</li>
-</ol>
-<p>eslint提供了自动修复命令，可以对一些常见的错误进行自动修复。我们可以利用这个特性来自动格式化项目代码，这样就可以保证代码书写风格的统一。</p>
-<p>将merge.js中的var ret = {};这一行前面多加一个空格，再执行 ESLint 检查：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">eslint merge.js</span><br><span class="line">  2:4  error  Expected indentation of 2 space characters but found 3  indent</span><br><span class="line"></span><br><span class="line">✖ 1 problem (1 error, 0 warnings)</span><br></pre></td></tr></table></figure></p>
-<p>这时候提示的是缩进只能为 2 个空格，而文件的第 2 行却发现了 3 个空格。<br>之后再执行</p>
-<p><code>eslint merge.js --fix</code></p>
-<p>可以发现merge.js文件被修改了，新添加的空格被去除了。</p>
-<p>以上过程通过展示了在一个简单的js文件中引入eslint，进行文件格式校验的过程，了解了eslint在项目中是如何被引入以及如何发挥作用的。</p>
-<p>很多人刚开始接触 ESLint 时觉得太难，是因为过太过于迷信权威。刚接触eslint就直接引入一些业界已经集成好的高度定制化的配置eslint规范。比如 Airbnb 公司的 JavaScript 风格，在 GitHub 上受到了很大的好评，其实我自己也非常认可这样的编码风格。但每个团队都会根据自己的的实际情况来定制不同的东西，我们并不能随便照搬过来。<br>直接使用eslint-config-airbnb这种某个公司高度定制化的配置，直接用来检查整个项目好几十个JS文件，而不是eslint:recommended这样保守的。可想而知那是怎样的画面。</p>
-<p>当我们学会了走路之后，可以试着跑一跑了，这时可以尝试引入上文提到的各大公司提供的高度配置的规范，这样当项目文件很大很多的时候可以省一些事。当然每个项目每个团队都有适合自己的开发规范，如果我们觉得 eslint-config-airbnb 规则配置中个别规则并不符合当前项目的要求，可以直接在 .eslintrc.js 配置 rules 属性，优先级高于共享规则 airbnb。</p>
-<p>顺便说一句，如果觉得官方提供的默认规则不好用，可以自定义规则配置文件，然后发布成 Npm 包。</p>
-<p>先学会简单地配置规则，如果要更深入地定制自己的规则，建议阅读<br><a href="https://cn.eslint.org/docs/rules/" target="_blank" rel="noopener">规则说明文档</a><br><a href="https://zhuanlan.zhihu.com/p/25271435" target="_blank" rel="noopener">ESLint 规则详解（一）</a><br><a href="https://zhuanlan.zhihu.com/p/26910986" target="_blank" rel="noopener">ESLint 规则详解（二）</a></p>
-<h3 id="文件配置"><a href="#文件配置" class="headerlink" title="文件配置"></a>文件配置</h3><p>ESLint 支持几种格式的配置文件</p>
-<ul>
-<li>JavaScript - 使用 .eslintrc.js 然后输出一个配置对象。</li>
-<li>YAML - 使用 .eslintrc.yaml 或 .eslintrc.yml 去定义配置的结构。</li>
-<li>JSON - 使用 .eslintrc.json 去定义配置的结构，ESLint 的 JSON 文件允许 JavaScript 风格的注释。</li>
-<li>(弃用) - 使用 .eslintrc，可以使 JSON 也可以是 YAML。</li>
-<li>package.json - 在 package.json 里创建一个 eslintConfig属性，在那里定义配置。</li>
-</ul>
-<p>如果同一个目录下有多个配置文件，ESLint 只会使用一个。优先级顺序如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 .eslintrc.js</span><br><span class="line">2 .eslintrc.yaml</span><br><span class="line">3 .eslintrc.yml</span><br><span class="line">4 .eslintrc.json</span><br><span class="line">5 .eslintrc</span><br><span class="line">6  package.json</span><br></pre></td></tr></table></figure></p>
-<h2 id="Prettier"><a href="#Prettier" class="headerlink" title="Prettier"></a>Prettier</h2><p>Prettier翻译过来是“更漂亮的”，来看看官网对他的定义：</p>
-<ul>
-<li>它是一款代码格式化工具，</li>
-<li>支持多种语言</li>
-<li>与大多数编辑器集成</li>
-<li>不需要太多配置</li>
-</ul>
-<p>使用prettier配置我们的项目，按下保存键，代码即被格式化，使得我们可以节省更多的时间和精力，不需要在代码评审中讨论风格。</p>
-<p>很多人通常会将eslint与prettier混为一谈，首先从定义上看eslint是一款代码校验工具，而Prettier区别于eslint的，prettier一款代码格式化工具。<br>prettier不仅能格式化javascript，还能支持jsx和css。总的来说它支持以下文件格式：</p>
-<ul>
-<li>JavaScript, including ES2017</li>
-<li>JSX</li>
-<li>Angular</li>
-<li>Vue</li>
-<li>Flow</li>
-<li>TypeScript</li>
-<li>CSS, Less, and SCSS</li>
-<li>HTML</li>
-<li>JSON</li>
-<li>GraphQL</li>
-<li>Markdown, including GFM and MDX</li>
-<li>YAML</li>
-</ul>
-<p>最重要的区别在于，prettier提供很少的配置项，它本身就是为了让用户少思考这些风格，把代码风格全部交给工具。它更像是提供了一种方案，用以保持所有输出的代码符合一致性的原则。</p>
-<h3 id="如何对Prettier进行配置"><a href="#如何对Prettier进行配置" class="headerlink" title="如何对Prettier进行配置"></a>如何对Prettier进行配置</h3><p>一共有三种方式支持对Prettier进行配置：</p>
-<ol>
-<li>根目录创建.prettierrc文件，能够写入YML、JSON的配置格式，并且支持.yaml/.yml/.json/.js后缀；</li>
-<li>根目录创建.prettier.config.js文件，并对外export一个对象；</li>
-<li>在package.json中新建prettier属性。   </li>
-</ol>
-<p>下面我们使用prettierrc.js的方式对prettier进行配置，同时讲解下各个配置的作用。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &quot;printWidth&quot;: 80, //一行的字符数，如果超过会进行换行，默认为80</span><br><span class="line">  &quot;tabWidth&quot;: 2, //一个tab代表几个空格数，默认为80</span><br><span class="line">  &quot;useTabs&quot;: false, //是否使用tab进行缩进，默认为false，表示用空格进行缩减</span><br><span class="line">  &quot;singleQuote&quot;: false, //字符串是否使用单引号，默认为false，使用双引号</span><br><span class="line">  &quot;semi&quot;: true, //行位是否使用分号，默认为true</span><br><span class="line">  &quot;trailingComma&quot;: &quot;none&quot;, //是否使用尾逗号，有三个可选值&quot;&lt;none|es5|all&gt;&quot;</span><br><span class="line">  &quot;bracketSpacing&quot;: true, //对象大括号直接是否有空格，默认为true，效果：&#123; foo: bar &#125;</span><br><span class="line">  &quot;parser&quot;: &quot;babylon&quot; //代码的解析引擎，默认为babylon，与babel相同。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置大概列出了这些，还有一些其他配置可以在<a href="">官方文档</a>进行查阅。</p>
-<p>注意一点，parser的配置项官网列出了如下可选项：</p>
-<ul>
-<li>babylon</li>
-<li>flow</li>
-<li>typescript Since v1.4.0</li>
-<li>postcss Since v1.4.0</li>
-<li>json Since v1.5.0</li>
-<li>graphql Since v1.5.0</li>
-<li>markdown Since v1.8.0<br>但是如果你使用了vue的单文件组件形式，记得将parser配置为vue，目前官方文档没有列出来。当然如果你自己写过AST的解析器，也可以用你自己的写的parser: require(“./my-parser”)。</li>
-</ul>
-<h3 id="ESLint-与-Prettier配合使用"><a href="#ESLint-与-Prettier配合使用" class="headerlink" title="ESLint 与 Prettier配合使用"></a>ESLint 与 Prettier配合使用</h3><p>通常，ESLint 与 Prettier配合使用。<br>首先肯定是需要安装prettier，并且你的项目中已经使用了ESLint，有eslintrc.js配置文件。<br><code>npm i -D prettier</code></p>
-<p>配合ESLint检测代码风格<br>安装插件<br><code>npm i -D eslint-plugin-prettier</code>   </p>
-<p>eslint-plugin-prettier插件会调用prettier对你的代码风格进行检查，其原理是先使用prettier对你的代码进行格式化，然后与格式化之前的代码进行对比，如果过出现了不一致，这个地方就会被prettier进行标记。</p>
-<p>接下来，我们需要在eslint配置文件的rules中添加，”prettier/prettier”: “error”，表示被prettier标记的地方抛出错误信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//.eslintrc.js</span><br><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [&quot;prettier&quot;],</span><br><span class="line">  &quot;rules&quot;: &#123;</span><br><span class="line">    &quot;prettier/prettier&quot;: &quot;error&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>借助ESLint的autofix功能，在保存代码的时候，自动将抛出error的地方进行fix。因为我们项目是在webpack中引入eslint-loader来启动eslint的，所以我们只要稍微修改webpack的配置，就能在启动webpack-dev-server的时候，每次保存代码同时自动对代码进行格式化。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  module: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.(js|vue)$/,</span><br><span class="line">        loader: &apos;eslint-loader&apos;,</span><br><span class="line">        enforce: &apos;pre&apos;,</span><br><span class="line">        include: [path.join(__dirname, &apos;src&apos;)],</span><br><span class="line">        options: &#123;</span><br><span class="line">          fix: true</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="EditorConfig"><a href="#EditorConfig" class="headerlink" title="EditorConfig"></a>EditorConfig</h2><p>一些细心的童鞋可能回发现，项目里面经常会有个.editorconfig的文件,那么，它究竟是干嘛的呢？事实上，它也能帮助我们在开发中保持一定的规范。</p>
-<p>先设想一个场景，一个大型项目，可能有很多位同事一起工作，而由于习惯的不同，导致他们用的编辑器五花八门，有vscode,有webstorm,有sublime,等等，它们默认的格式化设置是不同的，有的是2格缩进，有的则是4格。规则的不同，导致代码风格的差异，这样就会给后期的运维工作带来不可预料的风险。so bad！</p>
-<p>所以，EditorConfig就是来做这件事的工具，它的作用就是</p>
-<blockquote>
-<p>帮助跨不同的编辑器和ide为多个开发人员维护一致的编码风格。</p>
-</blockquote>
-<p>知道了它是干什么，那么它是怎么用的呢？</p>
-<h3 id="配置EditorConfig"><a href="#配置EditorConfig" class="headerlink" title="配置EditorConfig"></a>配置EditorConfig</h3><ol>
-<li>安装插件</li>
-</ol>
-<p>每个编辑器都有相应的插件，这里以vscode为例，我们需要安装EditorConfig:<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/eslintconfig.png" alt=""></p>
-<ol>
-<li>配置.editorconfig文件</li>
-</ol>
-<p>在根目录下新建.editorconfig文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 是否是顶级配置文件，设置为true的时候才会停止搜索.editorconfig文件</span><br><span class="line">root = true</span><br><span class="line"></span><br><span class="line">[*]</span><br><span class="line"># 文件编码格式,一般为utf-8</span><br><span class="line">charset = utf-8</span><br><span class="line"># 缩进类型</span><br><span class="line">indent_style = space</span><br><span class="line"># 缩进数量</span><br><span class="line">indent_size = 2</span><br><span class="line"># 换行符类型格式,一般用lf</span><br><span class="line">end_of_line = lf</span><br><span class="line"># 末尾行后加多一行空行</span><br><span class="line">insert_final_newline = true</span><br><span class="line"># 删除行尾的空格</span><br><span class="line">trim_trailing_whitespace = true</span><br></pre></td></tr></table></figure></p>
-<p>做完以上两步后，vscode会自动的按照以上规范进行新建文件。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/01/善用插件统一你的代码风格/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -2138,7 +2108,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2151,18 +2133,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2182,31 +2152,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2222,47 +2172,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -2274,11 +2208,51 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Virtual DOM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">性能优化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
               </li>
             
             <div class="clearfix"></div>

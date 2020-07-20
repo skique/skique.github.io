@@ -156,6 +156,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-字符串的模式匹配" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/14/字符串的模式匹配/">字符串的模式匹配</a>
+    </h1>
+  
+
+        
+        <a href="/2018/11/14/字符串的模式匹配/" class="archive-article-date">
+  	<time datetime="2018-11-14T03:55:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="模式匹配-pattern-matching"><a href="#模式匹配-pattern-matching" class="headerlink" title="模式匹配 (pattern matching)"></a>模式匹配 (pattern matching)</h3><p>  一个目标对象T字符串,P字符串在目标T中寻找一个给定的模式P的过程<br>  用给定的模式P，在目标字符串T中搜索与模式P全同的一个子串，并求出T中第一个和P全同匹配的子串（简称为”配串”）,返回其首字符位置<br>  <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/字符串的模式匹配.png" alt=""><br>  如图所示：为使模式P与目标T匹配，必须满足p0 p1 p2 … pm-1 = ti ti+1 ti+2 … ti+m-1</p>
+<h2 id="朴素算法（穷举法）"><a href="#朴素算法（穷举法）" class="headerlink" title="朴素算法（穷举法）"></a>朴素算法（穷举法）</h2><h3 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h3><p>  设T = t0t1, t2, …,tn-1， P = p0, p1, …, pm-1</p>
+<ul>
+<li>i为T中字符的下标，j为P中字符的下标 </li>
+<li>匹配成功(p0 = ti , p1 = ti+1 , …,  pm-1 = ti+m-1 ) 即T.substr(i, m) == P.substr(0, m)</li>
+<li>匹配失败(pj≠ti ) 时，将 P 右一位移再行比较</li>
+<li>尝试所有的可能情况<h3 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h3>方法一：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_1(string S, string P, int startindex) &#123;  </span><br><span class="line">  int LastIndex = S.length() – P.length();                   // 两个字符串的模式长度差值</span><br><span class="line">  int count = P.length();    </span><br><span class="line">  if (LastIndex &lt; startindex)&#123;                               // 开始匹配位置startindex的值过大，匹配无法成功</span><br><span class="line">    return (-1);</span><br><span class="line">  &#125;</span><br><span class="line">  for (int g = startindex; g &lt;= LastIndex; g++)&#123;             // g为S的游标，用模式P和S第g位置子串比较，若失败则继续循环   </span><br><span class="line">    if (P == S.substr(g, count))</span><br><span class="line">      return  g;</span><br><span class="line">  &#125;     </span><br><span class="line">  return  (-1);                                              // 若for循环结束，则整个匹配失败，返回值为负</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>方法二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_2(string T, string P, int  startindex)&#123;</span><br><span class="line">  int LastIndex = T.length() - P.length();</span><br><span class="line">  if  (LastIndex &lt; startindex) return (-1);              // 开始匹配位置startindex的值过大，匹配无法成功   </span><br><span class="line">  int i = startindex,   j = 0;                           // i 是指向T内部字符的游标，j 是指向P内部字符的游标   </span><br><span class="line">  while (i &lt; T.length()  &amp;&amp;  j &lt; P.length())&#123;   </span><br><span class="line">    if (P[j] == T[i]) &#123;</span><br><span class="line">      i++;  j++;                                         // 若P[j] == T[i],则继续向下比较</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      i = i - j + 1; j = 0;                              // 否则匹配的初始位置(i-j)右移一位 即：i=i-j+1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  if ( j &gt;=  P.length())&#123;</span><br><span class="line">    return (i - j);                                      // 若匹配成功，则返回该T子串的开始位置</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return -1;</span><br><span class="line">  &#125;                                                      // 若失败，函数返回值为负 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>方法三：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int FindPat_3(string T, string P, int startindex) &#123;</span><br><span class="line">  for (int g= startindex; g &lt;= T.length() - P.length(); g++) &#123; //g为T的游标，      </span><br><span class="line">    for (int j=0; ((j&lt;P.length()) &amp;&amp; (T[g+j]==P[j])) ; j++);   //j为p的游标，满足条件则继续比较P的下一位j++,否则跳出内层循环将匹配的起始位置+1；即g++</span><br><span class="line">    if (j == P.length())</span><br><span class="line">      return  g;</span><br><span class="line">  &#125;</span><br><span class="line">  return(-1);                                                  // for结束，或startindex值过大,则匹配失败  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="效率分析"><a href="#效率分析" class="headerlink" title="效率分析"></a>效率分析</h3><ol>
+<li>第一种情况： 最坏情况<br>– 假定目标 T 的长度为 n，模式 P 长度为 m，m≤n  – 在最坏的情况下，每一次循环都不成功，则一共要进行比 较（n-m+1）次<br>– 每一次“相同匹配”比较所耗费的时间，是 P 和 T 逐个 字符比较的时间，最坏情况下，共 m 次<br>– 因此，整个算法的最坏时间开销估计为：O( m * n )</li>
+<li><p>第二种情况：没找到匹配下的最佳情况<br>• 总是在第一个字符上不匹配<br>• 总比较次数： – n – m + 1<br>• 时间复杂度： – O(n)</p>
+<h2 id="KMP算法-无回溯匹配"><a href="#KMP算法-无回溯匹配" class="headerlink" title="KMP算法(无回溯匹配)"></a>KMP算法(无回溯匹配)</h2><h3 id="算法思想-1"><a href="#算法思想-1" class="headerlink" title="算法思想"></a>算法思想</h3><p>匹配过程中，一旦pj和ti 比较不等时，即P.substr(1,j-1) == T.substr(i-j+1,j-1)但pj≠ ti<br>– 将p右移的k位，用P中pk和ti进行比较<br>– 显然有k &lt; j, 且不同的j, 其k 值不同<br>– k 值仅仅依赖于模式P 本身，而与目标对象T无关</p>
+<p><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想.png" alt=""><br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP算法思想2.png" alt=""></p>
+<h3 id="算法实现-1"><a href="#算法实现-1" class="headerlink" title="算法实现"></a>算法实现</h3><h4 id="字符串的特征向量"><a href="#字符串的特征向量" class="headerlink" title="字符串的特征向量"></a>字符串的特征向量</h4><p>设模式P 由m 个字符组成，记为P  =  p0 p1 p2 p3……pm-1<br>令特征向量N 用来表示模式P 的字符分布特征，简称N 向量由m个特征数n0 …nm-1 整数组成，记为N ＝n0 n1 n2 n3……nm-1<br>N在很多文献中也称为next 数组，每个nj 对应next 数组中的元素next[j]</p>
+</li>
+</ol>
+<p>构造方法<br>P第j 个位置的特征数nj，首尾串最长的k<br>– 首串：p0    p1              … pk-2  pk-1<br>– 尾串：pj-k  pj-k+1        … pj-2   pj-1<br> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/特征向量构造方法.png" alt=""><br>例如：对于字符串 P = a  a  a  a  b   a   a  a   a   c<br>     p的特征向量N = -1  0  1  2  3   0   1  2  3   4<br> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/KMP模式匹配示例.png" alt=""></p>
+<h4 id="KMP模式匹配算法"><a href="#KMP模式匹配算法" class="headerlink" title="KMP模式匹配算法"></a>KMP模式匹配算法</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int KMPStrMatching(string T, string P,  int* N, int start)&#123;</span><br><span class="line">  int j= 0;                   // 模式的下标变量</span><br><span class="line">  int i = start;              // 目标的下标变量</span><br><span class="line">  int pLen= P.length( );      // 模式的长度</span><br><span class="line">  int tLen= T.length( );      // 目标的长度</span><br><span class="line">  if(tLen-start &lt; pLen)       // 若目标比模式短，匹配无法成功</span><br><span class="line">  return(-1);          </span><br><span class="line">  while( j &lt; pLen&amp;&amp;  i &lt; tLen) &#123;  // 反复比较，进行匹配</span><br><span class="line">    if(j == -1  ||  T[i] == P[j])   </span><br><span class="line">      i++,  j++;</span><br><span class="line">    else j = N[j];</span><br><span class="line">  &#125;</span><br><span class="line">  if(j &gt;= pLen)</span><br><span class="line">    return(i-pLen);            // 注意仔细算下标</span><br><span class="line">  else</span><br><span class="line">    return(-1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="字符串的特征向量N-——非优化版"><a href="#字符串的特征向量N-——非优化版" class="headerlink" title="字符串的特征向量N ——非优化版"></a>字符串的特征向量N ——非优化版</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> int findNext(string P) &#123;</span><br><span class="line">   int j, k;</span><br><span class="line">   int m = P.length();       // m为模式P的长度</span><br><span class="line">   assert(m &gt; 0);                   // 若m＝0，退出</span><br><span class="line">   int* next = new int[m];            // 动态存储区开辟整数数组</span><br><span class="line">   assert(next != 0);               // 若开辟存储区域失败，退出</span><br><span class="line">   next[0] = -1;   </span><br><span class="line">   j = 0;  </span><br><span class="line">   k = -1;</span><br><span class="line">   while(j &lt; m-1) &#123;                 </span><br><span class="line">    while(k &gt;= 0 &amp;&amp; P[k] != P[j])    // 不等则采用KMP 自找首尾子串</span><br><span class="line">      k = next[k];                   // k 递归地向前找</span><br><span class="line">    j++; k++; next[j] = k;   </span><br><span class="line">  &#125;</span><br><span class="line">  return next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> <img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/模式右滑j-k位.png" alt=""></p>
+<p>如图：模式右滑j-k位后 p0 p1 …pk-1 = ti-k ti-k+1 … ti-1<br>对于最后一位pj!==ti, 若pk == pj则一定有 pk!== ti;造成一次冗余比较</p>
+<h4 id="字符串的特征向量N-——优化版"><a href="#字符串的特征向量N-——优化版" class="headerlink" title="字符串的特征向量N ——优化版"></a>字符串的特征向量N ——优化版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">int findNext(string P) &#123;</span><br><span class="line">  int j, k;</span><br><span class="line">  int m = P.length();               // m为模式P的长度</span><br><span class="line">  int* next = new int[m];           // 动态存储区开辟整数数组</span><br><span class="line">  next[0] = -1;   </span><br><span class="line">  j = 0;  </span><br><span class="line">  k = -1;</span><br><span class="line">  while(j &lt; m-1) &#123;                  // 若写成j &lt; m 会越界</span><br><span class="line">    while(k &gt;= 0 &amp;&amp; P[k] != P[j])&#123;  // 若不等，采用KMP 找首尾子串</span><br><span class="line">      k = next[k];                  // k 递归地向前找</span><br><span class="line">    &#125;             </span><br><span class="line">    j++;   k++; </span><br><span class="line">    if(P[k] == P[j])   </span><br><span class="line">      next[j] = next[k];           // 前面找k 值，没有受优化的影响</span><br><span class="line">    else</span><br><span class="line">      next[j] = k;                 // 取消if判断，则不优化</span><br><span class="line">  &#125;</span><br><span class="line">  return next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>next数组对比<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">序号j           0   1   2   3   4   5   6   7   8</span><br><span class="line"> P             a   b   c   a   a   b   a    b   c</span><br><span class="line"> k                 0   0   0   1   1   2    1   2        //非优化版</span><br><span class="line">pk==pj?            ≠   ≠   ==  ≠  ==   ≠   ==   ==</span><br><span class="line"> next[j]      -1   0   0  -1   1   0   2   0    0        //优化版</span><br></pre></td></tr></table></figure></p>
+<h3 id="算法效率"><a href="#算法效率" class="headerlink" title="算法效率"></a>算法效率</h3><p>求特征数组的时间为O(m)<br>KMP算法的时间为O(n+m)</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">朴素算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">KMP算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">字符串的特征向量</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/11/14/字符串的模式匹配/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-农夫过河算法实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1182,7 +1290,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1195,18 +1315,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1226,31 +1334,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1266,47 +1354,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1318,11 +1390,51 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Virtual DOM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">性能优化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
               </li>
             
             <div class="clearfix"></div>

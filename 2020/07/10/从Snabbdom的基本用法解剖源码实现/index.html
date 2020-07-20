@@ -16,12 +16,12 @@
 <meta property="og:site_name" content="taoyouyou的博客">
 <meta property="og:description" content="使用vnode的优点 手动操作dom比较复杂，还需要考虑浏览器的兼容性问题，虽然有jquery等库简化dom操作，但是随着项目越来越复杂，dom操作复杂提升 Virtual DOM的好处是当状态改变时不需要立即更新dom,只需要创建一个虚拟树来描述dom，Virtual DOM内部将弄清楚如何有效(diff)的更新dom。  Snabbdom基本用法为什么选择snabbdom呢，因为Snabbdo">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/snabbdom.png">
-<meta property="og:updated_time" content="2020-07-10T07:50:31.118Z">
+<meta property="og:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/sanbbdom.png">
+<meta property="og:updated_time" content="2020-07-10T08:17:10.618Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从Snabbdom的基本用法解剖源码实现">
 <meta name="twitter:description" content="使用vnode的优点 手动操作dom比较复杂，还需要考虑浏览器的兼容性问题，虽然有jquery等库简化dom操作，但是随着项目越来越复杂，dom操作复杂提升 Virtual DOM的好处是当状态改变时不需要立即更新dom,只需要创建一个虚拟树来描述dom，Virtual DOM内部将弄清楚如何有效(diff)的更新dom。  Snabbdom基本用法为什么选择snabbdom呢，因为Snabbdo">
-<meta name="twitter:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/snabbdom.png">
+<meta name="twitter:image" content="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/sanbbdom.png">
   
     <link rel="alternative" href="/atom.xml" title="taoyouyou的博客" type="application/atom+xml">
   
@@ -248,46 +248,47 @@
 </ul>
 <h3 id="分析源码实现"><a href="#分析源码实现" class="headerlink" title="分析源码实现"></a>分析源码实现</h3><p>一般做法是从入口函数开始解析主线逻辑，所以可以从h函数开始解析。</p>
 <h4 id="1、h"><a href="#1、h" class="headerlink" title="1、h()"></a>1、h()</h4><p>h函数创建虚拟节点（vnodes），函数接收一个字符串形式的标签/选择器、一个可选的数据对象、一个可选的字符串或数组作为子代。</p>
-<p>实现：在ts中通过调整代码实现了<strong>函数重载</strong>，通过调用vnode函数传入不同的参数值和参数类型，返回一个vnode节点。</p>
 <blockquote>
 <p>函数重载：</p>
 <ul>
 <li>参数个数或类型不同的函数</li>
 <li>javascript中没有重载的概念</li>
-<li>typescript中与重载，不过重载的实现还是通过代码调整参数<br>如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function add(a,b)&#123;</span><br><span class="line">   console.log(a,b)</span><br><span class="line">&#125;</span><br><span class="line">function add(a,b,c)&#123;</span><br><span class="line">   console.log(a+b+c)</span><br><span class="line">&#125;</span><br><span class="line">add(1,2);</span><br><span class="line">add(1,2,3)</span><br></pre></td></tr></table></figure>
-</li>
+<li>typescript中与重载，不过重载的实现还是通过代码调整参数</li>
 </ul>
 </blockquote>
-<h4 id="2、vnode"><a href="#2、vnode" class="headerlink" title="2、vnode()"></a>2、vnode()</h4><p>vnode定义了一种vnode数据对象，作为对真实dom的描述。</p>
-<h5 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h5><ul>
-<li>sel</li>
-<li>data</li>
-<li>children</li>
-<li>text</li>
-<li>elm</li>
-<li>key</li>
+<p>在ts中通过调整代码实现了<strong>函数重载</strong>，通过调用vnode函数传入不同的参数值和参数类型，返回一个vnode节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// h 函数的重载</span><br><span class="line">export function h(sel: string): VNode;</span><br><span class="line">export function h(sel: string, data: VNodeData): VNode;</span><br><span class="line">export function h(sel: string, children: VNodeChildren): VNode;</span><br><span class="line">export function h(sel: string, data: VNodeData, children: VNodeChildren): VNode;</span><br><span class="line">export function h(sel: any, b?: any, c?: any): VNode &#123;</span><br><span class="line">  var data: VNodeData = &#123;&#125;, children: any, text: any, i: number;</span><br><span class="line">  // 处理参数，实现重载的机制</span><br><span class="line">  if (c !== undefined) &#123;  // 处理三个参数的情况：sel,data,children/text</span><br><span class="line">    data = b;</span><br><span class="line">    if (is.array(c)) &#123; children = c; &#125;         // 如果c是数组，c代表了当前节点的子节点</span><br><span class="line">    else if (is.primitive(c)) &#123; text = c; &#125;    // 如果c是字符串或数字,代表了文本值</span><br><span class="line">    else if (c &amp;&amp; c.sel) &#123; children = [c]; &#125;   // 如果c是vnode, 会被处理成数组</span><br><span class="line">  &#125; else if (b !== undefined) &#123;              //处理两个参数的情况</span><br><span class="line">    if (is.array(b)) &#123; children = b; &#125;       // 如果b是数组，b代表了当前节点的子节点</span><br><span class="line">    else if (is.primitive(b)) &#123; text = b; &#125;  // 如果b是字符串或数字,代表了文本值</span><br><span class="line">    else if (b &amp;&amp; b.sel) &#123; children = [b]; &#125; // 如果b是vnode, 会被处理成数组</span><br><span class="line">    else &#123; data = b; &#125;                       // 否则，b作为data</span><br><span class="line">  &#125;</span><br><span class="line">  if (children !== undefined) &#123;</span><br><span class="line">    for (i = 0; i &lt; children.length; ++i) &#123;</span><br><span class="line">      if (is.primitive(children[i])) children[i] = vnode(undefined, undefined, undefined, children[i], undefined);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  if (</span><br><span class="line">    sel[0] === &apos;s&apos; &amp;&amp; sel[1] === &apos;v&apos; &amp;&amp; sel[2] === &apos;g&apos; &amp;&amp;</span><br><span class="line">    (sel.length === 3 || sel[3] === &apos;.&apos; || sel[3] === &apos;#&apos;)</span><br><span class="line">  ) &#123;       //  处理选择器是svg的情况</span><br><span class="line">    addNS(data, children, sel);   // 给节点和节点的子节点递归添加命名空间</span><br><span class="line">  &#125;</span><br><span class="line">  return vnode(sel, data, children, text, undefined);  // 调用vnode()函数返回一个vnode</span><br><span class="line">&#125;;</span><br><span class="line">export default h;  // 将h函数导出为默认模块</span><br></pre></td></tr></table></figure></p>
+<h4 id="2、vnode"><a href="#2、vnode" class="headerlink" title="2、vnode()"></a>2、vnode()</h4><p>vnode定义了一种vnode数据对象，作为对真实dom的描述。<br>vnode = vnode(sel,data,children,text,elm)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">export function vnode(sel: string | undefined,</span><br><span class="line">                      data: any | undefined,</span><br><span class="line">                      children: Array&lt;VNode | string&gt; | undefined,</span><br><span class="line">                      text: string | undefined,</span><br><span class="line">                      elm: Element | Text | undefined): VNode &#123;</span><br><span class="line">  let key = data === undefined ? undefined : data.key;</span><br><span class="line">  return &#123;sel, data, children, text, elm, key&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="vnode属性"><a href="#vnode属性" class="headerlink" title="vnode属性"></a>vnode属性</h5><ul>
+<li>sel: 选择器</li>
+<li>data: 模块数据</li>
+<li>children: 子节点</li>
+<li>text: 记录vnode对应的真实dom</li>
+<li>elm: 和children互斥</li>
+<li>key: 优化用</li>
 </ul>
-<h4 id="4、init"><a href="#4、init" class="headerlink" title="4、init()"></a>4、init()</h4><p>init接收一个模块列表，并返回一个使用指定模块集的patch函数</p>
+<h4 id="3、init"><a href="#3、init" class="headerlink" title="3、init()"></a>3、init()</h4><p>init接收一个模块列表，并返回一个使用指定模块集的patch函数</p>
 <p>用法：<code>patch() = init(modules: Array&lt;Partial&lt;Module&gt;&gt;, domApi?: DOMAPI);</code></p>
 <blockquote>
 <p>高阶函数：一个函数里面返回另一个函数<br>高阶函数的作用：<br>形成闭包：内部函数可以访问外部函数upvalue, patch()可以访问到modules和domAp等外部函数参数;</p>
 </blockquote>
-<p>init()处理过程：</p>
+<p>init()实现过程：</p>
 <ol>
 <li>domapi给定默认值</li>
 <li>把传入的所有模块的钩子函数，统一存储到cbs对象中</li>
 <li>init 内部返回 patch, 把vnode渲染成真实dom,并返回vnode。</li>
 </ol>
-<h4 id="3、patch"><a href="#3、patch" class="headerlink" title="3、patch()"></a>3、patch()</h4><p>init返回的patch函数需要接受两个参数。第一个是表示当前视图的DOM元素或vnode。第二个是表示更新后的新视图的vnode。</p>
+<p>代码实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">export function init(modules: Array&lt;Partial&lt;Module&gt;&gt;, domApi?: DOMAPI) &#123;</span><br><span class="line">  let i: number, j: number, cbs = (&#123;&#125; as ModuleHooks);</span><br><span class="line">  // 初始化转换虚拟节点的api</span><br><span class="line">  const api: DOMAPI = domApi !== undefined ? domApi : htmlDomApi;</span><br><span class="line">  </span><br><span class="line">  // 把传入的所有模块的钩子函数，统一存储到cbs对象中</span><br><span class="line">  // 最终构建的cbs对象形式 cbs=&#123;creat:[fn1,fn2], update:[], ...&#125;</span><br><span class="line">  for (i = 0; i &lt; hooks.length; ++i) &#123;</span><br><span class="line">    // cbs.create = [], cbs.update=[]...</span><br><span class="line">    cbs[hooks[i]] = [];</span><br><span class="line">    for (j = 0; j &lt; modules.length; ++j) &#123;</span><br><span class="line">      // modules 传入的模块数组</span><br><span class="line">      // 获取模块中的hook函数</span><br><span class="line">      // hook= modules[0][create]...</span><br><span class="line">      const hook = modules[j][hooks[i]];</span><br><span class="line">      if (hook !== undefined) &#123;</span><br><span class="line">        (cbs[hooks[i]] as Array&lt;any&gt;).push(hook);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ... // 一系列辅助函数</span><br><span class="line"></span><br><span class="line">  // init 内部返回 patch, 把vnode渲染成真实dom,并返回vnode</span><br><span class="line">  return function patch(oldVnode: VNode | Element, vnode: VNode): VNode &#123;</span><br><span class="line">     ... // patch内部函数实现</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="4、patch"><a href="#4、patch" class="headerlink" title="4、patch()"></a>4、patch()</h4><p>init返回的patch函数需要接受两个参数。第一个是表示当前视图的DOM元素或vnode。第二个是表示更新后的新视图的vnode。</p>
 <p>用法：<code>patch(oldVnode, newVnode)</code><br>作用：打补丁，把新节点中变化的内容渲染到真实的dom，最后返回新节点作为下一次处理的旧节点。<br>实现过程：</p>
 <ul>
 <li>对比新旧节点是否相同节点（节点的key和sel相同）</li>
 <li>如果不是相同节点，删除之前的内容，重新渲染</li>
 <li>如果是相同的节点，在判断新的vnode是否有text，如果有并且和oldVnode的text不同，直接更新文本</li>
 <li>如果新的vnode有children，判断子节点是否有变化，判断子节点的过程使用的就是diff算法</li>
-<li>diff的过程只进行同层比较</li>
+<li>diff的过程只进行同层比较。</li>
 </ul>
-<p>针对snabbdom源码，笔者对于真实dom到虚拟dom的相互转化的过程整理总结成脑图。希望对于读者理解snabbdom的实现有一点帮助。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/snabbdom.png" alt=""></p>
+<p>代码实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">return function patch(oldVnode: VNode | Element, vnode: VNode): VNode &#123;</span><br><span class="line">   let i: number, elm: Node, parent: Node;</span><br><span class="line"></span><br><span class="line">   // 保存新插入节点的队列，为了触发钩子函数</span><br><span class="line">   const insertedVnodeQueue: VNodeQueue = [];</span><br><span class="line"></span><br><span class="line">   // 执行模块中pre函数</span><br><span class="line">   for (i = 0; i &lt; cbs.pre.length; ++i) cbs.pre[i]();</span><br><span class="line"></span><br><span class="line">   // 如果oldVnode不是vnode,创建vnode并设置elm</span><br><span class="line">   if (!isVnode(oldVnode)) &#123;</span><br><span class="line">   // 把dom元素转换成空的 vnode</span><br><span class="line">   oldVnode = emptyNodeAt(oldVnode);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   // 如果新旧节点相同</span><br><span class="line">   if (sameVnode(oldVnode, vnode)) &#123;</span><br><span class="line">   // 找节点差异并更新dom</span><br><span class="line">   patchVnode(oldVnode, vnode, insertedVnodeQueue);</span><br><span class="line">   &#125; else &#123;</span><br><span class="line">   // 如果节点不同，vnode创建对应的dom</span><br><span class="line">   // 获取当前节点的dom元素</span><br><span class="line">   elm = oldVnode.elm as Node;</span><br><span class="line">   parent = api.parentNode(elm);</span><br><span class="line"></span><br><span class="line">   // 创建vnode对应的dom元素，并触发init/create 钩子函数</span><br><span class="line">   createElm(vnode, insertedVnodeQueue);</span><br><span class="line"></span><br><span class="line">   if (parent !== null) &#123;</span><br><span class="line">      // 如果父节点不为空，把vnode对应的dom插入到文档中</span><br><span class="line">      api.insertBefore(parent, vnode.elm as Node, api.nextSibling(elm));</span><br><span class="line">      // 移除老节点</span><br><span class="line">      removeVnodes(parent, [oldVnode], 0, 0);</span><br><span class="line">   &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   // 执行用户设置的insert钩子函数</span><br><span class="line">   for (i = 0; i &lt; insertedVnodeQueue.length; ++i) &#123;</span><br><span class="line">   (((insertedVnodeQueue[i].data as VNodeData).hook as Hooks).insert as any)(insertedVnodeQueue[i]);</span><br><span class="line">   &#125;</span><br><span class="line">   // 执行模块的post函数</span><br><span class="line">   for (i = 0; i &lt; cbs.post.length; ++i) cbs.post[i]();</span><br><span class="line">   // 返回vnode</span><br><span class="line">   return vnode;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>针对snabbdom源码，笔者对于真实dom到虚拟dom的相互转化的过程整理总结成脑图。希望对于读者理解snabbdom的实现有一点帮助。<br><img src="https://gitee.com/taoyouyou/taoyouyou/raw/master/assets/photos/sanbbdom.png" alt=""></p>
 
       
 
@@ -401,6 +402,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2020/07/20/从缓存的角度来谈谈前端性能优化/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          从缓存的角度来谈谈前端性能优化
+        
+      </div>
+    </a>
+  
   
     <a href="/2020/07/06/了解vue源码，从0到1实现自己的mvvm框架/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">了解vue源码，从0到1实现自己的mvvm框架</div>
@@ -430,7 +440,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用vnode的优点"><span class="toc-number">1.</span> <span class="toc-text">使用vnode的优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Snabbdom基本用法"><span class="toc-number">2.</span> <span class="toc-text">Snabbdom基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装snabbdom"><span class="toc-number">2.1.</span> <span class="toc-text">安装snabbdom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入-snabbdom"><span class="toc-number">2.2.</span> <span class="toc-text">导入 snabbdom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块"><span class="toc-number">2.3.</span> <span class="toc-text">模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#常用模块"><span class="toc-number">2.3.1.</span> <span class="toc-text">常用模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#模块使用"><span class="toc-number">2.3.2.</span> <span class="toc-text">模块使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#snabbdom源码"><span class="toc-number">3.</span> <span class="toc-text">snabbdom源码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snabbdom的核心"><span class="toc-number">3.1.</span> <span class="toc-text">snabbdom的核心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snabbdom源码-1"><span class="toc-number">3.2.</span> <span class="toc-text">snabbdom源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析源码实现"><span class="toc-number">3.3.</span> <span class="toc-text">分析源码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、h"><span class="toc-number">3.3.1.</span> <span class="toc-text">1、h()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、vnode"><span class="toc-number">3.3.2.</span> <span class="toc-text">2、vnode()</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#属性"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">属性</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、init"><span class="toc-number">3.3.3.</span> <span class="toc-text">4、init()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、patch"><span class="toc-number">3.3.4.</span> <span class="toc-text">3、patch()</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用vnode的优点"><span class="toc-number">1.</span> <span class="toc-text">使用vnode的优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Snabbdom基本用法"><span class="toc-number">2.</span> <span class="toc-text">Snabbdom基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装snabbdom"><span class="toc-number">2.1.</span> <span class="toc-text">安装snabbdom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入-snabbdom"><span class="toc-number">2.2.</span> <span class="toc-text">导入 snabbdom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块"><span class="toc-number">2.3.</span> <span class="toc-text">模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#常用模块"><span class="toc-number">2.3.1.</span> <span class="toc-text">常用模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#模块使用"><span class="toc-number">2.3.2.</span> <span class="toc-text">模块使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#snabbdom源码"><span class="toc-number">3.</span> <span class="toc-text">snabbdom源码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snabbdom的核心"><span class="toc-number">3.1.</span> <span class="toc-text">snabbdom的核心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snabbdom源码-1"><span class="toc-number">3.2.</span> <span class="toc-text">snabbdom源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析源码实现"><span class="toc-number">3.3.</span> <span class="toc-text">分析源码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、h"><span class="toc-number">3.3.1.</span> <span class="toc-text">1、h()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、vnode"><span class="toc-number">3.3.2.</span> <span class="toc-text">2、vnode()</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#vnode属性"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">vnode属性</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、init"><span class="toc-number">3.3.3.</span> <span class="toc-text">3、init()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、patch"><span class="toc-number">3.3.4.</span> <span class="toc-text">4、patch()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -542,7 +552,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -555,18 +577,6 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">https</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">mongodb</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">web开发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -586,31 +596,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">网页爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -626,47 +616,31 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MacOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">前端工程化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">puppeteer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">-Virtual DOM -diff</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -678,11 +652,51 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">webpack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JavaScript基础</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">正则表达式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Virtual DOM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">diff</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mvvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">性能优化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
               </li>
             
             <div class="clearfix"></div>
